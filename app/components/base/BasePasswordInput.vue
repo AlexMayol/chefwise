@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * BasePasswordInput - Password input field with visibility toggle
- * 
+ *
  * @example
  * <BasePasswordInput v-model="password" label="Password" :error="errors.password" />
  */
@@ -45,7 +45,9 @@ const emit = defineEmits<{
 const showPassword = ref(false);
 
 // Generate unique ID if not provided
-const inputId = computed(() => props.id || `password-${Math.random().toString(36).substr(2, 9)}`);
+const inputId = computed(
+  () => props.id || `password-${Math.random().toString(36).substr(2, 9)}`,
+);
 
 // Update model value
 const updateValue = (event: Event) => {

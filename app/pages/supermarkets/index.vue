@@ -80,24 +80,15 @@ const confirmDelete = async () => {
       </div>
 
       <!-- Error Alert -->
-      <div
+      <BaseAlert
         v-if="error"
-        class="mb-6 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20"
+        variant="error"
+        dismissible
+        class="mb-6"
+        @dismiss="clearError"
       >
-        <Icon
-          name="ph:warning-circle"
-          size="20"
-          class="text-red-600 dark:text-red-400"
-        />
-        <p class="flex-1 text-sm text-red-600 dark:text-red-400">{{ error }}</p>
-        <button
-          type="button"
-          class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-          @click="clearError"
-        >
-          <Icon name="ph:x" size="18" />
-        </button>
-      </div>
+        {{ error }}
+      </BaseAlert>
 
       <!-- Loading State -->
       <div
@@ -147,71 +138,35 @@ const confirmDelete = async () => {
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <Teleport to="body">
-      <div
-        v-if="showDeleteModal"
-        class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto"
-      >
-        <!-- Backdrop -->
-        <div
-          class="fixed inset-0 bg-black/50 transition-opacity"
-          @click="closeDeleteModal"
-        />
+    <BaseModal
+      v-model="showDeleteModal"
+      :title="t('supermarkets.delete.title')"
+      icon="ph:warning"
+      icon-variant="danger"
+      max-width="md"
+    >
+      <template #subtitle>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          {{
+            t("supermarkets.delete.message", {
+              name: supermarketToDelete?.name,
+            })
+          }}
+        </p>
+      </template>
 
-        <!-- Modal -->
-        <div
-          class="relative z-10 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-slate-800"
+      <template #actions="{ close }">
+        <BaseButton variant="secondary" :disabled="isDeleting" @click="close">
+          {{ t("common.cancel") }}
+        </BaseButton>
+        <BaseButton
+          variant="danger"
+          :loading="isDeleting"
+          @click="confirmDelete"
         >
-          <div class="flex items-center gap-4">
-            <div
-              class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
-            >
-              <Icon
-                name="ph:warning"
-                size="24"
-                class="text-red-600 dark:text-red-400"
-              />
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                {{ t("supermarkets.delete.title") }}
-              </h3>
-              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {{
-                  t("supermarkets.delete.message", {
-                    name: supermarketToDelete?.name,
-                  })
-                }}
-              </p>
-            </div>
-          </div>
-
-          <div class="mt-6 flex justify-end gap-3">
-            <button
-              type="button"
-              class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600"
-              :disabled="isDeleting"
-              @click="closeDeleteModal"
-            >
-              {{ t("common.cancel") }}
-            </button>
-            <button
-              type="button"
-              class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              :disabled="isDeleting"
-              @click="confirmDelete"
-            >
-              <Icon
-                v-if="isDeleting"
-                name="ph:spinner"
-                size="18"
-                class="animate-spin"
-              />
-              {{ t("common.delete") }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+          {{ t("common.delete") }}
+        </BaseButton>
+      </template>
+    </BaseModal>
   </div>
 </template>

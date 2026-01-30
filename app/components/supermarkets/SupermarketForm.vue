@@ -98,72 +98,28 @@ watch(
 <template>
   <form class="space-y-6" @submit.prevent="handleSubmit">
     <!-- Name Field -->
-    <div>
-      <label
-        for="supermarket-name"
-        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        {{ t("supermarkets.form.name") }}
-        <span class="text-red-500">*</span>
-      </label>
-      <div class="relative">
-        <div
-          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-        >
-          <Icon
-            name="ph:storefront"
-            size="18"
-            class="text-gray-400 dark:text-gray-500"
-          />
-        </div>
-        <input
-          id="supermarket-name"
-          v-model="name"
-          type="text"
-          :placeholder="t('supermarkets.form.namePlaceholder')"
-          class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-emerald-500"
-          :class="{
-            'border-red-500 focus:border-red-500 focus:ring-red-500/20':
-              errors.name && touched.name,
-          }"
-          @blur="
-            touched.name = true;
-            validateName(name);
-          "
-        />
-      </div>
-      <p v-if="errors.name && touched.name" class="mt-1.5 text-xs text-red-500">
-        {{ errors.name }}
-      </p>
-    </div>
+    <BaseInput
+      id="supermarket-name"
+      v-model="name"
+      :label="t('supermarkets.form.name')"
+      :placeholder="t('supermarkets.form.namePlaceholder')"
+      icon="ph:storefront"
+      required
+      :error="errors.name && touched.name ? errors.name : undefined"
+      @blur="
+        touched.name = true;
+        validateName(name);
+      "
+    />
 
     <!-- Location Field -->
-    <div>
-      <label
-        for="supermarket-location"
-        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        {{ t("supermarkets.form.location") }}
-      </label>
-      <div class="relative">
-        <div
-          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-        >
-          <Icon
-            name="ph:map-pin"
-            size="18"
-            class="text-gray-400 dark:text-gray-500"
-          />
-        </div>
-        <input
-          id="supermarket-location"
-          v-model="location"
-          type="text"
-          :placeholder="t('supermarkets.form.locationPlaceholder')"
-          class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-emerald-500"
-        />
-      </div>
-    </div>
+    <BaseInput
+      id="supermarket-location"
+      v-model="location"
+      :label="t('supermarkets.form.location')"
+      :placeholder="t('supermarkets.form.locationPlaceholder')"
+      icon="ph:map-pin"
+    />
 
     <!-- Logo Upload Field (Placeholder - Cloudinary integration pending) -->
     <div>
@@ -216,25 +172,20 @@ watch(
 
     <!-- Form Actions -->
     <div class="flex items-center justify-end gap-3 pt-2">
-      <button
+      <BaseButton
         type="button"
-        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600"
+        variant="secondary"
         :disabled="props.isSubmitting"
         @click="handleCancel"
       >
         {{ t("common.cancel") }}
-      </button>
-      <button
+      </BaseButton>
+      <BaseButton
         type="submit"
-        :disabled="props.isSubmitting || !isFormValid"
-        class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        variant="primary"
+        :loading="props.isSubmitting"
+        :disabled="!isFormValid"
       >
-        <Icon
-          v-if="props.isSubmitting"
-          name="ph:spinner"
-          size="18"
-          class="animate-spin"
-        />
         <template v-if="props.supermarket">
           {{
             props.isSubmitting
@@ -249,7 +200,7 @@ watch(
               : t("supermarkets.create.submit")
           }}
         </template>
-      </button>
+      </BaseButton>
     </div>
   </form>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * BaseInput - Reusable input field component with icon, validation, and error states
- * 
+ *
  * @example
  * <BaseInput v-model="email" type="email" icon="ph:envelope" placeholder="Enter email" />
  * <BaseInput v-model="name" label="Name" :error="errors.name" required />
@@ -49,7 +49,9 @@ const emit = defineEmits<{
 }>();
 
 // Generate unique ID if not provided
-const inputId = computed(() => props.id || `input-${Math.random().toString(36).substr(2, 9)}`);
+const inputId = computed(
+  () => props.id || `input-${Math.random().toString(36).substr(2, 9)}`,
+);
 
 // Update model value
 const updateValue = (event: Event) => {
@@ -96,11 +98,7 @@ const inputClasses = computed(() => {
         v-if="icon"
         class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
       >
-        <Icon
-          :name="icon"
-          size="18"
-          class="text-gray-400 dark:text-gray-500"
-        />
+        <Icon :name="icon" size="18" class="text-gray-400 dark:text-gray-500" />
       </div>
 
       <!-- Input Field -->
