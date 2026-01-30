@@ -1,0 +1,37 @@
+{
+  "name": "nuxt-boilerplate",
+  "private": true,
+  "version": "3.0.2",
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "dev-https": "nuxt dev --https --ssl-cert certs/localhost.pem --ssl-key certs/localhost-key.pem",
+    "generate": "nuxt generate",
+    "preview-https": "NITRO_SSL_CERT=`cat certs/localhost.pem` NITRO_SSL_KEY=`cat certs/localhost-key.pem` node .output/server/index.mjs",
+    "preview:static": "npx serve .output/public",
+    "start": "node .output/server/index.mjs",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint --ext .ts,.js,.vue .",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write . --fix"
+  },
+  "devDependencies": {
+    "@dargmuesli/nuxt-cookie-control": "^9.1.10",
+    "@nuxt/eslint": "^1.12.1",
+    "@nuxt/icon": "^2.1.1",
+    "@nuxt/image": "^2.0.0",
+    "@nuxtjs/color-mode": "^4.0.0",
+    "@nuxtjs/device": "^4.0.0",
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/i18n": "^10.2.1",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.3",
+    "nuxt": "^4.2.2",
+    "postcss-import": "^16.1.1",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4"
+  }
+}
