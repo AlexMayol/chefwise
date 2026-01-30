@@ -5,6 +5,7 @@
 A web application that allows users to track supermarket product prices, create recipes, and calculate the true cost of home cooking vs buying ready-made items.
 
 **Tech Stack:**
+
 - Frontend: Nuxt 3
 - Database: Supabase
 - Image Storage: Cloudinary
@@ -16,19 +17,23 @@ A web application that allows users to track supermarket product prices, create 
 ---
 
 ## Phase 0: Project Setup & Infrastructure
+
 **Goal:** Set up the development environment and foundational tools
 
 ### Task 0.1: Initialize Project Structure
-**Status:** 🔄 In Progress
+
+**Status:** ✅ Complete
 
 #### Subtasks:
+
 - [x] Create new Nuxt 3 project with TypeScript
 - [x] Configure Vite build settings
-- [ ] Set up project folder structure (`/components`, `/pages`, `/composables`, `/types`, `/utils`)
-- [ ] Create `.env.example` file with required environment variables
+- [x] Set up project folder structure (`/components`, `/pages`, `/composables`, `/types`, `/utils`)
+- [x] Create `.env.example` file with required environment variables
 - [x] Initialize Git repository
 
 **Acceptance Criteria:**
+
 - Project runs with `npm run dev`
 - TypeScript properly configured
 - All folders created and organized
@@ -36,18 +41,21 @@ A web application that allows users to track supermarket product prices, create 
 ---
 
 ### Task 0.2: Configure Code Quality Tools
-**Status:** 🔄 In Progress
+
+**Status:** ✅ Complete
 
 #### Subtasks:
+
 - [x] Install and configure ESLint with Vue/Nuxt rules
 - [x] Install and configure Prettier
 - [x] Set up ESLint + Prettier integration (no conflicts)
-- [ ] Configure Husky for pre-commit hooks
-- [ ] Add pre-commit hook for linting and formatting
+- [x] Configure Husky for pre-commit hooks
+- [x] Add pre-commit hook for linting and formatting
 - [x] Create `.eslintrc.js` and `.prettierrc` configuration files
-- [ ] Add scripts to `package.json`: `lint`, `format`, `type-check`
+- [x] Add scripts to `package.json`: `lint`, `format`, `type-check`
 
 **Acceptance Criteria:**
+
 - Pre-commit hooks prevent commits with linting errors
 - Code auto-formats on save (if IDE configured)
 - `npm run lint` passes without errors
@@ -55,9 +63,11 @@ A web application that allows users to track supermarket product prices, create 
 ---
 
 ### Task 0.3: Configure Tailwind CSS
+
 **Status:** ✅ Complete
 
 #### Subtasks:
+
 - [x] Install Tailwind CSS and dependencies
 - [x] Configure `tailwind.config.js` with custom theme
 - [x] Set up CSS purge settings for production
@@ -66,6 +76,7 @@ A web application that allows users to track supermarket product prices, create 
 - [x] Configure Nuxt to use Tailwind
 
 **Acceptance Criteria:**
+
 - Tailwind utility classes work in components
 - Custom theme colors accessible
 - Production build purges unused CSS
@@ -73,9 +84,11 @@ A web application that allows users to track supermarket product prices, create 
 ---
 
 ### Task 0.4: Set Up Testing Framework
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Install Vitest and configure for unit testing
 - [ ] Create `vitest.config.ts`
 - [ ] Set up test utilities and helpers
@@ -86,6 +99,7 @@ A web application that allows users to track supermarket product prices, create 
 - [ ] Add test scripts to `package.json`
 
 **Acceptance Criteria:**
+
 - `npm run test:unit` executes Vitest
 - `npm run test:e2e` executes Playwright
 - Sample tests pass
@@ -93,9 +107,11 @@ A web application that allows users to track supermarket product prices, create 
 ---
 
 ### Task 0.5: Configure Supabase
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create Supabase project
 - [ ] Install Supabase client library
 - [ ] Configure Supabase environment variables
@@ -104,6 +120,7 @@ A web application that allows users to track supermarket product prices, create 
 - [ ] Enable Row Level Security (RLS) on Supabase
 
 **Acceptance Criteria:**
+
 - Supabase client successfully connects
 - Environment variables properly loaded
 - RLS enabled on database
@@ -111,9 +128,11 @@ A web application that allows users to track supermarket product prices, create 
 ---
 
 ### Task 0.6: Configure Cloudinary
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create Cloudinary account
 - [ ] Install Cloudinary SDK
 - [ ] Configure Cloudinary environment variables
@@ -122,6 +141,7 @@ A web application that allows users to track supermarket product prices, create 
 - [ ] Configure upload presets and transformations
 
 **Acceptance Criteria:**
+
 - Images can be uploaded to Cloudinary
 - Image URLs are returned correctly
 - Transformations work (resize, optimize)
@@ -129,12 +149,15 @@ A web application that allows users to track supermarket product prices, create 
 ---
 
 ## Phase 1: Authentication & User Management
+
 **Goal:** Implement user registration, login, and session management
 
 ### Task 1.1: Set Up Database Schema for Users
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `users` table in Supabase (extends auth.users)
 - [ ] Define user profile fields (email, created_at, updated_at)
 - [ ] Set up RLS policies for users table
@@ -142,6 +165,7 @@ A web application that allows users to track supermarket product prices, create 
 - [ ] Test user table creation
 
 **Database Schema:**
+
 ```sql
 -- users table (extends Supabase auth.users)
 CREATE TABLE public.users (
@@ -164,6 +188,7 @@ CREATE POLICY "Users can update own profile"
 ```
 
 **Acceptance Criteria:**
+
 - Users table created with proper schema
 - RLS policies prevent unauthorized access
 - Migration file documented
@@ -171,9 +196,11 @@ CREATE POLICY "Users can update own profile"
 ---
 
 ### Task 1.2: Create Authentication Pages
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/login` page component
 - [ ] Create `/app/register` page component
 - [ ] Design login form (email, password)
@@ -183,6 +210,7 @@ CREATE POLICY "Users can update own profile"
 - [ ] Add loading states for form submission
 
 **Acceptance Criteria:**
+
 - Login page accessible at `/app/login`
 - Register page accessible at `/app/register`
 - Forms have proper validation
@@ -191,9 +219,11 @@ CREATE POLICY "Users can update own profile"
 ---
 
 ### Task 1.3: Implement Authentication Logic
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create auth composable (`/composables/useAuth.ts`)
 - [ ] Implement `signUp()` function
 - [ ] Implement `signIn()` function
@@ -204,6 +234,7 @@ CREATE POLICY "Users can update own profile"
 - [ ] Create authenticated user state management
 
 **Acceptance Criteria:**
+
 - Users can register with email/password
 - Users can log in with credentials
 - Users can log out
@@ -213,9 +244,11 @@ CREATE POLICY "Users can update own profile"
 ---
 
 ### Task 1.4: Create Authentication Middleware
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create middleware file (`/middleware/auth.ts`)
 - [ ] Check if user is authenticated
 - [ ] Redirect unauthenticated users to `/app/login`
@@ -224,6 +257,7 @@ CREATE POLICY "Users can update own profile"
 - [ ] Create public middleware for login/register pages
 
 **Acceptance Criteria:**
+
 - Protected routes redirect to login if not authenticated
 - Authenticated users can access `/app/*` routes
 - Login/register pages accessible without authentication
@@ -231,9 +265,11 @@ CREATE POLICY "Users can update own profile"
 ---
 
 ### Task 1.5: Write Authentication Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write unit tests for `useAuth` composable
 - [ ] Write e2e test for registration flow
 - [ ] Write e2e test for login flow
@@ -242,6 +278,7 @@ CREATE POLICY "Users can update own profile"
 - [ ] Test error handling scenarios
 
 **Acceptance Criteria:**
+
 - All unit tests pass
 - E2E tests cover complete auth flows
 - Edge cases tested (invalid email, weak password)
@@ -249,12 +286,15 @@ CREATE POLICY "Users can update own profile"
 ---
 
 ## Phase 2: Supermarket Management
+
 **Goal:** Allow users to create, read, update, and delete supermarkets
 
 ### Task 2.1: Create Supermarkets Database Schema
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `supermarkets` table in Supabase
 - [ ] Define columns: id, user_id, name, location, logo_url, created_at, updated_at
 - [ ] Set up foreign key constraint to users table
@@ -263,6 +303,7 @@ CREATE POLICY "Users can update own profile"
 - [ ] Create database migration file
 
 **Database Schema:**
+
 ```sql
 CREATE TABLE public.supermarkets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -298,6 +339,7 @@ CREATE POLICY "Users can delete own supermarkets"
 ```
 
 **Acceptance Criteria:**
+
 - Table created with correct schema
 - RLS policies enforce user isolation
 - Indexes improve query performance
@@ -305,9 +347,11 @@ CREATE POLICY "Users can delete own supermarkets"
 ---
 
 ### Task 2.2: Create Supermarket TypeScript Types
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/types/supermarket.ts` file
 - [ ] Define `Supermarket` interface
 - [ ] Define `CreateSupermarketDTO` type
@@ -315,6 +359,7 @@ CREATE POLICY "Users can delete own supermarkets"
 - [ ] Export all types
 
 **Type Definitions:**
+
 ```typescript
 export interface Supermarket {
   id: string;
@@ -340,6 +385,7 @@ export interface UpdateSupermarketDTO {
 ```
 
 **Acceptance Criteria:**
+
 - Types are properly defined
 - Types match database schema
 - Types are importable throughout project
@@ -347,9 +393,11 @@ export interface UpdateSupermarketDTO {
 ---
 
 ### Task 2.3: Create Supermarket API Composable
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/composables/useSupermarkets.ts`
 - [ ] Implement `getSupermarkets()` - fetch all user's supermarkets
 - [ ] Implement `getSupermarketById(id)` - fetch single supermarket
@@ -360,6 +408,7 @@ export interface UpdateSupermarketDTO {
 - [ ] Add loading states
 
 **Acceptance Criteria:**
+
 - All CRUD operations work correctly
 - Errors are handled gracefully
 - Loading states are exposed
@@ -368,9 +417,11 @@ export interface UpdateSupermarketDTO {
 ---
 
 ### Task 2.4: Create Supermarket List Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/supermarkets/index.vue` page
 - [ ] Display list of user's supermarkets
 - [ ] Create `SupermarketCard` component
@@ -382,6 +433,7 @@ export interface UpdateSupermarketDTO {
 - [ ] Add empty state (no supermarkets yet)
 
 **Acceptance Criteria:**
+
 - Supermarkets display in a grid/list
 - Cards show all relevant info
 - Delete confirmation prevents accidents
@@ -390,9 +442,11 @@ export interface UpdateSupermarketDTO {
 ---
 
 ### Task 2.5: Create Supermarket Form Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `SupermarketForm.vue` component
 - [ ] Add input for name (required)
 - [ ] Add input for location (optional)
@@ -404,6 +458,7 @@ export interface UpdateSupermarketDTO {
 - [ ] Style form with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Form validates required fields
 - Image uploads successfully to Cloudinary
 - Form data emits correctly
@@ -412,9 +467,11 @@ export interface UpdateSupermarketDTO {
 ---
 
 ### Task 2.6: Create Add Supermarket Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/supermarkets/new.vue` page
 - [ ] Import and use `SupermarketForm` component
 - [ ] Handle form submission
@@ -424,6 +481,7 @@ export interface UpdateSupermarketDTO {
 - [ ] Handle errors and display to user
 
 **Acceptance Criteria:**
+
 - New supermarket can be created
 - User redirected after success
 - Errors handled gracefully
@@ -431,9 +489,11 @@ export interface UpdateSupermarketDTO {
 ---
 
 ### Task 2.7: Create Edit Supermarket Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/supermarkets/[id]/edit.vue` page
 - [ ] Fetch existing supermarket data
 - [ ] Populate `SupermarketForm` with existing data
@@ -444,6 +504,7 @@ export interface UpdateSupermarketDTO {
 - [ ] Handle errors and display to user
 
 **Acceptance Criteria:**
+
 - Existing data loads into form
 - Supermarket updates successfully
 - User redirected after success
@@ -452,9 +513,11 @@ export interface UpdateSupermarketDTO {
 ---
 
 ### Task 2.8: Create Supermarket Detail Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/supermarkets/[id]/index.vue` page
 - [ ] Display supermarket details (name, location, logo)
 - [ ] Show list of products from this supermarket
@@ -462,6 +525,7 @@ export interface UpdateSupermarketDTO {
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - All supermarket details display correctly
 - Products associated with supermarket are shown
 - Navigation to edit page works
@@ -469,9 +533,11 @@ export interface UpdateSupermarketDTO {
 ---
 
 ### Task 2.9: Write Supermarket Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write unit tests for `useSupermarkets` composable
 - [ ] Write e2e test for creating a supermarket
 - [ ] Write e2e test for editing a supermarket
@@ -480,6 +546,7 @@ export interface UpdateSupermarketDTO {
 - [ ] Test image upload functionality
 
 **Acceptance Criteria:**
+
 - All unit tests pass
 - E2E tests cover complete CRUD flows
 - Image upload tested
@@ -487,12 +554,15 @@ export interface UpdateSupermarketDTO {
 ---
 
 ## Phase 3: Unit Conversion System
+
 **Goal:** Create a robust, tested system for converting between units
 
 ### Task 3.1: Design Unit System Architecture
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Define unit categories (volume, weight, count)
 - [ ] Define base units for each category
 - [ ] Define conversion factors
@@ -500,37 +570,39 @@ export interface UpdateSupermarketDTO {
 - [ ] Document unit system design
 
 **Unit System Design:**
+
 ```typescript
 // Unit categories and base units
 const UNIT_SYSTEM = {
   volume: {
-    baseUnit: 'ml',
+    baseUnit: "ml",
     units: {
-      ml: { name: 'Milliliters', factor: 1 },
-      cl: { name: 'Centiliters', factor: 10 },
-      dl: { name: 'Deciliters', factor: 100 },
-      l: { name: 'Liters', factor: 1000 }
-    }
+      ml: { name: "Milliliters", factor: 1 },
+      cl: { name: "Centiliters", factor: 10 },
+      dl: { name: "Deciliters", factor: 100 },
+      l: { name: "Liters", factor: 1000 },
+    },
   },
   weight: {
-    baseUnit: 'g',
+    baseUnit: "g",
     units: {
-      mg: { name: 'Milligrams', factor: 0.001 },
-      g: { name: 'Grams', factor: 1 },
-      kg: { name: 'Kilograms', factor: 1000 }
-    }
+      mg: { name: "Milligrams", factor: 0.001 },
+      g: { name: "Grams", factor: 1 },
+      kg: { name: "Kilograms", factor: 1000 },
+    },
   },
   count: {
-    baseUnit: 'unit',
+    baseUnit: "unit",
     units: {
-      unit: { name: 'Units', factor: 1 },
-      dozen: { name: 'Dozens', factor: 12 }
-    }
-  }
+      unit: { name: "Units", factor: 1 },
+      dozen: { name: "Dozens", factor: 12 },
+    },
+  },
 };
 ```
 
 **Acceptance Criteria:**
+
 - All common units are defined
 - Conversion factors are accurate
 - System is extensible for future units
@@ -538,9 +610,11 @@ const UNIT_SYSTEM = {
 ---
 
 ### Task 3.2: Create Unit Types
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/types/units.ts` file
 - [ ] Define `UnitCategory` type
 - [ ] Define `Unit` type
@@ -548,12 +622,13 @@ const UNIT_SYSTEM = {
 - [ ] Export all types
 
 **Type Definitions:**
-```typescript
-export type UnitCategory = 'volume' | 'weight' | 'count';
 
-export type VolumeUnit = 'ml' | 'cl' | 'dl' | 'l';
-export type WeightUnit = 'mg' | 'g' | 'kg';
-export type CountUnit = 'unit' | 'dozen';
+```typescript
+export type UnitCategory = "volume" | "weight" | "count";
+
+export type VolumeUnit = "ml" | "cl" | "dl" | "l";
+export type WeightUnit = "mg" | "g" | "kg";
+export type CountUnit = "unit" | "dozen";
 
 export type Unit = VolumeUnit | WeightUnit | CountUnit;
 
@@ -570,6 +645,7 @@ export interface Quantity {
 ```
 
 **Acceptance Criteria:**
+
 - Types cover all unit categories
 - Types are type-safe
 - Types match unit system design
@@ -577,9 +653,11 @@ export interface Quantity {
 ---
 
 ### Task 3.3: Create Unit Conversion Utilities
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/utils/units.ts` file
 - [ ] Implement `getUnitCategory(unit)` function
 - [ ] Implement `convertToBaseUnit(value, unit)` function
@@ -590,6 +668,7 @@ export interface Quantity {
 - [ ] Handle edge cases (negative values, zero, very large numbers)
 
 **Core Functions:**
+
 ```typescript
 // Convert any unit to its base unit
 export function convertToBaseUnit(value: number, unit: Unit): number;
@@ -598,7 +677,11 @@ export function convertToBaseUnit(value: number, unit: Unit): number;
 export function convertFromBaseUnit(value: number, unit: Unit): number;
 
 // Convert between any two units (must be same category)
-export function convertUnit(value: number, fromUnit: Unit, toUnit: Unit): number;
+export function convertUnit(
+  value: number,
+  fromUnit: Unit,
+  toUnit: Unit,
+): number;
 
 // Check if two units are in the same category
 export function isSameCategory(unit1: Unit, unit2: Unit): boolean;
@@ -608,6 +691,7 @@ export function getUnitCategory(unit: Unit): UnitCategory;
 ```
 
 **Acceptance Criteria:**
+
 - All conversion functions work correctly
 - Invalid conversions throw errors
 - Functions handle edge cases
@@ -616,9 +700,11 @@ export function getUnitCategory(unit: Unit): UnitCategory;
 ---
 
 ### Task 3.4: Create Unit Display Utilities
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `formatQuantity(value, unit)` function
 - [ ] Create `formatPrice(price, quantity, unit)` function - formats price per unit
 - [ ] Create `getUnitLabel(unit)` function - returns display name
@@ -626,6 +712,7 @@ export function getUnitCategory(unit: Unit): UnitCategory;
 - [ ] Handle decimal formatting (1.5L vs 1L 500ml)
 
 **Acceptance Criteria:**
+
 - Quantities display in human-readable format
 - Prices per unit are correctly formatted
 - Pluralization works correctly
@@ -633,9 +720,11 @@ export function getUnitCategory(unit: Unit): UnitCategory;
 ---
 
 ### Task 3.5: Write Comprehensive Unit Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Test all volume conversions (ml ↔ cl ↔ dl ↔ l)
 - [ ] Test all weight conversions (mg ↔ g ↔ kg)
 - [ ] Test count conversions (unit ↔ dozen)
@@ -645,35 +734,39 @@ export function getUnitCategory(unit: Unit): UnitCategory;
 - [ ] Achieve >95% code coverage on unit utilities
 
 **Test Cases:**
+
 ```typescript
 // Example tests
-describe('Unit Conversion', () => {
-  test('1L = 1000ml', () => {
-    expect(convertUnit(1, 'l', 'ml')).toBe(1000);
+describe("Unit Conversion", () => {
+  test("1L = 1000ml", () => {
+    expect(convertUnit(1, "l", "ml")).toBe(1000);
   });
-  
-  test('500ml = 0.5L', () => {
-    expect(convertUnit(500, 'ml', 'l')).toBe(0.5);
+
+  test("500ml = 0.5L", () => {
+    expect(convertUnit(500, "ml", "l")).toBe(0.5);
   });
-  
-  test('Cannot convert volume to weight', () => {
-    expect(() => convertUnit(100, 'ml', 'g')).toThrow();
+
+  test("Cannot convert volume to weight", () => {
+    expect(() => convertUnit(100, "ml", "g")).toThrow();
   });
 });
 ```
 
 **Acceptance Criteria:**
+
 - All unit conversions tested
 - Edge cases covered
-- >95% code coverage
+- > 95% code coverage
 - No rounding errors in conversions
 
 ---
 
 ### Task 3.6: Create Unit Selector Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `UnitSelector.vue` component
 - [ ] Display dropdown of available units by category
 - [ ] Filter units based on category prop
@@ -682,6 +775,7 @@ describe('Unit Conversion', () => {
 - [ ] Add visual icons for unit types
 
 **Acceptance Criteria:**
+
 - Component displays correct units for category
 - Selection emits properly
 - Component is reusable
@@ -689,12 +783,15 @@ describe('Unit Conversion', () => {
 ---
 
 ## Phase 4: Product Management
+
 **Goal:** Allow users to create and manage products with prices and units
 
 ### Task 4.1: Create Products Database Schema
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `products` table in Supabase
 - [ ] Define columns: id, user_id, supermarket_id, name, description, current_price, quantity, unit, image_url, rating, created_at, updated_at
 - [ ] Set up foreign key constraints
@@ -703,6 +800,7 @@ describe('Unit Conversion', () => {
 - [ ] Create database migration file
 
 **Database Schema:**
+
 ```sql
 CREATE TABLE public.products (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -744,6 +842,7 @@ CREATE POLICY "Users can delete own products"
 ```
 
 **Acceptance Criteria:**
+
 - Table created with correct schema
 - Foreign keys enforce data integrity
 - RLS policies enforce user isolation
@@ -751,9 +850,11 @@ CREATE POLICY "Users can delete own products"
 ---
 
 ### Task 4.2: Create Price History Database Schema
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `product_price_history` table
 - [ ] Define columns: id, product_id, price, recorded_at
 - [ ] Set up foreign key to products table
@@ -763,6 +864,7 @@ CREATE POLICY "Users can delete own products"
 - [ ] Create database migration file
 
 **Database Schema:**
+
 ```sql
 CREATE TABLE public.product_price_history (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -772,7 +874,7 @@ CREATE TABLE public.product_price_history (
 );
 
 -- Indexes
-CREATE INDEX idx_price_history_product_recorded 
+CREATE INDEX idx_price_history_product_recorded
   ON public.product_price_history(product_id, recorded_at DESC);
 
 -- RLS Policies
@@ -807,6 +909,7 @@ CREATE TRIGGER trigger_record_price_change
 ```
 
 **Acceptance Criteria:**
+
 - Price history table created
 - Trigger automatically records price changes
 - Historical data preserved
@@ -814,9 +917,11 @@ CREATE TRIGGER trigger_record_price_change
 ---
 
 ### Task 4.3: Create Product TypeScript Types
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/types/product.ts` file
 - [ ] Define `Product` interface
 - [ ] Define `CreateProductDTO` type
@@ -826,6 +931,7 @@ CREATE TRIGGER trigger_record_price_change
 - [ ] Export all types
 
 **Type Definitions:**
+
 ```typescript
 export interface Product {
   id: string;
@@ -878,6 +984,7 @@ export interface PriceHistory {
 ```
 
 **Acceptance Criteria:**
+
 - Types match database schema
 - Calculated fields included
 - Types are type-safe
@@ -885,9 +992,11 @@ export interface PriceHistory {
 ---
 
 ### Task 4.4: Create Product Calculation Utilities
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/utils/productCalculations.ts` file
 - [ ] Implement `calculatePricePerBaseUnit(product)` function
 - [ ] Implement `formatPricePerUnit(product)` function
@@ -896,6 +1005,7 @@ export interface PriceHistory {
 - [ ] Add comprehensive tests for calculations
 
 **Core Functions:**
+
 ```typescript
 // Calculate price per base unit (e.g., per ml for volume)
 export function calculatePricePerBaseUnit(product: Product): number;
@@ -907,11 +1017,12 @@ export function formatPricePerUnit(product: Product): string;
 export function calculateProductCost(
   product: Product,
   requiredQuantity: number,
-  requiredUnit: Unit
+  requiredUnit: Unit,
 ): number;
 ```
 
 **Acceptance Criteria:**
+
 - Calculations are accurate
 - Unit conversions work correctly
 - Edge cases handled
@@ -920,9 +1031,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.5: Create Product API Composable
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/composables/useProducts.ts`
 - [ ] Implement `getProducts()` - fetch all user's products
 - [ ] Implement `getProductById(id)` - fetch single product
@@ -935,6 +1048,7 @@ export function calculateProductCost(
 - [ ] Add error handling and loading states
 
 **Acceptance Criteria:**
+
 - All CRUD operations work
 - Price per unit calculated automatically
 - Filtering works correctly
@@ -943,9 +1057,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.6: Create Product Form Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `ProductForm.vue` component
 - [ ] Add input for name (required)
 - [ ] Add textarea for description (optional)
@@ -961,6 +1077,7 @@ export function calculateProductCost(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - All fields validated correctly
 - Price per unit displays in real-time
 - Image uploads to Cloudinary
@@ -969,9 +1086,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.7: Create Product List Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/products/index.vue` page
 - [ ] Display grid/list of user's products
 - [ ] Create `ProductCard` component
@@ -986,6 +1105,7 @@ export function calculateProductCost(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Products display correctly
 - Filtering and searching work
 - Sorting works correctly
@@ -994,9 +1114,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.8: Create Add Product Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/products/new.vue` page
 - [ ] Import and use `ProductForm` component
 - [ ] Handle form submission
@@ -1006,6 +1128,7 @@ export function calculateProductCost(
 - [ ] Handle errors
 
 **Acceptance Criteria:**
+
 - New product can be created
 - Validation works
 - Success and error states handled
@@ -1013,9 +1136,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.9: Create Edit Product Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/products/[id]/edit.vue` page
 - [ ] Fetch existing product data
 - [ ] Populate form with existing data
@@ -1026,6 +1151,7 @@ export function calculateProductCost(
 - [ ] Handle errors
 
 **Acceptance Criteria:**
+
 - Product data loads into form
 - Updates save correctly
 - Price history recorded on price change
@@ -1033,9 +1159,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.10: Create Product Detail Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/products/[id]/index.vue` page
 - [ ] Display product details (image, name, description, price, rating)
 - [ ] Display price per unit prominently
@@ -1046,6 +1174,7 @@ export function calculateProductCost(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - All product details display
 - Price history visualized clearly
 - Navigation works correctly
@@ -1053,9 +1182,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.11: Create Price History Chart Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `PriceHistoryChart.vue` component
 - [ ] Choose charting library (e.g., Chart.js, ApexCharts)
 - [ ] Install and configure charting library
@@ -1067,6 +1198,7 @@ export function calculateProductCost(
 - [ ] Make chart responsive
 
 **Acceptance Criteria:**
+
 - Chart displays price history accurately
 - Chart is responsive
 - Tooltips show detailed information
@@ -1075,9 +1207,11 @@ export function calculateProductCost(
 ---
 
 ### Task 4.12: Write Product Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write unit tests for product calculations
 - [ ] Write unit tests for `useProducts` composable
 - [ ] Write e2e test for creating a product
@@ -1088,6 +1222,7 @@ export function calculateProductCost(
 - [ ] Test price history recording
 
 **Acceptance Criteria:**
+
 - All unit tests pass
 - E2E tests cover CRUD flows
 - Price calculations tested thoroughly
@@ -1096,12 +1231,15 @@ export function calculateProductCost(
 ---
 
 ## Phase 5: Recipe Management
+
 **Goal:** Allow users to create recipes with products and calculate total cost
 
 ### Task 5.1: Create Recipes Database Schema
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `recipes` table in Supabase
 - [ ] Define columns: id, user_id, name, description, image_url, servings, prep_time_minutes, rating, created_at, updated_at
 - [ ] Set up foreign key to users table
@@ -1110,6 +1248,7 @@ export function calculateProductCost(
 - [ ] Create database migration file
 
 **Database Schema:**
+
 ```sql
 CREATE TABLE public.recipes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1148,15 +1287,18 @@ CREATE POLICY "Users can delete own recipes"
 ```
 
 **Acceptance Criteria:**
+
 - Recipes table created
 - RLS policies enforce user isolation
 
 ---
 
 ### Task 5.2: Create Recipe Ingredients Database Schema
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `recipe_ingredients` table in Supabase
 - [ ] Define columns: id, recipe_id, product_id, quantity, unit
 - [ ] Set up foreign keys to recipes and products
@@ -1165,6 +1307,7 @@ CREATE POLICY "Users can delete own recipes"
 - [ ] Create database migration file
 
 **Database Schema:**
+
 ```sql
 CREATE TABLE public.recipe_ingredients (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1223,6 +1366,7 @@ CREATE POLICY "Users can delete ingredients of own recipes"
 ```
 
 **Acceptance Criteria:**
+
 - Recipe ingredients table created
 - Foreign keys enforce referential integrity
 - RLS policies enforce proper access control
@@ -1230,9 +1374,11 @@ CREATE POLICY "Users can delete ingredients of own recipes"
 ---
 
 ### Task 5.3: Create Recipe TypeScript Types
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/types/recipe.ts` file
 - [ ] Define `Recipe` interface
 - [ ] Define `RecipeIngredient` interface
@@ -1243,6 +1389,7 @@ CREATE POLICY "Users can delete ingredients of own recipes"
 - [ ] Export all types
 
 **Type Definitions:**
+
 ```typescript
 export interface Recipe {
   id: string;
@@ -1308,6 +1455,7 @@ export interface CreateRecipeIngredientDTO {
 ```
 
 **Acceptance Criteria:**
+
 - Types match database schema
 - Calculated fields included
 - Types support nested data
@@ -1315,9 +1463,11 @@ export interface CreateRecipeIngredientDTO {
 ---
 
 ### Task 5.4: Create Recipe Calculation Utilities
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/utils/recipeCalculations.ts` file
 - [ ] Implement `calculateIngredientCost(ingredient, product)` function
 - [ ] Implement `calculateRecipeTotalCost(recipe)` function
@@ -1326,30 +1476,28 @@ export interface CreateRecipeIngredientDTO {
 - [ ] Add comprehensive tests
 
 **Core Functions:**
+
 ```typescript
 // Calculate cost of a single ingredient in the recipe
 export function calculateIngredientCost(
   ingredient: RecipeIngredient,
-  product: Product
+  product: Product,
 ): number;
 
 // Calculate total cost of recipe
-export function calculateRecipeTotalCost(
-  recipe: RecipeWithIngredients
-): number;
+export function calculateRecipeTotalCost(recipe: RecipeWithIngredients): number;
 
 // Calculate cost per serving
-export function calculateCostPerServing(
-  recipe: RecipeWithIngredients
-): number;
+export function calculateCostPerServing(recipe: RecipeWithIngredients): number;
 
 // Get detailed cost breakdown
 export function getRecipeCostBreakdown(
-  recipe: RecipeWithIngredients
+  recipe: RecipeWithIngredients,
 ): IngredientCost[];
 ```
 
 **Acceptance Criteria:**
+
 - Calculations are accurate
 - Unit conversions handled correctly
 - Edge cases handled
@@ -1358,9 +1506,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.5: Create Recipe API Composable
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/composables/useRecipes.ts`
 - [ ] Implement `getRecipes()` - fetch all user's recipes
 - [ ] Implement `getRecipeById(id)` - fetch single recipe with ingredients
@@ -1374,6 +1524,7 @@ export function getRecipeCostBreakdown(
 - [ ] Add error handling and loading states
 
 **Acceptance Criteria:**
+
 - All CRUD operations work
 - Ingredients can be managed
 - Costs calculated automatically
@@ -1382,9 +1533,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.6: Create Recipe Form Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `RecipeForm.vue` component
 - [ ] Add input for name (required)
 - [ ] Add textarea for description (optional)
@@ -1397,6 +1550,7 @@ export function getRecipeCostBreakdown(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - All fields validated
 - Image uploads to Cloudinary
 - Form is user-friendly
@@ -1404,9 +1558,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.7: Create Recipe Ingredient Selector Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `RecipeIngredientSelector.vue` component
 - [ ] Display list of user's products in a searchable dropdown
 - [ ] Add quantity input (number, min 0)
@@ -1418,6 +1574,7 @@ export function getRecipeCostBreakdown(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Products are searchable
 - Unit validation works
 - Cost displays in real-time
@@ -1426,9 +1583,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.8: Create Recipe Ingredient List Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `RecipeIngredientList.vue` component
 - [ ] Display list of ingredients with product name, quantity, unit
 - [ ] Show individual ingredient costs
@@ -1440,6 +1599,7 @@ export function getRecipeCostBreakdown(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Ingredients display clearly
 - Costs are accurate
 - Edit and remove work
@@ -1448,9 +1608,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.9: Create Recipe List Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/recipes/index.vue` page
 - [ ] Display grid/list of user's recipes
 - [ ] Create `RecipeCard` component
@@ -1464,6 +1626,7 @@ export function getRecipeCostBreakdown(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Recipes display correctly
 - Search and sort work
 - Total costs display
@@ -1472,9 +1635,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.10: Create Add Recipe Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/recipes/new.vue` page
 - [ ] Import `RecipeForm` component
 - [ ] Import `RecipeIngredientSelector` component
@@ -1487,6 +1652,7 @@ export function getRecipeCostBreakdown(
 - [ ] Handle errors
 
 **Acceptance Criteria:**
+
 - Recipe and ingredients can be created together
 - Transaction ensures data consistency
 - Success and error states handled
@@ -1494,9 +1660,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.11: Create Edit Recipe Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/recipes/[id]/edit.vue` page
 - [ ] Fetch existing recipe data with ingredients
 - [ ] Populate forms with existing data
@@ -1507,6 +1675,7 @@ export function getRecipeCostBreakdown(
 - [ ] Handle errors
 
 **Acceptance Criteria:**
+
 - Recipe data loads correctly
 - Ingredients can be modified
 - Updates save correctly
@@ -1514,9 +1683,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.12: Create Recipe Detail Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/recipes/[id]/index.vue` page
 - [ ] Display recipe details (image, name, description, servings, prep time, rating)
 - [ ] Display ingredient list with quantities and units
@@ -1526,6 +1697,7 @@ export function getRecipeCostBreakdown(
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - All recipe details display
 - Cost breakdown is clear
 - Scaling feature works
@@ -1534,9 +1706,11 @@ export function getRecipeCostBreakdown(
 ---
 
 ### Task 5.13: Write Recipe Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write unit tests for recipe calculations
 - [ ] Write unit tests for `useRecipes` composable
 - [ ] Write e2e test for creating a recipe with ingredients
@@ -1547,6 +1721,7 @@ export function getRecipeCostBreakdown(
 - [ ] Test cost calculations with various unit conversions
 
 **Acceptance Criteria:**
+
 - All unit tests pass
 - E2E tests cover complete recipe flows
 - Cost calculations tested thoroughly
@@ -1554,12 +1729,15 @@ export function getRecipeCostBreakdown(
 ---
 
 ## Phase 6: Recipe Sharing
+
 **Goal:** Allow users to share recipes in view-only mode
 
 ### Task 6.1: Create Shared Recipes Database Schema
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Add `is_public` boolean column to recipes table
 - [ ] Add `share_token` unique text column to recipes table
 - [ ] Create index on share_token
@@ -1567,6 +1745,7 @@ export function getRecipeCostBreakdown(
 - [ ] Create database migration file
 
 **Database Schema:**
+
 ```sql
 -- Add columns to recipes table
 ALTER TABLE public.recipes
@@ -1594,6 +1773,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ```
 
 **Acceptance Criteria:**
+
 - Columns added to recipes table
 - Share tokens are unique
 - Public recipes accessible without authentication
@@ -1601,15 +1781,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 6.2: Create Share Token Generation Utility
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/utils/shareToken.ts` file
 - [ ] Implement `generateShareToken()` function (random, URL-safe)
 - [ ] Implement `isValidShareToken(token)` function
 - [ ] Add tests for token generation
 
 **Acceptance Criteria:**
+
 - Tokens are random and unique
 - Tokens are URL-safe
 - Validation works correctly
@@ -1617,9 +1800,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 6.3: Add Recipe Sharing Toggle to Recipe Detail Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Add "Share Recipe" toggle switch to recipe detail page
 - [ ] Generate share token when toggled on
 - [ ] Update recipe with is_public=true and share_token
@@ -1629,6 +1814,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Allow toggling off (removes public access but keeps token)
 
 **Acceptance Criteria:**
+
 - Toggle updates database correctly
 - Share link is copyable
 - Public indicator displays clearly
@@ -1636,9 +1822,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 6.4: Create Public Recipe View Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/recipes/shared/[token].vue` page (no auth required)
 - [ ] Fetch recipe by share token
 - [ ] Display recipe details (read-only)
@@ -1650,6 +1838,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Public recipe displays correctly
 - No authentication required
 - Invalid tokens show 404
@@ -1658,15 +1847,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 6.5: Create Shared Recipe Product View
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Allow viewing product details from shared recipe (read-only)
 - [ ] Display product name, quantity, unit, price
 - [ ] Hide sensitive data (user info, supermarket specifics if desired)
 - [ ] Style consistently with public recipe view
 
 **Acceptance Criteria:**
+
 - Product info displays correctly
 - Sensitive data hidden
 - View is read-only
@@ -1674,9 +1866,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 6.6: Write Recipe Sharing Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write unit tests for share token generation
 - [ ] Write e2e test for sharing a recipe
 - [ ] Write e2e test for viewing shared recipe (unauthenticated)
@@ -1685,6 +1879,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Test invalid share token handling
 
 **Acceptance Criteria:**
+
 - All tests pass
 - Sharing flows tested
 - Security verified (no unauthorized edits)
@@ -1692,12 +1887,15 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ## Phase 7: Dashboard & Analytics
+
 **Goal:** Create a central dashboard with insights and analytics
 
 ### Task 7.1: Create Dashboard Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/dashboard/index.vue` page
 - [ ] Display summary statistics (total products, recipes, supermarkets)
 - [ ] Show recent products added
@@ -1707,6 +1905,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Make responsive
 
 **Acceptance Criteria:**
+
 - Dashboard displays all statistics
 - Quick actions work
 - Responsive design
@@ -1714,9 +1913,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 7.2: Create Analytics Page
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/app/analytics/index.vue` page
 - [ ] Display price trend charts for products
 - [ ] Show most expensive ingredients
@@ -1726,6 +1927,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - All analytics display correctly
 - Charts are interactive
 - Filtering works
@@ -1733,9 +1935,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 7.3: Create Supermarket Comparison Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `SupermarketComparison.vue` component
 - [ ] Allow selecting a product type (e.g., "milk")
 - [ ] Display all user's products matching that type across supermarkets
@@ -1744,6 +1948,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Comparison displays correctly
 - Cheapest option highlighted
 - User can compare products easily
@@ -1751,9 +1956,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 7.4: Create Price Insights Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `PriceInsights.vue` component
 - [ ] Calculate average price changes over time
 - [ ] Identify products with significant price increases
@@ -1762,6 +1969,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Insights are accurate
 - Recommendations are helpful
 - Display is clear
@@ -1769,33 +1977,40 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 7.5: Write Dashboard Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write e2e test for dashboard page
 - [ ] Write e2e test for analytics page
 - [ ] Write unit tests for analytics calculations
 - [ ] Test supermarket comparison component
 
 **Acceptance Criteria:**
+
 - All tests pass
 - Analytics verified for accuracy
 
 ---
 
 ## Phase 8: Landing Page
+
 **Goal:** Create a marketing landing page to promote the app
 
 ### Task 8.1: Design Landing Page Structure
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create wireframe for landing page
 - [ ] Plan sections: Hero, Features, How It Works, Benefits, CTA
 - [ ] Choose color scheme and typography
 - [ ] Find or create illustrations/icons
 
 **Acceptance Criteria:**
+
 - Wireframe complete
 - Design approved
 - Assets ready
@@ -1803,9 +2018,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 8.2: Create Hero Section
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/pages/index.vue` landing page
 - [ ] Create hero section component
 - [ ] Add headline and subheadline
@@ -1815,6 +2032,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Hero section is compelling
 - CTA is prominent
 - Responsive design
@@ -1822,9 +2040,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 8.3: Create Features Section
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create features section component
 - [ ] Highlight 3-4 key features with icons
   - Track product prices
@@ -1835,6 +2055,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Features clearly communicated
 - Icons are relevant
 - Section is visually appealing
@@ -1842,9 +2063,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 8.4: Create How It Works Section
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create how-it-works section component
 - [ ] Show 3-step process with visuals
   1. Add products from your supermarket
@@ -1854,6 +2077,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Process is clear and simple
 - Visuals support text
 - Flow is logical
@@ -1861,39 +2085,47 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 8.5: Create Benefits Section
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create benefits section component
 - [ ] List key benefits (save money, track inflation, make informed decisions)
 - [ ] Add supporting visuals or icons
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Benefits are compelling
 - Section is engaging
 
 ---
 
 ### Task 8.6: Create Call-to-Action Section
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create CTA section component
 - [ ] Add compelling CTA text
 - [ ] Add sign-up button
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - CTA is clear and prominent
 - Button links to registration
 
 ---
 
 ### Task 8.7: Create Footer
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create footer component
 - [ ] Add links (About, Privacy Policy, Terms of Service, Contact)
 - [ ] Add social media icons (if applicable)
@@ -1901,32 +2133,39 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Footer has all necessary links
 - Footer is consistent across pages
 
 ---
 
 ### Task 8.8: Write Landing Page Tests
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write e2e test for landing page navigation
 - [ ] Test CTA button redirects to registration
 - [ ] Test responsive design on different screen sizes
 
 **Acceptance Criteria:**
+
 - All tests pass
 - Landing page is fully functional
 
 ---
 
 ## Phase 9: Navigation & Layout
+
 **Goal:** Create consistent navigation and layout across the app
 
 ### Task 9.1: Create Main Navigation Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `MainNav.vue` component
 - [ ] Add logo/brand name
 - [ ] Add navigation links (Dashboard, Products, Recipes, Supermarkets, Analytics)
@@ -1936,6 +2175,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Navigation is accessible on all pages
 - Mobile menu works
 - Active link is highlighted
@@ -1943,9 +2183,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 9.2: Create Layout Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/layouts/default.vue` layout
 - [ ] Include `MainNav` component
 - [ ] Include `Footer` component
@@ -1954,47 +2196,57 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Layout is consistent across pages
 - Navigation and footer always visible
 
 ---
 
 ### Task 9.3: Create Public Layout Component
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `/layouts/public.vue` layout for landing page
 - [ ] Simpler header without full navigation
 - [ ] Include footer
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Public layout distinct from app layout
 - Consistent branding
 
 ---
 
 ### Task 9.4: Apply Layouts to All Pages
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Apply `default` layout to all `/app/*` pages
 - [ ] Apply `public` layout to landing page and shared recipe pages
 - [ ] Verify consistency
 
 **Acceptance Criteria:**
+
 - All pages use appropriate layouts
 - Navigation works across all pages
 
 ---
 
 ## Phase 10: User Experience Enhancements
+
 **Goal:** Improve usability and polish the application
 
 ### Task 10.1: Add Loading States
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `LoadingSpinner.vue` component
 - [ ] Add loading states to all data fetching operations
 - [ ] Show spinner during form submissions
@@ -2002,15 +2254,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Loading indicators display during async operations
 - User cannot submit forms multiple times
 
 ---
 
 ### Task 10.2: Add Error Handling & Messages
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `ErrorMessage.vue` component
 - [ ] Display errors from API calls
 - [ ] Add error boundaries for components
@@ -2018,6 +2273,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Errors display clearly
 - Users know what went wrong
 - Errors are dismissable
@@ -2025,9 +2281,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 10.3: Add Success Notifications
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `Toast.vue` notification component
 - [ ] Show success messages after create/update/delete operations
 - [ ] Auto-dismiss after 3-5 seconds
@@ -2035,6 +2293,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Success messages display
 - Auto-dismiss works
 - User can dismiss manually
@@ -2042,9 +2301,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 10.4: Add Confirmation Modals
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `ConfirmModal.vue` component
 - [ ] Use for delete operations
 - [ ] Require explicit confirmation
@@ -2052,15 +2313,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Confirmations prevent accidental deletes
 - User can cancel confirmation
 
 ---
 
 ### Task 10.5: Improve Form Validation
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Add inline validation to all forms
 - [ ] Show validation errors below fields
 - [ ] Validate on blur and on submit
@@ -2068,6 +2332,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style validation states with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Validation is immediate and clear
 - Users know what to fix
 - Invalid forms cannot be submitted
@@ -2075,9 +2340,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 10.6: Add Empty States
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Create `EmptyState.vue` component
 - [ ] Add to product list (no products yet)
 - [ ] Add to recipe list (no recipes yet)
@@ -2086,15 +2353,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Style with Tailwind CSS
 
 **Acceptance Criteria:**
+
 - Empty states are friendly and helpful
 - CTAs guide users to add content
 
 ---
 
 ### Task 10.7: Improve Accessibility
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Add ARIA labels to all interactive elements
 - [ ] Ensure keyboard navigation works
 - [ ] Test with screen reader
@@ -2103,6 +2373,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Add alt text to all images
 
 **Acceptance Criteria:**
+
 - App is accessible via keyboard
 - Screen reader can navigate app
 - WCAG 2.1 AA compliance
@@ -2110,9 +2381,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 10.8: Optimize Performance
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Implement lazy loading for routes
 - [ ] Optimize images (use Cloudinary transformations)
 - [ ] Add pagination to long lists
@@ -2121,6 +2394,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Run Lighthouse audit and fix issues
 
 **Acceptance Criteria:**
+
 - Lighthouse score >90 for performance
 - Pages load quickly
 - Images are optimized
@@ -2128,27 +2402,33 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ## Phase 11: Polish & Bug Fixes
+
 **Goal:** Fix bugs, refine UI, and prepare for launch
 
 ### Task 11.1: Comprehensive Testing
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Run all unit tests
 - [ ] Run all e2e tests
 - [ ] Fix any failing tests
 - [ ] Achieve >80% code coverage
 
 **Acceptance Criteria:**
+
 - All tests pass
 - Code coverage meets target
 
 ---
 
 ### Task 11.2: Cross-Browser Testing
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Test on Chrome
 - [ ] Test on Firefox
 - [ ] Test on Safari
@@ -2156,29 +2436,35 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Fix browser-specific issues
 
 **Acceptance Criteria:**
+
 - App works on all major browsers
 
 ---
 
 ### Task 11.3: Responsive Design Testing
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Test on mobile devices (iOS, Android)
 - [ ] Test on tablets
 - [ ] Test on desktop (various resolutions)
 - [ ] Fix responsive issues
 
 **Acceptance Criteria:**
+
 - App is fully responsive
 - UI adapts to all screen sizes
 
 ---
 
 ### Task 11.4: User Acceptance Testing
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Recruit beta testers
 - [ ] Collect feedback
 - [ ] Prioritize feedback items
@@ -2186,15 +2472,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Retest with users
 
 **Acceptance Criteria:**
+
 - User feedback collected
 - Critical issues resolved
 
 ---
 
 ### Task 11.5: Security Audit
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Review all RLS policies
 - [ ] Test authentication flows for vulnerabilities
 - [ ] Ensure no sensitive data exposed in public routes
@@ -2203,15 +2492,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Run security scanning tools
 
 **Acceptance Criteria:**
+
 - No critical security vulnerabilities
 - RLS policies properly restrict access
 
 ---
 
 ### Task 11.6: Performance Optimization
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Profile application for bottlenecks
 - [ ] Optimize database queries
 - [ ] Add database indexes where needed
@@ -2219,15 +2511,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Enable caching where appropriate
 
 **Acceptance Criteria:**
+
 - App is performant under load
 - Database queries optimized
 
 ---
 
 ### Task 11.7: Documentation
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Write README with setup instructions
 - [ ] Document environment variables
 - [ ] Create user guide
@@ -2235,15 +2530,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Add code comments where needed
 
 **Acceptance Criteria:**
+
 - README is complete
 - New developers can set up project easily
 
 ---
 
 ### Task 11.8: Final UI Polish
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Review all pages for visual consistency
 - [ ] Refine spacing and typography
 - [ ] Ensure color palette is consistent
@@ -2251,18 +2549,22 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Polish animations
 
 **Acceptance Criteria:**
+
 - UI is polished and professional
 - Consistent visual language
 
 ---
 
 ## Phase 12: Deployment
+
 **Goal:** Deploy the application to production
 
 ### Task 12.1: Set Up Production Environment
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Choose hosting platform (Vercel, Netlify, etc.)
 - [ ] Set up production Supabase project
 - [ ] Set up production Cloudinary account
@@ -2270,15 +2572,18 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Set up custom domain (if applicable)
 
 **Acceptance Criteria:**
+
 - Production environment configured
 - Environment variables set
 
 ---
 
 ### Task 12.2: Configure Build & Deployment Pipeline
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Configure build settings
 - [ ] Set up CI/CD pipeline (GitHub Actions, etc.)
 - [ ] Configure automatic deployments on push
@@ -2286,30 +2591,36 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Test deployment process
 
 **Acceptance Criteria:**
+
 - Deployment pipeline works
 - Automatic deployments configured
 
 ---
 
 ### Task 12.3: Migrate Database to Production
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Run all database migrations on production Supabase
 - [ ] Verify all tables created correctly
 - [ ] Verify all RLS policies enabled
 - [ ] Test database connections
 
 **Acceptance Criteria:**
+
 - Production database matches schema
 - RLS policies active
 
 ---
 
 ### Task 12.4: Deploy Application
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Build production bundle
 - [ ] Deploy to hosting platform
 - [ ] Verify deployment successful
@@ -2317,21 +2628,25 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Monitor for errors
 
 **Acceptance Criteria:**
+
 - Application deployed successfully
 - All features work in production
 
 ---
 
 ### Task 12.5: Configure Monitoring & Analytics
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Set up error tracking (Sentry, etc.)
 - [ ] Set up analytics (Google Analytics, Plausible, etc.)
 - [ ] Configure performance monitoring
 - [ ] Set up logging
 
 **Acceptance Criteria:**
+
 - Errors tracked and reported
 - User analytics collected
 - Performance monitored
@@ -2339,9 +2654,11 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ---
 
 ### Task 12.6: Launch Checklist
+
 **Status:** ⏳ Pending
 
 #### Subtasks:
+
 - [ ] Verify SSL certificate active
 - [ ] Test all features in production one final time
 - [ ] Verify email notifications work (if applicable)
@@ -2350,6 +2667,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 - [ ] Announce launch
 
 **Acceptance Criteria:**
+
 - All systems operational
 - Launch successful
 
@@ -2358,32 +2676,38 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ## Future Enhancements (Post-Launch)
 
 ### Shopping List Feature
+
 - Allow users to generate shopping lists from recipes
 - Calculate total cost before shopping
 - Check off items while shopping
 
 ### Meal Planning Feature
+
 - Weekly meal planner
 - Drag-and-drop recipes to days
 - Automatic shopping list generation
 - Weekly cost calculation
 
 ### Barcode Scanning
+
 - Mobile app feature to scan product barcodes
 - Auto-fill product information
 - Quick product addition
 
 ### Export Functionality
+
 - Export recipes as PDF
 - Export product lists as CSV
 - Export cost reports
 
 ### Notifications
+
 - Price change alerts
 - Recipe suggestions based on available products
 - Weekly cost summary emails
 
 ### Multi-Language Support
+
 - Add i18n
 - Support for multiple currencies
 - Regional unit preferences
@@ -2393,6 +2717,7 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 ## Appendix
 
 ### Git Workflow
+
 1. Create feature branch from `main`
 2. Implement task
 3. Write tests
@@ -2400,11 +2725,13 @@ CREATE POLICY "Anyone can view ingredients of public recipes"
 5. Review and merge
 
 ### Branch Naming Convention
+
 - `feature/task-X.Y-short-description`
 - `bugfix/issue-number-short-description`
 - `hotfix/critical-issue`
 
 ### Commit Message Format
+
 ```
 type(scope): subject
 
@@ -2416,6 +2743,7 @@ footer (optional)
 Types: feat, fix, docs, style, refactor, test, chore
 
 ### Code Review Checklist
+
 - [ ] Code follows style guide
 - [ ] Tests written and passing
 - [ ] No console.log statements
@@ -2432,6 +2760,7 @@ Types: feat, fix, docs, style, refactor, test, chore
 ---
 
 ## Task Status Legend
+
 - ⏳ **Pending** - Not started
 - 🚧 **In Progress** - Currently being worked on
 - ✅ **Completed** - Task finished and tested
@@ -2440,4 +2769,4 @@ Types: feat, fix, docs, style, refactor, test, chore
 
 ---
 
-*This implementation plan is a living document and should be updated as the project progresses.*
+_This implementation plan is a living document and should be updated as the project progresses._

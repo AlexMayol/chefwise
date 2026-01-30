@@ -12,9 +12,21 @@
     "preview:static": "npx serve .output/public",
     "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare",
-    "lint": "eslint --ext .ts,.js,.vue .",
-    "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write . --fix"
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "nuxt typecheck"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@dargmuesli/nuxt-cookie-control": "^9.1.10",
@@ -27,11 +39,18 @@
     "@nuxtjs/i18n": "^10.2.1",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.11.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "nuxt": "^4.2.2",
     "postcss-import": "^16.1.1",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
+    "typescript": "^5.9.3",
     "vue": "^3.5.26",
-    "vue-router": "^4.6.4"
+    "vue-router": "^4.6.4",
+    "vue-tsc": "^3.2.4"
+  },
+  "dependencies": {
+    "@nuxtjs/cloudinary": "^4.0.0"
   }
 }

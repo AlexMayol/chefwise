@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@nuxtjs/i18n",
     "@dargmuesli/nuxt-cookie-control",
+    "@nuxtjs/cloudinary",
   ],
   nitro: {
     compressPublicAssets: true,
@@ -123,5 +124,12 @@ export default defineNuxtConfig({
       optional: [],
     },
     locales: ["en", "fr", "ar"],
+  },
+  cloudinary: {
+    cloudName: "",
+    apiKey: "",
+    analytics: true,
+    cloud: {},
+    url: {},
   },
 });
