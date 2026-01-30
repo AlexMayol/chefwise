@@ -18,26 +18,26 @@ const handleDelete = () => {
 
 <template>
   <div
-    class="group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
+    class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 dark:border-gray-800 dark:bg-gray-900"
   >
     <!-- Card Content -->
     <NuxtLink :to="`/supermarkets/${supermarket.id}`" class="block p-6">
       <div class="flex items-start gap-4">
         <!-- Logo -->
         <div
-          class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-slate-700"
+          class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900"
         >
           <NuxtImg
             v-if="supermarket.logo_url"
             :src="supermarket.logo_url"
             :alt="supermarket.name"
-            class="h-10 w-10 rounded object-cover"
+            class="h-12 w-12 rounded-lg object-cover"
           />
           <Icon
             v-else
             name="ph:storefront"
-            size="28"
-            class="text-gray-400 dark:text-gray-500"
+            size="32"
+            class="text-primary-600 dark:text-primary-400"
           />
         </div>
 
@@ -67,18 +67,18 @@ const handleDelete = () => {
 
     <!-- Actions -->
     <div
-      class="flex items-center justify-end gap-2 border-t border-gray-100 px-4 py-3 dark:border-slate-700"
+      class="flex items-center justify-end gap-2 border-t border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-800/50"
     >
       <NuxtLink
         :to="`/supermarkets/${supermarket.id}/edit`"
-        class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-slate-700 dark:hover:text-white"
+        class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-white hover:text-primary-600 dark:text-gray-300 dark:hover:bg-gray-900 dark:hover:text-primary-400"
       >
         <Icon name="ph:pencil-simple" size="16" />
         {{ t("common.edit") }}
       </NuxtLink>
       <button
         type="button"
-        class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300"
+        class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-all hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300"
         @click.prevent="handleDelete"
       >
         <Icon name="ph:trash" size="16" />

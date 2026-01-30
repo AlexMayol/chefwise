@@ -11,9 +11,11 @@
     padding-left: 5px;
   }
 }
+
 html {
-  @apply bg-white;
+  @apply bg-gray-50;
 }
+
 html.dark {
-  @apply bg-slate-900;
+  @apply bg-gray-950;
 }

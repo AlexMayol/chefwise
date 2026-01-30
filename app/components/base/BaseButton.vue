@@ -44,13 +44,13 @@ const buttonClasses = computed(() => {
 
   const variantClasses = {
     primary:
-      "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-emerald-700 focus:ring-emerald-500 dark:focus:ring-offset-slate-800",
+      "bg-gradient-to-r from-primary-500 to-secondary-600 text-white shadow-lg shadow-primary-500/25 hover:from-primary-600 hover:to-secondary-700 focus:ring-primary-500 dark:focus:ring-offset-gray-900 transform hover:scale-105",
     secondary:
-      "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600 dark:focus:ring-offset-slate-800",
+      "border-2 border-gray-200 bg-white text-gray-900 hover:border-primary-500 hover:bg-gray-50 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:border-primary-500 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900",
     danger:
-      "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800",
+      "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900",
     ghost:
-      "text-gray-700 hover:bg-gray-100 focus:ring-emerald-500 dark:text-gray-300 dark:hover:bg-slate-700 dark:focus:ring-offset-slate-800",
+      "text-gray-700 hover:bg-gray-100 focus:ring-primary-500 dark:text-gray-300 dark:hover:bg-gray-800 dark:focus:ring-offset-gray-900",
   };
 
   const sizeClasses = {
