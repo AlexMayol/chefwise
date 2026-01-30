@@ -119,6 +119,114 @@
       "success": "Supermarket updated successfully"
     }
   },
+  "landing": {
+    "meta": {
+      "title": "ChefWise - Smart Recipe Cost Calculator",
+      "description": "Track supermarket prices, calculate recipe costs, and make smarter cooking decisions. Compare prices, track history, and share your favorite recipes."
+    },
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "benefits": "Benefits",
+      "login": "Login",
+      "getStarted": "Get Started"
+    },
+    "hero": {
+      "title": "Calculate the True Cost of ",
+      "highlight": "Home Cooking",
+      "subtitle": "Track supermarket prices, create recipes, and discover if cooking at home really saves money. Make informed decisions with real data.",
+      "cta": "Start Free Today",
+      "learnMore": "Learn More",
+      "feature1": "Track Prices",
+      "feature2": "Smart Analysis",
+      "feature3": "Compare Stores",
+      "feature4": "Share Recipes"
+    },
+    "features": {
+      "title": "Everything You Need to Cook Smart",
+      "subtitle": "Powerful features to help you track, calculate, and optimize your cooking costs.",
+      "feature1": {
+        "title": "Track Product Prices",
+        "description": "Keep track of prices from multiple supermarkets with quantity and unit information. Know exactly what you're paying."
+      },
+      "feature2": {
+        "title": "Create Recipes",
+        "description": "Build your recipe collection by combining products as ingredients. Organize all your favorite dishes in one place."
+      },
+      "feature3": {
+        "title": "Calculate True Costs",
+        "description": "Instantly calculate the real cost of any recipe based on current product prices. No more guessing or estimating."
+      },
+      "feature4": {
+        "title": "Compare Supermarkets",
+        "description": "See which store offers the best prices for your recipes. Make data-driven shopping decisions."
+      },
+      "feature5": {
+        "title": "Track Price History",
+        "description": "Monitor how prices change over time. Identify trends and buy at the best moments."
+      },
+      "feature6": {
+        "title": "Share Recipes",
+        "description": "Share your recipes publicly with unique links. Let others discover your culinary creations."
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Get started in four simple steps and start making smarter cooking decisions today.",
+      "step1": {
+        "title": "Add Your Supermarkets",
+        "description": "Start by adding the stores where you shop. Include locations and logos to keep everything organized."
+      },
+      "step2": {
+        "title": "Track Product Prices",
+        "description": "Add products with their current prices, quantities, and units. Update prices as they change to maintain accurate data."
+      },
+      "step3": {
+        "title": "Create Your Recipes",
+        "description": "Build recipes by selecting products as ingredients. Specify quantities for each ingredient and set serving sizes."
+      },
+      "step4": {
+        "title": "Calculate & Compare",
+        "description": "Instantly see the total cost and cost per serving. Compare recipes and find the most economical options."
+      }
+    },
+    "benefits": {
+      "title": "Why Choose ChefWise?",
+      "subtitle": "Make better decisions about cooking at home vs eating out.",
+      "benefit1": {
+        "title": "Save Money",
+        "description": "Know exactly how much your recipes cost and find cheaper alternatives without sacrificing quality."
+      },
+      "benefit2": {
+        "title": "Save Time",
+        "description": "No more manual calculations. Get instant cost breakdowns and spend more time cooking."
+      },
+      "benefit3": {
+        "title": "Make Informed Decisions",
+        "description": "Compare cooking at home vs buying ready-made items with real data, not estimates."
+      },
+      "benefit4": {
+        "title": "Track Trends",
+        "description": "See how product prices change over time and plan your shopping accordingly."
+      }
+    },
+    "cta": {
+      "title": "Ready to Cook Smarter?",
+      "subtitle": "Join ChefWise today and start tracking your recipe costs for free.",
+      "button": "Get Started Free"
+    },
+    "footer": {
+      "tagline": "Smart recipe cost calculator for home cooks.",
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal",
+      "about": "About",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "rights": "All rights reserved."
+    }
+  },
   "error": {
     "return": "Go back",
     "page-not-found": "Page not found"

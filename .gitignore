@@ -76,3 +76,15 @@ certs/localhost.pem
 pnpm-lock.yaml
 
 plans/
+
+# Screenshots
+*.png
+landing-page-*.png
+
+# Screenshot script
+screenshot.mjs
+
+# Environment files
+.env
+.env.*
+!.env.example

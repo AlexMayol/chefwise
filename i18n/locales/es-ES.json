@@ -119,6 +119,114 @@
       "success": "Supermercado actualizado exitosamente"
     }
   },
+  "landing": {
+    "meta": {
+      "title": "ChefWise - Calculadora Inteligente de Costos de Recetas",
+      "description": "Rastrea precios de supermercados, calcula costos de recetas y toma decisiones más inteligentes al cocinar. Compara precios, rastrea historial y comparte tus recetas favoritas."
+    },
+    "nav": {
+      "features": "Características",
+      "howItWorks": "Cómo Funciona",
+      "benefits": "Beneficios",
+      "login": "Iniciar Sesión",
+      "getStarted": "Comenzar"
+    },
+    "hero": {
+      "title": "Calcula el Costo Real de ",
+      "highlight": "Cocinar en Casa",
+      "subtitle": "Rastrea precios de supermercados, crea recetas y descubre si cocinar en casa realmente ahorra dinero. Toma decisiones informadas con datos reales.",
+      "cta": "Comenzar Gratis Hoy",
+      "learnMore": "Más Información",
+      "feature1": "Rastrea Precios",
+      "feature2": "Análisis Inteligente",
+      "feature3": "Compara Tiendas",
+      "feature4": "Comparte Recetas"
+    },
+    "features": {
+      "title": "Todo lo que Necesitas para Cocinar Inteligentemente",
+      "subtitle": "Funciones poderosas para ayudarte a rastrear, calcular y optimizar tus costos de cocina.",
+      "feature1": {
+        "title": "Rastrea Precios de Productos",
+        "description": "Mantén un registro de precios de múltiples supermercados con información de cantidad y unidad. Sabe exactamente lo que estás pagando."
+      },
+      "feature2": {
+        "title": "Crea Recetas",
+        "description": "Construye tu colección de recetas combinando productos como ingredientes. Organiza todos tus platos favoritos en un solo lugar."
+      },
+      "feature3": {
+        "title": "Calcula Costos Reales",
+        "description": "Calcula instantáneamente el costo real de cualquier receta basándote en precios actuales. No más suposiciones o estimaciones."
+      },
+      "feature4": {
+        "title": "Compara Supermercados",
+        "description": "Ve qué tienda ofrece los mejores precios para tus recetas. Toma decisiones de compra basadas en datos."
+      },
+      "feature5": {
+        "title": "Rastrea Historial de Precios",
+        "description": "Monitorea cómo cambian los precios con el tiempo. Identifica tendencias y compra en los mejores momentos."
+      },
+      "feature6": {
+        "title": "Comparte Recetas",
+        "description": "Comparte tus recetas públicamente con enlaces únicos. Deja que otros descubran tus creaciones culinarias."
+      }
+    },
+    "howItWorks": {
+      "title": "Cómo Funciona",
+      "subtitle": "Comienza en cuatro simples pasos y empieza a tomar decisiones más inteligentes al cocinar hoy.",
+      "step1": {
+        "title": "Agrega Tus Supermercados",
+        "description": "Comienza agregando las tiendas donde compras. Incluye ubicaciones y logos para mantener todo organizado."
+      },
+      "step2": {
+        "title": "Rastrea Precios de Productos",
+        "description": "Agrega productos con sus precios actuales, cantidades y unidades. Actualiza los precios a medida que cambian para mantener datos precisos."
+      },
+      "step3": {
+        "title": "Crea Tus Recetas",
+        "description": "Construye recetas seleccionando productos como ingredientes. Especifica cantidades para cada ingrediente y establece tamaños de porción."
+      },
+      "step4": {
+        "title": "Calcula y Compara",
+        "description": "Ve instantáneamente el costo total y el costo por porción. Compara recetas y encuentra las opciones más económicas."
+      }
+    },
+    "benefits": {
+      "title": "¿Por Qué Elegir ChefWise?",
+      "subtitle": "Toma mejores decisiones sobre cocinar en casa vs comer fuera.",
+      "benefit1": {
+        "title": "Ahorra Dinero",
+        "description": "Sabe exactamente cuánto cuestan tus recetas y encuentra alternativas más baratas sin sacrificar calidad."
+      },
+      "benefit2": {
+        "title": "Ahorra Tiempo",
+        "description": "No más cálculos manuales. Obtén desgloses de costos instantáneos y pasa más tiempo cocinando."
+      },
+      "benefit3": {
+        "title": "Toma Decisiones Informadas",
+        "description": "Compara cocinar en casa vs comprar productos listos con datos reales, no estimaciones."
+      },
+      "benefit4": {
+        "title": "Rastrea Tendencias",
+        "description": "Ve cómo cambian los precios de los productos con el tiempo y planifica tus compras en consecuencia."
+      }
+    },
+    "cta": {
+      "title": "¿Listo para Cocinar Más Inteligentemente?",
+      "subtitle": "Únete a ChefWise hoy y comienza a rastrear los costos de tus recetas gratis.",
+      "button": "Comenzar Gratis"
+    },
+    "footer": {
+      "tagline": "Calculadora inteligente de costos de recetas para cocineros caseros.",
+      "product": "Producto",
+      "company": "Empresa",
+      "legal": "Legal",
+      "about": "Acerca de",
+      "contact": "Contacto",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio",
+      "rights": "Todos los derechos reservados."
+    }
+  },
   "error": {
     "return": "Volver",
     "page-not-found": "Página no encontrada"
