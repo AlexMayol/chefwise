@@ -30,7 +30,6 @@ export default defineNuxtConfig({
     logLevel: 4,
   },
 
-
   imports: {
     dirs: ["app/stores"],
   },
