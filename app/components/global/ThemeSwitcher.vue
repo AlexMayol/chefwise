@@ -20,7 +20,7 @@ onMounted(() => {
   <ClientOnly>
     <button
       v-bind="$attrs"
-      class="cursor-pointer flex w-10 h-10"
+      class="flex h-10 w-10 cursor-pointer"
       aria-label="Toggle color modes"
       @click="toggleColorMode"
     >

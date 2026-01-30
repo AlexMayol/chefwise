@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   //ssr:false,
   compatibilityDate: "2025-07-15",
@@ -14,29 +16,18 @@ export default defineNuxtConfig({
     "@nuxtjs/device",
     "@nuxt/icon",
     "@nuxt/image",
-    "@nuxtjs/tailwindcss",
     "@nuxtjs/google-fonts",
     "@nuxtjs/color-mode",
     "@nuxtjs/i18n",
     "@nuxtjs/supabase",
   ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  css: ["~/assets/css/tailwind.css"],
   nitro: {
     compressPublicAssets: true,
     logLevel: 4,
-  },
-  tailwindcss: {
-    cssPath: "~/assets/css/tailwind.css",
-    configPath: "tailwind.config.ts",
-    exposeConfig: false,
-    viewer: true,
-  },
-
-  postcss: {
-    plugins: {
-      "postcss-import": {},
-      tailwindcss: {},
-      autoprefixer: {},
-    },
   },
 
   imports: {

@@ -10,20 +10,20 @@ const { t } = useI18n();
    -->
   <div>
     <nav
-      class="p-3 py-2 border-b-4 border-b-[#56CB82] flex justify-between"
+      class="flex justify-between border-b-4 border-b-[#56CB82] p-3 py-2"
       :class="t('locale.dir') === 'rtl' ? 'flex-row-reverse' : 'flex-row'"
     >
-      <ul class="flex justify-center items-center align-middle gap-2">
+      <ul class="flex items-center justify-center gap-2 align-middle">
         <li>
           <NuxtLink
-            class="rounded-md dark:bg-slate-700 p-2 px-3 hover:bg-gray-100 hover:dark:bg-slate-600 text-gray-700 dark:text-white hover:dark:text-white"
+            class="rounded-md p-2 px-3 text-gray-700 hover:bg-gray-100 dark:bg-slate-700 dark:text-white hover:dark:bg-slate-600 hover:dark:text-white"
             to="/dashboard"
             >{{ t("pages.index.link") }}</NuxtLink
           >
         </li>
         <li>
           <NuxtLink
-            class="rounded-md dark:bg-slate-700 p-2 px-3 hover:bg-gray-100 hover:dark:bg-slate-600 text-gray-700 dark:text-white hover:dark:text-white"
+            class="rounded-md p-2 px-3 text-gray-700 hover:bg-gray-100 dark:bg-slate-700 dark:text-white hover:dark:bg-slate-600 hover:dark:text-white"
             to="/supermarkets"
             >{{ t("supermarkets.title") }}</NuxtLink
           >
@@ -32,7 +32,7 @@ const { t } = useI18n();
       <div class="flex justify-end">
         <div class="flex w-full items-center justify-center gap-2">
           <ThemeSwitcher
-            class="rounded-lg hover:bg-gray-100 p-2 dark:hover:bg-slate-700 text-gray-600 dark:text-white"
+            class="rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-slate-700"
           />
           <LanguageSelector />
         </div>
@@ -72,6 +72,6 @@ const { t } = useI18n();
 </template>
 <style lang="postcss">
 ul .router-link-exact-active {
-  @apply bg-gray-200 text-gray-700 border-green-300 dark:bg-gray-200 dark:text-black;
+  @apply border-green-300 bg-gray-200 text-gray-700 dark:bg-gray-200 dark:text-black;
 }
 </style>
