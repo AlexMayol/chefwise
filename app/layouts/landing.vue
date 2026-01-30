@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const { t } = useI18n();
-const colorMode = useColorMode();
 const localePath = useLocalePath();
 
 // Navigation scroll state
@@ -101,9 +99,9 @@ onUnmounted(() => {
 
             <!-- Mobile menu button -->
             <button
-              @click="mobileMenuOpen = !mobileMenuOpen"
               class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+              @click="mobileMenuOpen = !mobileMenuOpen"
             >
               <Icon
                 :name="mobileMenuOpen ? 'mdi:close' : 'mdi:menu'"
@@ -121,22 +119,22 @@ onUnmounted(() => {
           <div class="flex flex-col space-y-4">
             <a
               href="#features"
-              @click="mobileMenuOpen = false"
               class="text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200"
+              @click="mobileMenuOpen = false"
             >
               {{ $t("landing.nav.features") }}
             </a>
             <a
               href="#how-it-works"
-              @click="mobileMenuOpen = false"
               class="text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200"
+              @click="mobileMenuOpen = false"
             >
               {{ $t("landing.nav.howItWorks") }}
             </a>
             <a
               href="#benefits"
-              @click="mobileMenuOpen = false"
               class="text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200"
+              @click="mobileMenuOpen = false"
             >
               {{ $t("landing.nav.benefits") }}
             </a>
