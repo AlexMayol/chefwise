@@ -21,7 +21,9 @@ const handleSignOut = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-accent-50 dark:from-gray-900 dark:via-primary-950 dark:to-secondary-950">
+  <div
+    class="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-accent-50 dark:from-gray-900 dark:via-primary-950 dark:to-secondary-950"
+  >
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8 flex items-center justify-between">
@@ -47,23 +49,23 @@ const handleSignOut = async () => {
       <div
         class="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-lg dark:border-gray-800 dark:bg-gray-900"
       >
-        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
-          <Icon
-            name="ph:chart-line"
-            size="40"
-            class="text-white"
-          />
+        <div
+          class="mx-auto w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl"
+        >
+          <Icon name="ph:chart-line" size="40" class="text-white" />
         </div>
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
           {{ t("dashboard.empty.title") }}
         </h2>
-        <p class="mt-3 text-base text-gray-600 dark:text-gray-400 max-w-lg mx-auto">
+        <p
+          class="mt-3 text-base text-gray-600 dark:text-gray-400 max-w-lg mx-auto"
+        >
           {{ t("dashboard.empty.description") }}
         </p>
         <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <NuxtLink
             to="/supermarkets"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-600 hover:from-primary-600 hover:to-secondary-700 text-white rounded-xl font-semibold text-base transition-all duration-300 transform hover:scale-105 shadow-lg shadow-primary-500/25"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-600 hover:from-primary-600 hover:to-secondary-700 text-white rounded-xl font-semibold text-base transition-all duration-300 hover:scale-105 shadow-lg shadow-primary-500/25"
           >
             <Icon name="ph:storefront" size="20" />
             {{ t("supermarkets.title") }}

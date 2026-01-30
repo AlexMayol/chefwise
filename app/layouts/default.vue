@@ -4,7 +4,7 @@ const { t } = useI18n();
 <template>
   <div>
     <nav
-      class="border-b-4 border-gradient-to-r from-primary-500 to-secondary-600 bg-white dark:bg-gray-900 p-3 py-3 flex justify-between shadow-sm"
+      class="border-b-4 border-primary-600 bg-white dark:bg-gray-900 p-3 py-3 flex justify-between shadow-sm"
       :class="t('locale.dir') === 'rtl' ? 'flex-row-reverse' : 'flex-row'"
     >
       <ul class="flex justify-center items-center align-middle gap-2">
@@ -34,7 +34,9 @@ const { t } = useI18n();
     </nav>
     <header class="mx-auto w-full max-w-4xl pt-10 pb-6">
       <div class="flex flex-col items-center gap-4">
-        <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center shadow-lg">
+        <div
+          class="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center shadow-lg"
+        >
           <Icon name="mdi:chef-hat" size="36" class="text-white" />
         </div>
         <div>

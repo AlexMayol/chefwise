@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * BaseButton - Reusable button component with multiple variants and states
- * 
+ *
  * @example
  * <BaseButton variant="primary" @click="handleClick">Save</BaseButton>
  * <BaseButton variant="danger" :loading="isDeleting">Delete</BaseButton>
@@ -44,7 +44,7 @@ const buttonClasses = computed(() => {
 
   const variantClasses = {
     primary:
-      "bg-gradient-to-r from-primary-500 to-secondary-600 text-white shadow-lg shadow-primary-500/25 hover:from-primary-600 hover:to-secondary-700 focus:ring-primary-500 dark:focus:ring-offset-gray-900 transform hover:scale-105",
+      "bg-gradient-to-r from-primary-500 to-secondary-600 text-white shadow-lg shadow-primary-500/25 hover:from-primary-600 hover:to-secondary-700 focus:ring-primary-500 dark:focus:ring-offset-gray-900 hover:scale-105",
     secondary:
       "border-2 border-gray-200 bg-white text-gray-900 hover:border-primary-500 hover:bg-gray-50 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:border-primary-500 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900",
     danger:
@@ -71,11 +71,7 @@ const buttonClasses = computed(() => {
 </script>
 
 <template>
-  <button
-    :type="type"
-    :disabled="disabled || loading"
-    :class="buttonClasses"
-  >
+  <button :type="type" :disabled="disabled || loading" :class="buttonClasses">
     <!-- Loading Spinner -->
     <Icon
       v-if="loading"
@@ -83,14 +79,14 @@ const buttonClasses = computed(() => {
       :size="size === 'sm' ? '16' : size === 'lg' ? '22' : '18'"
       class="animate-spin"
     />
-    
+
     <!-- Icon (if provided and not loading) -->
     <Icon
       v-else-if="icon"
       :name="icon"
       :size="size === 'sm' ? '16' : size === 'lg' ? '22' : '18'"
     />
-    
+
     <!-- Button Content -->
     <slot />
   </button>
