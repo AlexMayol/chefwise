@@ -2,30 +2,66 @@
   "locale": {
     "dir": "ltr",
     "en-US": "English",
-    "fr-FR": "Français",
-    "ar-AR": "العربية"
+    "es-ES": "Español"
   },
   "site": {
-    "name": "Unofficial Nuxt Boilerplate"
+    "name": "ChefWise"
+  },
+  "common": {
+    "loading": "Loading...",
+    "backToHome": "Back to home"
   },
   "themes": {
     "system": "System",
     "light": "Light",
     "dark": "Dark"
   },
-  "cookies": {
-    "bar": {
-      "title": "🍪 Hi there, this site uses cookies.",
-      "description": "We use cookies and similar technologies to help personalize content and offer a better experience. You can opt to customize them by clicking the customize button."
+  "auth": {
+    "tagline": "Smart recipe cost calculator",
+    "fields": {
+      "email": "Email address",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
     },
-    "modal": {
-      "title": "Customize",
-      "description": "We use different types of cookies to optimize your experience on our website. Click on the categories below to learn more about their purposes. You can choose the types of cookies to be allowed and can change your preferences later. Remember that disabling cookies can affect your experience.",
-      "privacy-policy": "Privacy policy"
+    "placeholders": {
+      "email": "you{'@'}example.com",
+      "password": "Enter your password",
+      "confirmPassword": "Confirm your password"
     },
-    "necessary": {
-      "title": "Strictly necessary cookies",
-      "description": "These cookies are essential for the proper functioning of my website. Without these cookies, the website would not work properly"
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMinLength8": "Password must be at least 8 characters",
+      "passwordStrength": "Password must contain uppercase, lowercase, and a number",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsMismatch": "Passwords do not match"
+    },
+    "password": {
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    },
+    "errors": {
+      "generic": "An error occurred. Please try again."
+    },
+    "login": {
+      "title": "Sign In - ChefWise",
+      "heading": "Welcome back",
+      "subheading": "Sign in to your account to continue",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "register": {
+      "title": "Sign Up - ChefWise",
+      "heading": "Create an account",
+      "subheading": "Start tracking your recipe costs today",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
     }
   },
   "error": {
@@ -56,7 +92,6 @@
         "postcss": "PostCSS",
         "lightHouse": "Lighthouse 100%",
         "deviceDetect": "Device detection",
-        "cookies": "Cookie banner",
         "Iconify": "Iconify",
         "Pinia": "Pinia",
         "enterprise": "Enterprise ready"

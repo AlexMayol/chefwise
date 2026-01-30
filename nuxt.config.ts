@@ -18,8 +18,6 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@nuxtjs/color-mode",
     "@nuxtjs/i18n",
-    "@dargmuesli/nuxt-cookie-control",
-    "@nuxtjs/cloudinary",
     "@nuxtjs/supabase",
   ],
   nitro: {
@@ -83,55 +81,13 @@ export default defineNuxtConfig({
     strategy: "no_prefix",
     locales: [
       { code: "en-US", iso: "en-US", file: "en-US.json" },
-      { code: "fr-FR", iso: "fr-FR", file: "fr-FR.json" },
-      { code: "ar-AR", iso: "ar-AR", file: "ar-AR.json" },
+      { code: "es-ES", iso: "es-ES", file: "es-ES.json" },
     ],
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: "nuxt-lang",
       redirectOn: "root",
     },
-  },
-
-  cookieControl: {
-    cookieExpiryOffsetMs: 1000 * 60 * 60 * 24 * 365, // one year
-    // set all these to true for highest GDPR enforcement
-    isAcceptNecessaryButtonEnabled: true,
-    isModalForced: false,
-    isCookieIdVisible: true,
-    closeModalOnClickOutside: true,
-    // show cookie button
-    isControlButtonEnabled: true,
-    // disable to get unstyled css for tailwind
-    isCssEnabled: false,
-    isDashInDescriptionEnabled: false,
-    cookies: {
-      necessary: [
-        {
-          name: {
-            fr: "Nécessaire",
-            en: "Necessary",
-            ar: "ضروري",
-          },
-          description: {
-            fr: "Nécessaire",
-            en: "Necessary",
-            ar: "ضروري",
-          },
-          isPreselected: true,
-          id: "necessary",
-        },
-      ],
-      optional: [],
-    },
-    locales: ["en", "fr", "ar"],
-  },
-  cloudinary: {
-    cloudName: "",
-    apiKey: "",
-    analytics: true,
-    cloud: {},
-    url: {},
   },
   supabase: {
     url: process.env.SUPABASE_URL,

@@ -197,22 +197,22 @@ CREATE POLICY "Users can update own profile"
 
 ### Task 1.2: Create Authentication Pages
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `/app/login` page component
-- [ ] Create `/app/register` page component
-- [ ] Design login form (email, password)
-- [ ] Design registration form (email, password, confirm password)
-- [ ] Add form validation (email format, password strength)
-- [ ] Style forms with Tailwind CSS
-- [ ] Add loading states for form submission
+- [x] Create `/app/login` page component
+- [x] Create `/app/register` page component
+- [x] Design login form (email, password)
+- [x] Design registration form (email, password, confirm password)
+- [x] Add form validation (email format, password strength)
+- [x] Style forms with Tailwind CSS
+- [x] Add loading states for form submission
 
 **Acceptance Criteria:**
 
-- Login page accessible at `/app/login`
-- Register page accessible at `/app/register`
+- Login page accessible at `/login`
+- Register page accessible at `/register`
 - Forms have proper validation
 - UI is responsive and styled
 

@@ -29,7 +29,6 @@
     ]
   },
   "devDependencies": {
-    "@dargmuesli/nuxt-cookie-control": "^9.1.10",
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/icon": "^2.1.1",
     "@nuxt/image": "^2.0.0",
