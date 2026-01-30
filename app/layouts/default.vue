@@ -17,29 +17,20 @@ const { t } = useI18n();
         <li>
           <NuxtLink
             class="rounded-md dark:bg-slate-700 p-2 px-3 hover:bg-gray-100 hover:dark:bg-slate-600 text-gray-700 dark:text-white hover:dark:text-white"
-            to="/"
+            to="/dashboard"
             >{{ t("pages.index.link") }}</NuxtLink
           >
         </li>
         <li>
           <NuxtLink
             class="rounded-md dark:bg-slate-700 p-2 px-3 hover:bg-gray-100 hover:dark:bg-slate-600 text-gray-700 dark:text-white hover:dark:text-white"
-            to="/minimal"
+            to="/supermarkets"
+            >{{ t("supermarkets.title") }}</NuxtLink
           >
-            {{ t("pages.minimal.link") }}
-          </NuxtLink>
         </li>
       </ul>
       <div class="flex justify-end">
         <div class="flex w-full items-center justify-center gap-2">
-          <NuxtLink
-            class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 dark:hover:bg-slate-700 dark:text-white"
-            target="_blank"
-            aria-label="Github"
-            to="https://github.com/renegadevi/nuxt-boilerplate"
-          >
-            <Icon name="simple-icons:github" size="20" color="black" />
-          </NuxtLink>
           <ThemeSwitcher
             class="rounded-lg hover:bg-gray-100 p-2 dark:hover:bg-slate-700 text-gray-600 dark:text-white"
           />

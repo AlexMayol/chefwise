@@ -102,6 +102,10 @@
       "logo": "Logo (optional)",
       "logoHint": "Upload a logo image for this supermarket"
     },
+    "validation": {
+      "nameRequired": "Supermarket name is required",
+      "nameMinLength": "Name must be at least 2 characters"
+    },
     "create": {
       "title": "Add Supermarket - ChefWise",
       "heading": "Add New Supermarket",

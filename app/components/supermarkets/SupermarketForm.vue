@@ -1,0 +1,255 @@
+<script setup lang="ts">
+import type { Supermarket, CreateSupermarketDTO } from "~/types/supermarket";
+
+const { t } = useI18n();
+
+// Props
+const props = withDefaults(
+  defineProps<{
+    /** Existing supermarket data for editing (optional) */
+    supermarket?: Supermarket;
+    /** Whether the form is in a loading/submitting state */
+    isSubmitting?: boolean;
+  }>(),
+  {
+    supermarket: undefined,
+    isSubmitting: false,
+  },
+);
+
+// Emits
+const emit = defineEmits<{
+  submit: [data: CreateSupermarketDTO];
+  cancel: [];
+}>();
+
+// Form state
+const name = ref(props.supermarket?.name ?? "");
+const location = ref(props.supermarket?.location ?? "");
+const logoUrl = ref(props.supermarket?.logo_url ?? "");
+
+// Validation state
+const errors = reactive({
+  name: "",
+});
+
+// Track if form has been touched
+const touched = reactive({
+  name: false,
+});
+
+// Validate name
+const validateName = (value: string): boolean => {
+  if (!value.trim()) {
+    errors.name = t("supermarkets.validation.nameRequired");
+    return false;
+  }
+  if (value.trim().length < 2) {
+    errors.name = t("supermarkets.validation.nameMinLength");
+    return false;
+  }
+  errors.name = "";
+  return true;
+};
+
+// Computed: Check if form is valid
+const isFormValid = computed(() => {
+  return name.value.trim().length >= 2;
+});
+
+// Handle form submission
+const handleSubmit = () => {
+  touched.name = true;
+
+  const isNameValid = validateName(name.value);
+
+  if (!isNameValid) {
+    return;
+  }
+
+  const formData: CreateSupermarketDTO = {
+    name: name.value.trim(),
+    location: location.value.trim() || undefined,
+    logo_url: logoUrl.value.trim() || undefined,
+  };
+
+  emit("submit", formData);
+};
+
+// Handle cancel
+const handleCancel = () => {
+  emit("cancel");
+};
+
+// Watch for prop changes (when editing)
+watch(
+  () => props.supermarket,
+  (newVal) => {
+    if (newVal) {
+      name.value = newVal.name;
+      location.value = newVal.location ?? "";
+      logoUrl.value = newVal.logo_url ?? "";
+    }
+  },
+  { immediate: true },
+);
+</script>
+
+<template>
+  <form class="space-y-6" @submit.prevent="handleSubmit">
+    <!-- Name Field -->
+    <div>
+      <label
+        for="supermarket-name"
+        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
+      >
+        {{ t("supermarkets.form.name") }}
+        <span class="text-red-500">*</span>
+      </label>
+      <div class="relative">
+        <div
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+        >
+          <Icon
+            name="ph:storefront"
+            size="18"
+            class="text-gray-400 dark:text-gray-500"
+          />
+        </div>
+        <input
+          id="supermarket-name"
+          v-model="name"
+          type="text"
+          :placeholder="t('supermarkets.form.namePlaceholder')"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-emerald-500"
+          :class="{
+            'border-red-500 focus:border-red-500 focus:ring-red-500/20':
+              errors.name && touched.name,
+          }"
+          @blur="
+            touched.name = true;
+            validateName(name);
+          "
+        />
+      </div>
+      <p v-if="errors.name && touched.name" class="mt-1.5 text-xs text-red-500">
+        {{ errors.name }}
+      </p>
+    </div>
+
+    <!-- Location Field -->
+    <div>
+      <label
+        for="supermarket-location"
+        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
+      >
+        {{ t("supermarkets.form.location") }}
+      </label>
+      <div class="relative">
+        <div
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+        >
+          <Icon
+            name="ph:map-pin"
+            size="18"
+            class="text-gray-400 dark:text-gray-500"
+          />
+        </div>
+        <input
+          id="supermarket-location"
+          v-model="location"
+          type="text"
+          :placeholder="t('supermarkets.form.locationPlaceholder')"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-emerald-500"
+        />
+      </div>
+    </div>
+
+    <!-- Logo Upload Field (Placeholder - Cloudinary integration pending) -->
+    <div>
+      <label
+        for="supermarket-logo"
+        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
+      >
+        {{ t("supermarkets.form.logo") }}
+      </label>
+      <div
+        class="flex items-center gap-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 dark:border-slate-600 dark:bg-slate-700/50"
+      >
+        <!-- Logo Preview -->
+        <div
+          class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white dark:bg-slate-700"
+        >
+          <NuxtImg
+            v-if="logoUrl"
+            :src="logoUrl"
+            alt="Supermarket logo"
+            class="h-12 w-12 rounded object-cover"
+          />
+          <Icon
+            v-else
+            name="ph:image"
+            size="32"
+            class="text-gray-400 dark:text-gray-500"
+          />
+        </div>
+
+        <!-- Upload Area -->
+        <div class="flex-1">
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ t("supermarkets.form.logoHint") }}
+          </p>
+          <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+            PNG, JPG up to 2MB
+          </p>
+          <!-- TODO: Implement Cloudinary upload in Task 0.6 -->
+          <input
+            id="supermarket-logo"
+            v-model="logoUrl"
+            type="url"
+            placeholder="https://example.com/logo.png"
+            class="mt-2 w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-gray-500"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <button
+        type="button"
+        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600"
+        :disabled="props.isSubmitting"
+        @click="handleCancel"
+      >
+        {{ t("common.cancel") }}
+      </button>
+      <button
+        type="submit"
+        :disabled="props.isSubmitting || !isFormValid"
+        class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <Icon
+          v-if="props.isSubmitting"
+          name="ph:spinner"
+          size="18"
+          class="animate-spin"
+        />
+        <template v-if="props.supermarket">
+          {{
+            props.isSubmitting
+              ? t("common.loading")
+              : t("supermarkets.edit.submit")
+          }}
+        </template>
+        <template v-else>
+          {{
+            props.isSubmitting
+              ? t("common.loading")
+              : t("supermarkets.create.submit")
+          }}
+        </template>
+      </button>
+    </div>
+  </form>
+</template>

@@ -486,19 +486,25 @@ export interface UpdateSupermarketDTO {
 
 ### Task 2.5: Create Supermarket Form Component
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `SupermarketForm.vue` component
-- [ ] Add input for name (required)
-- [ ] Add input for location (optional)
-- [ ] Add image upload for logo (Cloudinary)
-- [ ] Implement form validation
-- [ ] Handle image upload to Cloudinary
-- [ ] Emit form data to parent component
-- [ ] Add loading state during submission
-- [ ] Style form with Tailwind CSS
+- [x] Create `SupermarketForm.vue` component
+- [x] Add input for name (required)
+- [x] Add input for location (optional)
+- [x] Add image upload for logo (placeholder - Cloudinary pending Task 0.6)
+- [x] Implement form validation
+- [ ] Handle image upload to Cloudinary (pending Task 0.6)
+- [x] Emit form data to parent component
+- [x] Add loading state during submission
+- [x] Style form with Tailwind CSS
+
+**Files Created:**
+
+- `app/components/supermarkets/SupermarketForm.vue`
+
+**Note:** Logo upload currently accepts URL input. Will be enhanced with Cloudinary file upload when Task 0.6 is completed.
 
 **Acceptance Criteria:**
 
@@ -511,17 +517,21 @@ export interface UpdateSupermarketDTO {
 
 ### Task 2.6: Create Add Supermarket Page
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `/app/supermarkets/new.vue` page
-- [ ] Import and use `SupermarketForm` component
-- [ ] Handle form submission
-- [ ] Call `createSupermarket()` from composable
-- [ ] Show success message on creation
-- [ ] Redirect to supermarkets list after success
-- [ ] Handle errors and display to user
+- [x] Create `/app/supermarkets/new.vue` page
+- [x] Import and use `SupermarketForm` component
+- [x] Handle form submission
+- [x] Call `createSupermarket()` from composable
+- [x] Show success message on creation
+- [x] Redirect to supermarkets list after success
+- [x] Handle errors and display to user
+
+**Files Created:**
+
+- `app/pages/supermarkets/new.vue`
 
 **Acceptance Criteria:**
 
