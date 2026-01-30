@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * BaseModal - Reusable modal dialog component
- * 
+ *
  * @example
  * <BaseModal v-model="showModal" title="Confirm Action">
  *   <p>Are you sure?</p>
@@ -85,13 +85,18 @@ const modalWidthClasses = computed(() => {
       <!-- Backdrop -->
       <div
         class="fixed inset-0 bg-black/50 transition-opacity"
+        aria-label="Close modal"
         @click="closeModal"
       />
 
       <!-- Modal -->
       <div
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="title ? 'modal-title' : undefined"
         class="relative z-10 w-full rounded-lg bg-white p-6 shadow-xl dark:bg-slate-800"
         :class="modalWidthClasses"
+        @keydown.esc="closeModal"
       >
         <!-- Header -->
         <div v-if="title || icon" class="flex items-center gap-4">
@@ -101,16 +106,15 @@ const modalWidthClasses = computed(() => {
             class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full"
             :class="iconBackgroundClasses"
           >
-            <Icon
-              :name="icon"
-              size="24"
-              :class="iconColorClasses"
-            />
+            <Icon :name="icon" size="24" :class="iconColorClasses" />
           </div>
 
           <!-- Title -->
           <div class="flex-1">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h3
+              id="modal-title"
+              class="text-lg font-semibold text-gray-900 dark:text-white"
+            >
               {{ title }}
             </h3>
             <!-- Subtitle slot -->
@@ -122,6 +126,7 @@ const modalWidthClasses = computed(() => {
             v-if="!$slots.actions"
             type="button"
             class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            aria-label="Close modal"
             @click="closeModal"
           >
             <Icon name="ph:x" size="20" />

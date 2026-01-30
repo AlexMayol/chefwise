@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * BaseAlert - Reusable alert component for displaying messages
- * 
+ *
  * @example
  * <BaseAlert variant="error" dismissible @dismiss="handleDismiss">Error message</BaseAlert>
  * <BaseAlert variant="success">Success message</BaseAlert>
@@ -92,6 +92,7 @@ const handleDismiss = () => {
     <button
       v-if="dismissible"
       type="button"
+      aria-label="Dismiss alert"
       :class="alertConfig.dismissClass"
       @click="handleDismiss"
     >

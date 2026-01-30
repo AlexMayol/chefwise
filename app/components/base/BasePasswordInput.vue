@@ -46,7 +46,7 @@ const showPassword = ref(false);
 
 // Generate unique ID if not provided
 const inputId = computed(
-  () => props.id || `password-${Math.random().toString(36).substr(2, 9)}`,
+  () => props.id || `password-${Math.random().toString(36).substring(2, 11)}`,
 );
 
 // Update model value
@@ -120,6 +120,7 @@ const inputClasses = computed(() => {
       <button
         type="button"
         class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+        aria-label="Toggle password visibility"
         @click="togglePasswordVisibility"
       >
         <Icon :name="showPassword ? 'ph:eye-slash' : 'ph:eye'" size="18" />

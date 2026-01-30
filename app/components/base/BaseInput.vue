@@ -50,7 +50,7 @@ const emit = defineEmits<{
 
 // Generate unique ID if not provided
 const inputId = computed(
-  () => props.id || `input-${Math.random().toString(36).substr(2, 9)}`,
+  () => props.id || `input-${Math.random().toString(36).substring(2, 11)}`,
 );
 
 // Update model value
