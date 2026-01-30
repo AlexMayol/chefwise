@@ -9,7 +9,12 @@
   },
   "common": {
     "loading": "Loading...",
-    "backToHome": "Back to home"
+    "backToHome": "Back to home",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "create": "Create"
   },
   "themes": {
     "system": "System",
@@ -18,6 +23,7 @@
   },
   "auth": {
     "tagline": "Smart recipe cost calculator",
+    "signOut": "Sign out",
     "fields": {
       "email": "Email address",
       "password": "Password",
@@ -62,6 +68,51 @@
       "submit": "Create account",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard - ChefWise",
+    "heading": "Dashboard",
+    "welcome": "Welcome back, {email}",
+    "empty": {
+      "title": "Get started with ChefWise",
+      "description": "Start by adding supermarkets and products to track your recipe costs."
+    }
+  },
+  "supermarkets": {
+    "title": "Supermarkets - ChefWise",
+    "heading": "Supermarkets",
+    "subheading": "Manage the stores where you track product prices",
+    "addNew": "Add Supermarket",
+    "addFirst": "Add Your First Supermarket",
+    "noLocation": "No location set",
+    "empty": {
+      "title": "No supermarkets yet",
+      "description": "Add your first supermarket to start tracking product prices."
+    },
+    "delete": {
+      "title": "Delete Supermarket",
+      "message": "Are you sure you want to delete \"{name}\"? This action cannot be undone and will also delete all products associated with this supermarket."
+    },
+    "form": {
+      "name": "Supermarket Name",
+      "namePlaceholder": "e.g., Walmart, Costco, Whole Foods",
+      "location": "Location (optional)",
+      "locationPlaceholder": "e.g., 123 Main Street, Downtown",
+      "logo": "Logo (optional)",
+      "logoHint": "Upload a logo image for this supermarket"
+    },
+    "create": {
+      "title": "Add Supermarket - ChefWise",
+      "heading": "Add New Supermarket",
+      "submit": "Create Supermarket",
+      "success": "Supermarket created successfully"
+    },
+    "edit": {
+      "title": "Edit Supermarket - ChefWise",
+      "heading": "Edit Supermarket",
+      "submit": "Save Changes",
+      "success": "Supermarket updated successfully"
     }
   },
   "error": {

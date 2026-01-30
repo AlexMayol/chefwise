@@ -8,6 +8,7 @@ useHead({
 
 definePageMeta({
   layout: "auth",
+  middleware: "guest",
 });
 
 // Form state

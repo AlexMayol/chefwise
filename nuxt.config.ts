@@ -43,6 +43,15 @@ export default defineNuxtConfig({
     dirs: ["app/stores"],
   },
 
+  components: {
+    dirs: [
+      {
+        path: "~/components",
+        pathPrefix: false,
+      },
+    ],
+  },
+
   app: {
     head: {
       charset: "utf-8",
@@ -94,7 +103,8 @@ export default defineNuxtConfig({
     key: process.env.SUPABASE_KEY,
     redirectOptions: {
       login: "/login",
-      callback: "/login",
+      callback: "/confirm",
+      exclude: ["/", "/login", "/register", "/confirm"],
     },
   },
 });

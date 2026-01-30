@@ -245,22 +245,43 @@ CREATE POLICY "Users can update own profile"
 
 ### Task 1.4: Create Authentication Middleware
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create middleware file (`/middleware/auth.ts`)
-- [ ] Check if user is authenticated
-- [ ] Redirect unauthenticated users to `/app/login`
-- [ ] Allow access to authenticated users
-- [ ] Apply middleware to protected routes
-- [ ] Create public middleware for login/register pages
+- [x] Create middleware file (`/middleware/auth.ts`)
+- [x] Check if user is authenticated
+- [x] Redirect unauthenticated users to `/login`
+- [x] Allow access to authenticated users
+- [x] Apply middleware to protected routes
+- [x] Create public middleware for login/register pages
+
+**Files Created:**
+
+- `app/middleware/auth.ts` - Protects routes requiring authentication
+- `app/middleware/guest.ts` - Redirects authenticated users away from public pages
+- `app/pages/dashboard.vue` - Protected dashboard page with auth middleware
+
+**Usage:**
+
+```typescript
+// For protected routes (requires authentication)
+definePageMeta({
+  middleware: "auth",
+});
+
+// For guest-only routes (login, register)
+definePageMeta({
+  middleware: "guest",
+});
+```
 
 **Acceptance Criteria:**
 
 - Protected routes redirect to login if not authenticated
-- Authenticated users can access `/app/*` routes
+- Authenticated users can access protected routes
 - Login/register pages accessible without authentication
+- Authenticated users are redirected from login/register to dashboard
 
 ---
 
@@ -291,16 +312,20 @@ CREATE POLICY "Users can update own profile"
 
 ### Task 2.1: Create Supermarkets Database Schema
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `supermarkets` table in Supabase
-- [ ] Define columns: id, user_id, name, location, logo_url, created_at, updated_at
-- [ ] Set up foreign key constraint to users table
-- [ ] Create RLS policies (users can only manage their own supermarkets)
-- [ ] Create indexes on `user_id` for performance
-- [ ] Create database migration file
+- [x] Create `supermarkets` table in Supabase
+- [x] Define columns: id, user_id, name, location, logo_url, created_at, updated_at
+- [x] Set up foreign key constraint to users table
+- [x] Create RLS policies (users can only manage their own supermarkets)
+- [x] Create indexes on `user_id` for performance
+- [x] Create database migration file
+
+**Files Created:**
+
+- `supabase/migrations/002_create_supermarkets_table.sql`
 
 **Database Schema:**
 
@@ -348,15 +373,19 @@ CREATE POLICY "Users can delete own supermarkets"
 
 ### Task 2.2: Create Supermarket TypeScript Types
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `/types/supermarket.ts` file
-- [ ] Define `Supermarket` interface
-- [ ] Define `CreateSupermarketDTO` type
-- [ ] Define `UpdateSupermarketDTO` type
-- [ ] Export all types
+- [x] Create `/types/supermarket.ts` file
+- [x] Define `Supermarket` interface
+- [x] Define `CreateSupermarketDTO` type
+- [x] Define `UpdateSupermarketDTO` type
+- [x] Export all types
+
+**Files Created:**
+
+- `app/types/supermarket.ts`
 
 **Type Definitions:**
 
@@ -394,18 +423,22 @@ export interface UpdateSupermarketDTO {
 
 ### Task 2.3: Create Supermarket API Composable
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `/composables/useSupermarkets.ts`
-- [ ] Implement `getSupermarkets()` - fetch all user's supermarkets
-- [ ] Implement `getSupermarketById(id)` - fetch single supermarket
-- [ ] Implement `createSupermarket(data)` - create new supermarket
-- [ ] Implement `updateSupermarket(id, data)` - update existing supermarket
-- [ ] Implement `deleteSupermarket(id)` - delete supermarket
-- [ ] Add error handling for all functions
-- [ ] Add loading states
+- [x] Create `/composables/useSupermarkets.ts`
+- [x] Implement `getSupermarkets()` - fetch all user's supermarkets
+- [x] Implement `getSupermarketById(id)` - fetch single supermarket
+- [x] Implement `createSupermarket(data)` - create new supermarket
+- [x] Implement `updateSupermarket(id, data)` - update existing supermarket
+- [x] Implement `deleteSupermarket(id)` - delete supermarket
+- [x] Add error handling for all functions
+- [x] Add loading states
+
+**Files Created:**
+
+- `app/composables/useSupermarkets.ts`
 
 **Acceptance Criteria:**
 
@@ -418,19 +451,29 @@ export interface UpdateSupermarketDTO {
 
 ### Task 2.4: Create Supermarket List Page
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `/app/supermarkets/index.vue` page
-- [ ] Display list of user's supermarkets
-- [ ] Create `SupermarketCard` component
-- [ ] Show supermarket logo, name, location
-- [ ] Add "Add New Supermarket" button
-- [ ] Add edit and delete buttons to each card
-- [ ] Implement delete confirmation modal
-- [ ] Style with Tailwind CSS
-- [ ] Add empty state (no supermarkets yet)
+- [x] Create `/app/supermarkets/index.vue` page
+- [x] Display list of user's supermarkets
+- [x] Create `SupermarketCard` component
+- [x] Show supermarket logo, name, location
+- [x] Add "Add New Supermarket" button
+- [x] Add edit and delete buttons to each card
+- [x] Implement delete confirmation modal
+- [x] Style with Tailwind CSS
+- [x] Add empty state (no supermarkets yet)
+
+**Files Created:**
+
+- `app/pages/supermarkets/index.vue`
+- `app/components/supermarkets/SupermarketCard.vue`
+
+**Translations Added:**
+
+- `i18n/locales/en-US.json` - supermarkets section
+- `i18n/locales/es-ES.json` - supermarkets section
 
 **Acceptance Criteria:**
 

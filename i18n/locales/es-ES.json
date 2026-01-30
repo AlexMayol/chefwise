@@ -9,7 +9,12 @@
   },
   "common": {
     "loading": "Cargando...",
-    "backToHome": "Volver al inicio"
+    "backToHome": "Volver al inicio",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "save": "Guardar",
+    "create": "Crear"
   },
   "themes": {
     "system": "Sistema",
@@ -18,6 +23,7 @@
   },
   "auth": {
     "tagline": "Calculadora inteligente de costos de recetas",
+    "signOut": "Cerrar sesión",
     "fields": {
       "email": "Correo electrónico",
       "password": "Contraseña",
@@ -62,6 +68,51 @@
       "submit": "Crear cuenta",
       "hasAccount": "¿Ya tienes una cuenta?",
       "signIn": "Iniciar sesión"
+    }
+  },
+  "dashboard": {
+    "title": "Panel - ChefWise",
+    "heading": "Panel de control",
+    "welcome": "Bienvenido, {email}",
+    "empty": {
+      "title": "Comienza con ChefWise",
+      "description": "Empieza agregando supermercados y productos para calcular los costos de tus recetas."
+    }
+  },
+  "supermarkets": {
+    "title": "Supermercados - ChefWise",
+    "heading": "Supermercados",
+    "subheading": "Gestiona las tiendas donde registras los precios de los productos",
+    "addNew": "Agregar Supermercado",
+    "addFirst": "Agrega Tu Primer Supermercado",
+    "noLocation": "Sin ubicación",
+    "empty": {
+      "title": "Aún no hay supermercados",
+      "description": "Agrega tu primer supermercado para empezar a registrar los precios de los productos."
+    },
+    "delete": {
+      "title": "Eliminar Supermercado",
+      "message": "¿Estás seguro de que deseas eliminar \"{name}\"? Esta acción no se puede deshacer y también eliminará todos los productos asociados a este supermercado."
+    },
+    "form": {
+      "name": "Nombre del Supermercado",
+      "namePlaceholder": "ej., Mercadona, Carrefour, Lidl",
+      "location": "Ubicación (opcional)",
+      "locationPlaceholder": "ej., Calle Principal 123, Centro",
+      "logo": "Logo (opcional)",
+      "logoHint": "Sube una imagen de logo para este supermercado"
+    },
+    "create": {
+      "title": "Agregar Supermercado - ChefWise",
+      "heading": "Agregar Nuevo Supermercado",
+      "submit": "Crear Supermercado",
+      "success": "Supermercado creado exitosamente"
+    },
+    "edit": {
+      "title": "Editar Supermercado - ChefWise",
+      "heading": "Editar Supermercado",
+      "submit": "Guardar Cambios",
+      "success": "Supermercado actualizado exitosamente"
     }
   },
   "error": {
