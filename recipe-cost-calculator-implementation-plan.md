@@ -154,15 +154,15 @@ A web application that allows users to track supermarket product prices, create 
 
 ### Task 1.1: Set Up Database Schema for Users
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 #### Subtasks:
 
-- [ ] Create `users` table in Supabase (extends auth.users)
-- [ ] Define user profile fields (email, created_at, updated_at)
-- [ ] Set up RLS policies for users table
-- [ ] Create database migration file
-- [ ] Test user table creation
+- [x] Create `users` table in Supabase (extends auth.users)
+- [x] Define user profile fields (email, created_at, updated_at)
+- [x] Set up RLS policies for users table
+- [x] Create database migration file
+- [x] Test user table creation
 
 **Database Schema:**
 

@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@dargmuesli/nuxt-cookie-control",
     "@nuxtjs/cloudinary",
+    "@nuxtjs/supabase",
   ],
   nitro: {
     compressPublicAssets: true,
@@ -131,5 +132,13 @@ export default defineNuxtConfig({
     analytics: true,
     cloud: {},
     url: {},
+  },
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    redirectOptions: {
+      login: "/login",
+      callback: "/login",
+    },
   },
 });
