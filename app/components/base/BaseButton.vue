@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * BaseButton - Reusable button component with multiple variants and states
- * 
+ *
  * @example
  * <BaseButton variant="primary" @click="handleClick">Save</BaseButton>
  * <BaseButton variant="danger" :loading="isDeleting">Delete</BaseButton>
@@ -71,11 +71,7 @@ const buttonClasses = computed(() => {
 </script>
 
 <template>
-  <button
-    :type="type"
-    :disabled="disabled || loading"
-    :class="buttonClasses"
-  >
+  <button :type="type" :disabled="disabled || loading" :class="buttonClasses">
     <!-- Loading Spinner -->
     <Icon
       v-if="loading"
@@ -83,14 +79,14 @@ const buttonClasses = computed(() => {
       :size="size === 'sm' ? '16' : size === 'lg' ? '22' : '18'"
       class="animate-spin"
     />
-    
+
     <!-- Icon (if provided and not loading) -->
     <Icon
       v-else-if="icon"
       :name="icon"
       :size="size === 'sm' ? '16' : size === 'lg' ? '22' : '18'"
     />
-    
+
     <!-- Button Content -->
     <slot />
   </button>

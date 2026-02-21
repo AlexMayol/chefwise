@@ -1,6 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Font Families */
+  --font-sans: "Inter", "sans-serif";
+  --font-serif: "serif";
+  --font-mono: "monospace";
+  --font-display: "Inter", "sans-serif";
+  --font-body: "Inter", "sans-serif";
+
+  /* Extended Spacing */
+  --spacing-8xl: 96rem;
+  --spacing-9xl: 128rem;
+
+  /* Extended Border Radius */
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+  --radius-6xl: 3rem;
+}
 
 @layer base {
   select {
@@ -11,9 +27,11 @@
     padding-left: 5px;
   }
 }
+
 html {
   @apply bg-white;
 }
+
 html.dark {
   @apply bg-slate-900;
 }

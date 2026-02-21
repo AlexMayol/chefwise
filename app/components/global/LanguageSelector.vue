@@ -45,14 +45,14 @@ function switchLanguage(lang: string) {
 
     <div
       v-if="isOpen"
-      class="absolute mt-1 min-w-32 rounded-lg bg-white shadow-lg border border-gray-100 dark:bg-slate-700 dark:border-slate-700 right-3"
+      class="absolute right-3 mt-1 min-w-32 rounded-lg border border-gray-100 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-700"
     >
       <ul>
         <li
           v-for="lang in availableLocales"
           :key="lang"
           :class="[
-            'px-4 py-2 cursor-pointer rounded-md m-1 hover:bg-gray-100 text-gray-600 dark:text-white dark:hover:bg-slate-600',
+            'm-1 cursor-pointer rounded-md px-4 py-2 text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-slate-600',
             { 'bg-gray-100 dark:bg-slate-600': locale === lang },
             { 'text-right': t('locale.dir') === 'rtl' },
           ]"
