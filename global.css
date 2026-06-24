@@ -1,0 +1,63 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+@import "nativewind/theme";
+
+:root {
+  --background: #fff8f0;
+  --foreground: #241d1a;
+  --card: #ffffff;
+  --card-foreground: #241d1a;
+  --muted: #f0e7dc;
+  --muted-foreground: #6d6258;
+  --primary: #ef6c28;
+  --primary-foreground: #ffffff;
+  --secondary: #d7eddf;
+  --secondary-foreground: #255338;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #ded1c2;
+  --input: #ded1c2;
+  --ring: #ef6c28;
+  --input-placeholder: #8a7f72;
+}
+
+.dark:root {
+  --background: #171210;
+  --foreground: #fff6e8;
+  --card: #221a17;
+  --card-foreground: #fff6e8;
+  --muted: #332721;
+  --muted-foreground: #d8c7b4;
+  --primary: #ff8440;
+  --primary-foreground: #171210;
+  --secondary: #2d5a3f;
+  --secondary-foreground: #d7eddf;
+  --destructive: #f87171;
+  --destructive-foreground: #171210;
+  --border: #4a3930;
+  --input: #4a3930;
+  --ring: #ff8440;
+  --input-placeholder: #d8c7b4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #171210;
+    --foreground: #fff6e8;
+    --card: #221a17;
+    --card-foreground: #fff6e8;
+    --muted: #332721;
+    --muted-foreground: #d8c7b4;
+    --primary: #ff8440;
+    --primary-foreground: #171210;
+    --secondary: #2d5a3f;
+    --secondary-foreground: #d7eddf;
+    --destructive: #f87171;
+    --destructive-foreground: #171210;
+    --border: #4a3930;
+    --input: #4a3930;
+    --ring: #ff8440;
+    --input-placeholder: #d8c7b4;
+  }
+}

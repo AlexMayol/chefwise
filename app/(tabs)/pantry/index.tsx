@@ -1,0 +1,33 @@
+import { CollectionScreen } from '@/components/domain/collection-screen';
+import { PantryAdjustmentForm } from '@/components/domain/pantry-adjustment-form';
+import { PantryTransactionList } from '@/components/domain/pantry-transaction-list';
+import { usePantry } from '@/lib/hooks/use-pantry';
+import { useTranslation } from '@/lib/i18n';
+
+export default function PantryScreen() {
+  const { t } = useTranslation();
+  const { items, transactions, adjust } = usePantry();
+
+  return (
+    <CollectionScreen
+      title={t('pantry.title')}
+      description={`${t('pantry.add')} · ${t('pantry.remove')} · ${t('pantry.waste')}`}
+      addLabel={t('pantry.add')}
+      modalTitle={t('pantry.add')}
+      items={items.map((item) => ({
+        id: item.id,
+        title: item.productId,
+        subtitle: `${item.quantity} ${item.unit}`,
+      }))}
+      renderForm={(onSaved) => (
+        <PantryAdjustmentForm
+          onSubmit={async (values) => {
+            await adjust(values);
+            onSaved();
+          }}
+        />
+      )}
+      footer={<PantryTransactionList transactions={transactions} />}
+    />
+  );
+}

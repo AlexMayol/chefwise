@@ -2,16 +2,20 @@ import { Link, Stack } from 'expo-router';
 import { StyleSheet } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
+import { useTranslation } from '@/lib/i18n';
+import { designTokens } from '@/lib/theme/tokens';
 
 export default function NotFoundScreen() {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
+      <Stack.Screen options={{ title: t('errors.deleteBlocked') }} />
       <View style={styles.container}>
-        <Text style={styles.title}>This screen doesn't exist.</Text>
+        <Text style={styles.title}>{t('common.empty')}</Text>
 
-        <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Go to home screen!</Text>
+        <Link href="/(tabs)/products" style={styles.link}>
+          <Text lightColor={designTokens.light.primary} darkColor={designTokens.dark.primary} style={styles.linkText}>{t('navigation.products')}</Text>
         </Link>
       </View>
     </>
@@ -35,6 +39,5 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 14,
-    color: '#2e78b7',
   },
 });

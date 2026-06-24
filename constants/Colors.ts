@@ -1,19 +1,18 @@
-const tintColorLight = '#2f95dc';
-const tintColorDark = '#fff';
+import { designTokens } from '@/lib/theme/tokens';
 
 export default {
   light: {
-    text: '#000',
-    background: '#fff',
-    tint: tintColorLight,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight,
+    text: designTokens.light.foreground,
+    background: designTokens.light.background,
+    tint: designTokens.light.primary,
+    tabIconDefault: designTokens.light.mutedForeground,
+    tabIconSelected: designTokens.light.primary,
   },
   dark: {
-    text: '#fff',
-    background: '#000',
-    tint: tintColorDark,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorDark,
+    text: designTokens.dark.foreground,
+    background: designTokens.dark.background,
+    tint: designTokens.dark.primary,
+    tabIconDefault: designTokens.dark.mutedForeground,
+    tabIconSelected: designTokens.dark.primary,
   },
 };
