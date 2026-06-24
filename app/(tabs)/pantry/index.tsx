@@ -21,7 +21,6 @@ export default function PantryScreen() {
     <CollectionScreen
       title={t('pantry.title')}
       emoji="🥫"
-      description={`${t('pantry.add')} · ${t('pantry.remove')} · ${t('pantry.waste')}`}
       addLabel={t('pantry.add')}
       modalTitle={t('pantry.add')}
       items={items.map((item) => ({

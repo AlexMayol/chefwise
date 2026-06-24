@@ -39,6 +39,7 @@ export const es = {
     },
     forms: {
       name: 'Nombre',
+      image: 'Imagen',
       address: 'Direccion',
       category: 'Categoria',
       emoji: 'Emoji',

@@ -1,7 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
-import { Image, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 
-import { Button } from '@/components/ui/button';
 import { saveEntityImage, deleteEntityImage, resolveEntityImageUri } from '@/lib/images/storage';
 import { useTranslation } from '@/lib/i18n';
 
@@ -33,11 +32,27 @@ export function EntityImageField({ entityType, entityId, value, onChange }: Enti
     onChange(null);
   }
 
+  if (uri) {
+    return (
+      <View className="relative">
+        <Image source={{ uri }} className="h-44 w-full rounded-2xl" resizeMode="cover" />
+        <Pressable
+          onPress={() => void removeImage()}
+          hitSlop={8}
+          accessibilityLabel={t('actions.delete')}
+          className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-background/80 active:opacity-70">
+          <Text className="text-base font-semibold text-foreground">✕</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   return (
-    <View className="gap-2 rounded-2xl border border-dashed border-border p-4">
-      {uri ? <Image source={{ uri }} className="h-40 w-full rounded-xl" resizeMode="cover" /> : <Text className="text-sm text-muted-foreground">{t('common.empty')}</Text>}
-      <Button label={t('actions.addImage')} variant="ghost" onPress={() => void pickImage()} />
-      {uri ? <Button label={t('actions.delete')} variant="destructive" onPress={() => void removeImage()} /> : null}
-    </View>
+    <Pressable
+      onPress={() => void pickImage()}
+      className="h-44 w-full items-center justify-center gap-1 rounded-2xl border border-dashed border-border bg-muted/30 active:opacity-70">
+      <Text className="text-2xl text-muted-foreground">＋</Text>
+      <Text className="text-sm font-medium text-muted-foreground">{t('actions.addImage')}</Text>
+    </Pressable>
   );
 }

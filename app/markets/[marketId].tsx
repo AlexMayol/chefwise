@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { DeleteButton } from '@/components/domain/delete-button';
 import { MarketForm } from '@/components/domain/market-form';
 import { ProductGrid } from '@/components/domain/product-grid';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
@@ -53,16 +52,17 @@ export default function MarketDetailScreen() {
       <BottomSheet visible={editing} onClose={() => setEditing(false)} bottomInset={insets.bottom}>
         {market ? (
           <ScrollView style={{ maxHeight: 480 }} keyboardShouldPersistTaps="handled">
-            <View className="gap-4">
-              <MarketForm
-                initialValues={market}
-                onSubmit={async (values) => {
-                  await update(marketId, values);
-                  setEditing(false);
-                }}
-              />
-              <DeleteButton onDelete={() => remove(marketId)} />
-            </View>
+            <MarketForm
+              initialValues={market}
+              onSubmit={async (values) => {
+                await update(marketId, values);
+                setEditing(false);
+              }}
+              onDelete={async () => {
+                await remove(marketId);
+                router.back();
+              }}
+            />
           </ScrollView>
         ) : null}
       </BottomSheet>

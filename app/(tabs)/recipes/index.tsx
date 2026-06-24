@@ -20,7 +20,6 @@ export default function RecipesScreen() {
     <CollectionScreen
       title={t('recipes.title')}
       emoji="🍳"
-      description={t('common.offline')}
       addLabel={t('recipes.new')}
       modalTitle={t('recipes.new')}
       items={items.map((recipe) => ({

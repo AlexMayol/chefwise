@@ -20,7 +20,6 @@ export default function ShoppingScreen() {
     <CollectionScreen
       title={t('shopping.title')}
       emoji="🛒"
-      description={`${t('shopping.draft')} · ${t('shopping.active')} · ${t('shopping.completed')}`}
       addLabel={t('shopping.new')}
       modalTitle={t('shopping.new')}
       items={items.map((list) => ({
