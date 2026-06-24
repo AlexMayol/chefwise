@@ -6,6 +6,7 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { VariableContextProvider } from 'nativewind';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
@@ -54,23 +55,26 @@ function RootLayoutNav() {
   const themeName = colorScheme === 'dark' ? 'dark' : 'light';
 
   return (
+    <SafeAreaProvider>
     <VariableContextProvider value={getDesignTokenVariables(themeName)}>
       <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
         <AppDatabaseProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="products/new" options={{ title: '' }} />
-            <Stack.Screen name="products/[productId]" options={{ title: '' }} />
-            <Stack.Screen name="markets/new" options={{ title: '' }} />
-            <Stack.Screen name="markets/[marketId]" options={{ title: '' }} />
-            <Stack.Screen name="recipes/new" options={{ title: '' }} />
-            <Stack.Screen name="recipes/[recipeId]" options={{ title: '' }} />
-            <Stack.Screen name="shopping/new" options={{ title: '' }} />
-            <Stack.Screen name="shopping/[shoppingListId]" options={{ title: '' }} />
+            <Stack.Screen name="categories/[categoryId]" options={{ headerShown: false }} />
+            <Stack.Screen name="products/new" options={{ headerShown: false }} />
+            <Stack.Screen name="products/[productId]" options={{ headerShown: false }} />
+            <Stack.Screen name="markets/new" options={{ headerShown: false }} />
+            <Stack.Screen name="markets/[marketId]" options={{ headerShown: false }} />
+            <Stack.Screen name="recipes/new" options={{ headerShown: false }} />
+            <Stack.Screen name="recipes/[recipeId]" options={{ headerShown: false }} />
+            <Stack.Screen name="shopping/new" options={{ headerShown: false }} />
+            <Stack.Screen name="shopping/[shoppingListId]" options={{ headerShown: false }} />
           </Stack>
           <PortalHost />
         </AppDatabaseProvider>
       </ThemeProvider>
     </VariableContextProvider>
+    </SafeAreaProvider>
   );
 }

@@ -3,23 +3,46 @@
 @import "tailwindcss/utilities.css";
 @import "nativewind/theme";
 
+/*
+ * Tailwind v4 registers theme colors here, not in tailwind.config.js.
+ * `inline` makes utilities emit `var(--primary)` directly so the runtime
+ * light/dark overrides below (and via VariableContextProvider) take effect.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
 :root {
-  --background: #fff8f0;
-  --foreground: #241d1a;
+  --background: #fbf6ee;
+  --foreground: #2a211b;
   --card: #ffffff;
-  --card-foreground: #241d1a;
-  --muted: #f0e7dc;
-  --muted-foreground: #6d6258;
-  --primary: #ef6c28;
-  --primary-foreground: #ffffff;
-  --secondary: #d7eddf;
-  --secondary-foreground: #255338;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #ded1c2;
-  --input: #ded1c2;
-  --ring: #ef6c28;
-  --input-placeholder: #8a7f72;
+  --card-foreground: #2a211b;
+  --muted: #f1e7d9;
+  --muted-foreground: #7a6e60;
+  --primary: #dd5e22;
+  --primary-foreground: #fff8f0;
+  --secondary: #e4ede2;
+  --secondary-foreground: #2e5238;
+  --destructive: #b5462e;
+  --destructive-foreground: #fff8f0;
+  --border: #e7dac8;
+  --input: #deceb9;
+  --ring: #dd5e22;
+  --input-placeholder: #9c8e7c;
 }
 
 .dark:root {
@@ -27,16 +50,16 @@
   --foreground: #fff6e8;
   --card: #221a17;
   --card-foreground: #fff6e8;
-  --muted: #332721;
+  --muted: #322620;
   --muted-foreground: #d8c7b4;
   --primary: #ff8440;
   --primary-foreground: #171210;
-  --secondary: #2d5a3f;
-  --secondary-foreground: #d7eddf;
-  --destructive: #f87171;
+  --secondary: #2c5340;
+  --secondary-foreground: #dce9dd;
+  --destructive: #e26a4e;
   --destructive-foreground: #171210;
-  --border: #4a3930;
-  --input: #4a3930;
+  --border: #45342a;
+  --input: #45342a;
   --ring: #ff8440;
   --input-placeholder: #d8c7b4;
 }
@@ -47,16 +70,16 @@
     --foreground: #fff6e8;
     --card: #221a17;
     --card-foreground: #fff6e8;
-    --muted: #332721;
+    --muted: #322620;
     --muted-foreground: #d8c7b4;
     --primary: #ff8440;
     --primary-foreground: #171210;
-    --secondary: #2d5a3f;
-    --secondary-foreground: #d7eddf;
-    --destructive: #f87171;
+    --secondary: #2c5340;
+    --secondary-foreground: #dce9dd;
+    --destructive: #e26a4e;
     --destructive-foreground: #171210;
-    --border: #4a3930;
-    --input: #4a3930;
+    --border: #45342a;
+    --input: #45342a;
     --ring: #ff8440;
     --input-placeholder: #d8c7b4;
   }

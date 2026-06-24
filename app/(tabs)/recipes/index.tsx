@@ -1,17 +1,26 @@
+import { useCallback } from 'react';
+
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { RecipeForm } from '@/components/domain/recipe-form';
 import { useRecipes } from '@/lib/hooks/use-recipes';
 import { useTranslation } from '@/lib/i18n';
-import type { Href } from 'expo-router';
+import { useFocusEffect, type Href } from 'expo-router';
 
 export default function RecipesScreen() {
   const { t } = useTranslation();
-  const { items, create } = useRecipes();
+  const { items, create, reload } = useRecipes();
+
+  useFocusEffect(
+    useCallback(() => {
+      void reload();
+    }, [reload]),
+  );
 
   return (
     <CollectionScreen
       title={t('recipes.title')}
-      description={`${t('recipes.manual')} · ${t('recipes.cheapestAvailable')}`}
+      emoji="🍳"
+      description={t('common.offline')}
       addLabel={t('recipes.new')}
       modalTitle={t('recipes.new')}
       items={items.map((recipe) => ({

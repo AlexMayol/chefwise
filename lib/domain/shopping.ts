@@ -8,11 +8,9 @@ export type BoughtWorkflowInput = {
   actualQuantity?: number;
   actualUnit?: Unit;
   actualPrice?: number;
-  marketId?: string;
   runInTransaction<T>(work: () => Promise<T>): Promise<T>;
   createPrice(input: {
     productId: string;
-    marketId: string;
     price: number;
     quantity: number;
     unit: Unit;
@@ -24,7 +22,6 @@ export type BoughtWorkflowInput = {
     actualQuantity: number;
     actualUnit: Unit;
     actualPrice: number;
-    marketId: string;
   }): Promise<void>;
   recordPurchaseInPantry(input: {
     productId: string;
@@ -35,16 +32,15 @@ export type BoughtWorkflowInput = {
 };
 
 export async function markShoppingItemBought(input: BoughtWorkflowInput): Promise<void> {
-  const { actualQuantity, actualUnit, actualPrice, marketId } = input;
+  const { actualQuantity, actualUnit, actualPrice } = input;
 
-  if (!actualQuantity || !actualUnit || !actualPrice || !marketId) {
+  if (!actualQuantity || !actualUnit || !actualPrice) {
     throw new Error('shopping.missingActuals');
   }
 
   await input.runInTransaction(async () => {
     const price = await input.createPrice({
       productId: input.item.productId,
-      marketId,
       price: actualPrice,
       quantity: actualQuantity,
       unit: actualUnit,
@@ -57,7 +53,6 @@ export async function markShoppingItemBought(input: BoughtWorkflowInput): Promis
       actualQuantity,
       actualUnit,
       actualPrice,
-      marketId,
     });
 
     await input.recordPurchaseInPantry({

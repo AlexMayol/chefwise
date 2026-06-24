@@ -1,3 +1,6 @@
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
+
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { PantryAdjustmentForm } from '@/components/domain/pantry-adjustment-form';
 import { PantryTransactionList } from '@/components/domain/pantry-transaction-list';
@@ -6,11 +9,18 @@ import { useTranslation } from '@/lib/i18n';
 
 export default function PantryScreen() {
   const { t } = useTranslation();
-  const { items, transactions, adjust } = usePantry();
+  const { items, transactions, adjust, reload } = usePantry();
+
+  useFocusEffect(
+    useCallback(() => {
+      void reload();
+    }, [reload]),
+  );
 
   return (
     <CollectionScreen
       title={t('pantry.title')}
+      emoji="🥫"
       description={`${t('pantry.add')} · ${t('pantry.remove')} · ${t('pantry.waste')}`}
       addLabel={t('pantry.add')}
       modalTitle={t('pantry.add')}

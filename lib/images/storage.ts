@@ -3,6 +3,8 @@ import { Directory, File, Paths } from 'expo-file-system';
 
 import { assertRelativeImagePath, buildEntityImagePath, resolveImageUri, type ImageEntityType, type RelativeImagePath } from './paths';
 
+const ENTITY_DIRECTORIES: Record<ImageEntityType, string> = { product: 'products', recipe: 'recipes', market: 'markets' };
+
 function getDocumentUri(): string {
   const legacyFileSystem = FileSystem as unknown as { documentDirectory?: string };
 
@@ -14,8 +16,7 @@ function getDocumentUri(): string {
 }
 
 function createImageDirectory(entityType: ImageEntityType): void {
-  const directory = entityType === 'product' ? 'products' : 'recipes';
-  const imageDirectory = new Directory(getDocumentUri(), 'images', directory);
+  const imageDirectory = new Directory(getDocumentUri(), 'images', ENTITY_DIRECTORIES[entityType]);
 
   if (!imageDirectory.exists) {
     imageDirectory.create({ intermediates: true });
@@ -42,6 +43,9 @@ export async function saveEntityImage(
     createImageDirectory(entityType);
     const source = new File(sourceUri);
     const destination = new File(getDocumentUri(), relativePath);
+    if (destination.exists) {
+      destination.delete();
+    }
     await source.copy(destination);
   } else if (fs.copyAsync) {
     await fs.copyAsync({ from: sourceUri, to: targetUri });
@@ -67,6 +71,10 @@ export async function deleteEntityImage(relativePath: string | null | undefined)
   } else if (fs.deleteAsync) {
     await fs.deleteAsync(resolveImageUri(relativePath, getDocumentUri()) ?? '', { idempotent: true });
   }
+}
+
+export function resolveEntityImageUri(relativePath: string | null | undefined): string | null {
+  return resolveImageUri(relativePath, getDocumentUri());
 }
 
 export { resolveImageUri };

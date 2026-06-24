@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 
 import { CollectionScreen } from '@/components/domain/collection-screen';
@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Select } from '@/components/ui/select';
 import type { ProductSort } from '@/lib/db/repositories/products';
+import { formatCurrency } from '@/lib/formatting/currency';
+import { resolveImageUri } from '@/lib/images/storage';
 import { useProducts } from '@/lib/hooks/use-products';
 import { useTranslation } from '@/lib/i18n';
-import type { Href } from 'expo-router';
+import { useFocusEffect, type Href } from 'expo-router';
 
 type MinimumRatingFilter = 'none' | '1' | '2' | '3' | '4' | '5';
 
@@ -18,25 +20,43 @@ export default function ProductsScreen() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [minimumRating, setMinimumRating] = useState<MinimumRatingFilter>('none');
   const [sort, setSort] = useState<ProductSort>('name');
-  const { items, create } = useProducts({
+  const { items, create, reload } = useProducts({
     favoritesOnly,
     minRating: minimumRating === 'none' ? undefined : Number(minimumRating),
     sort,
   });
 
+  useFocusEffect(
+    useCallback(() => {
+      void reload();
+    }, [reload]),
+  );
+
   return (
     <CollectionScreen
       title={t('products.title')}
-      description={`${t('products.favoritesOnly')} · ${t('products.minimumRating')} · ${t('common.uncategorized')}`}
+      emoji="🥕"
       addLabel={t('products.new')}
       modalTitle={t('products.new')}
+      columns={2}
       items={items.map((product) => ({
         id: product.id,
-        title: product.name,
-        subtitle: product.notes ?? t('common.missingPrice'),
-        meta: product.isFavorite ? '★' : undefined,
+        title: `${product.isFavorite ? '★ ' : ''}${product.name}`,
+        subtitle: product.marketName ?? undefined,
+        meta:
+          product.normalizedPrice != null
+            ? `${formatCurrency(product.normalizedPrice)}/${product.normalizedUnit}`
+            : t('common.missingPrice'),
+        imageUri: resolveImageUri(product.imagePath) ?? undefined,
+        emoji: '🥕',
         href: `/products/${product.id}` as Href,
       }))}
+      activeFilterCount={(favoritesOnly ? 1 : 0) + (minimumRating !== 'none' ? 1 : 0) + (sort !== 'name' ? 1 : 0)}
+      onResetFilters={() => {
+        setFavoritesOnly(false);
+        setMinimumRating('none');
+        setSort('name');
+      }}
       controls={
         <View className="gap-3">
           <Button
@@ -74,8 +94,8 @@ export default function ProductsScreen() {
       }
       renderForm={(onSaved) => (
         <ProductForm
-          onSubmit={async (values) => {
-            await create(values);
+          onSubmit={async (values, initialPrice) => {
+            await create(values, initialPrice);
             onSaved();
           }}
         />

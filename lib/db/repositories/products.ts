@@ -1,4 +1,4 @@
-import type { Unit } from '@/lib/domain/units';
+import type { NormalizedUnit, Unit } from '@/lib/domain/units';
 
 import type { AppDatabase } from '../client';
 import { createId, fromSqlBoolean, insertRow, nowIso, toSqlBoolean, updateRow } from './base';
@@ -7,6 +7,7 @@ export type Product = {
   id: string;
   name: string;
   categoryId: string | null;
+  marketId: string;
   defaultUnit: Unit;
   rating: number | null;
   notes: string | null;
@@ -20,9 +21,21 @@ export type ProductRow = Omit<Product, 'isFavorite'> & {
   isFavorite: number;
 };
 
+// Enriched list shape: bare product plus the data the list card surfaces
+// (market name + latest normalized price), joined in the list() query.
+export type ProductListItem = Product & {
+  marketName: string | null;
+  price: number | null;
+  normalizedPrice: number | null;
+  normalizedUnit: NormalizedUnit | null;
+};
+
+type ProductListRow = ProductRow & Omit<ProductListItem, keyof Product>;
+
 export type ProductInput = {
   name: string;
   categoryId?: string | null;
+  marketId: string;
   defaultUnit: Unit;
   rating?: number | null;
   notes?: string | null;
@@ -38,33 +51,49 @@ function mapProduct(row: ProductRow): Product {
 
 export function createProductRepository(db: AppDatabase) {
   return {
-    async list(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}): Promise<Product[]> {
+    async list(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}): Promise<ProductListItem[]> {
       const clauses: string[] = [];
       const params: number[] = [];
 
       if (options.favoritesOnly) {
-        clauses.push('isFavorite = 1');
+        clauses.push('p.isFavorite = 1');
       }
 
       if (options.minRating) {
-        clauses.push('rating >= ?');
+        clauses.push('p.rating >= ?');
         params.push(options.minRating);
       }
 
       const orderBy =
         options.sort === 'highest_rated'
-          ? 'rating DESC, name COLLATE NOCASE ASC'
+          ? 'p.rating DESC, p.name COLLATE NOCASE ASC'
           : options.sort === 'lowest_rated'
-            ? 'rating ASC, name COLLATE NOCASE ASC'
+            ? 'p.rating ASC, p.name COLLATE NOCASE ASC'
             : options.sort === 'favorites_first'
-              ? 'isFavorite DESC, name COLLATE NOCASE ASC'
-              : 'name COLLATE NOCASE ASC';
+              ? 'p.isFavorite DESC, p.name COLLATE NOCASE ASC'
+              : 'p.name COLLATE NOCASE ASC';
 
-      const rows = await db.getAllAsync<ProductRow>(
-        `SELECT * FROM products${clauses.length ? ` WHERE ${clauses.join(' AND ')}` : ''} ORDER BY ${orderBy}`,
+      const rows = await db.getAllAsync<ProductListRow>(
+        `SELECT p.*, m.name AS marketName,
+                lp.price AS price, lp.normalizedPrice AS normalizedPrice, lp.normalizedUnit AS normalizedUnit
+         FROM products p
+         LEFT JOIN markets m ON m.id = p.marketId
+         LEFT JOIN (
+           SELECT productId, price, normalizedPrice, normalizedUnit,
+                  ROW_NUMBER() OVER (PARTITION BY productId ORDER BY observedAt DESC, id DESC) AS rn
+           FROM product_prices
+         ) lp ON lp.productId = p.id AND lp.rn = 1
+         ${clauses.length ? `WHERE ${clauses.join(' AND ')}` : ''}
+         ORDER BY ${orderBy}`,
         params,
       );
-      return rows.map(mapProduct);
+      return rows.map((row) => ({
+        ...mapProduct(row),
+        marketName: row.marketName,
+        price: row.price,
+        normalizedPrice: row.normalizedPrice,
+        normalizedUnit: row.normalizedUnit,
+      }));
     },
     async getById(id: string): Promise<Product | null> {
       const row = await db.getFirstAsync<ProductRow>('SELECT * FROM products WHERE id = ?', [id]);
@@ -76,6 +105,7 @@ export function createProductRepository(db: AppDatabase) {
         id: createId('product'),
         name: input.name,
         categoryId: input.categoryId ?? null,
+        marketId: input.marketId,
         defaultUnit: input.defaultUnit,
         rating: input.rating ?? null,
         notes: input.notes ?? null,

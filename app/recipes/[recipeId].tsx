@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { DeleteButton } from '@/components/domain/delete-button';
 import { FeatureScreen } from '@/components/domain/feature-screen';
 import { RecipeCostBreakdown } from '@/components/domain/recipe-cost-breakdown';
 import { RecipeProductForm } from '@/components/domain/recipe-product-form';
@@ -10,33 +11,29 @@ import { ListRow } from '@/components/ui/list-row';
 import { useTranslation } from '@/lib/i18n';
 import { useRecipeDetail } from '@/lib/hooks/use-recipes';
 import type { RecipeCostResult } from '@/lib/domain/recipes';
-import { useMarkets } from '@/lib/hooks/use-markets';
 import { useProducts } from '@/lib/hooks/use-products';
 
 export default function RecipeDetailScreen() {
   const { t } = useTranslation();
   const { recipeId } = useLocalSearchParams<{ recipeId: string }>();
-  const { recipe, ingredients, addIngredient, calculateCost, cook } = useRecipeDetail(recipeId);
+  const { recipe, ingredients, addIngredient, calculateCost, cook, remove } = useRecipeDetail(recipeId);
   const { items: products } = useProducts({ sort: 'favorites_first' });
-  const { items: markets } = useMarkets();
   const [cost, setCost] = useState<RecipeCostResult | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const productNamesById = Object.fromEntries(products.map((product) => [product.id, product.name]));
-  const marketNamesById = Object.fromEntries(markets.map((market) => [market.id, market.name]));
 
   useEffect(() => {
     void calculateCost().then(setCost);
   }, [calculateCost]);
 
   return (
-    <FeatureScreen title={recipe?.name ?? t('recipes.title')} description={cost?.complete ? t('recipes.totalCost') : t('recipes.incompleteCost')}>
+    <FeatureScreen title={recipe?.name ?? t('recipes.title')} description={cost?.complete ? t('recipes.totalCost') : t('recipes.incompleteCost')} emoji="🍳" showBack>
       <RecipeCostBreakdown
         totalCost={cost?.totalCost}
         costPerServing={cost?.costPerServing}
         complete={cost?.complete ?? false}
         breakdown={cost?.breakdown}
         productNamesById={productNamesById}
-        marketNamesById={marketNamesById}
       />
       {ingredients.map((ingredient) => (
         <ListRow key={ingredient.id} title={productNamesById[ingredient.productId] ?? ingredient.productId} subtitle={`${ingredient.quantity} ${ingredient.unit}`} />
@@ -59,6 +56,7 @@ export default function RecipeDetailScreen() {
         />
         {message ? <Text className="mt-2 text-sm text-muted-foreground">{message}</Text> : null}
       </View>
+      <DeleteButton onDelete={remove} />
     </FeatureScreen>
   );
 }

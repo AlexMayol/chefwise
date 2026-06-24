@@ -6,6 +6,7 @@
 - Keep SQL ordering explicit; important examples are product price history (`observedAt DESC, id DESC`) and pantry transactions (`occurredAt DESC`).
 - Use `db.withTransactionAsync` for multi-step writes that must be atomic.
 - Keep generated IDs prefixed and stable in shape through `createId(prefix)`.
+- `list()` queries may `LEFT JOIN` related tables (e.g. market name) and the latest `product_prices` row to feed rich list cards; return an enriched `*ListItem` type and keep heavier detail-only data out of list queries.
 
 ## Immutability
 

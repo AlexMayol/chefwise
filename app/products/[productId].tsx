@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { DeleteButton } from '@/components/domain/delete-button';
 import { FeatureScreen } from '@/components/domain/feature-screen';
 import { PriceForm } from '@/components/domain/price-form';
 import { PriceHistoryList } from '@/components/domain/price-history-list';
@@ -15,20 +16,17 @@ import { useTranslation } from '@/lib/i18n';
 export default function ProductDetailScreen() {
   const { t } = useTranslation();
   const { productId } = useLocalSearchParams<{ productId: string }>();
-  const { item: product, update } = useProductDetail(productId);
+  const { item: product, update, remove } = useProductDetail(productId);
   const { items, latest, create } = useProductPrices(productId);
   const { items: markets } = useMarkets();
-  const marketsById = new Map(markets.map((market) => [market.id, market]));
-  const marketsWithPrices = Array.from(new Set(items.map((price) => price.marketId))).map((marketId) => ({
-    id: marketId,
-    name: marketsById.get(marketId)?.name ?? marketId,
-    address: marketsById.get(marketId)?.address ?? undefined,
-  }));
+  const market = product ? markets.find((entry) => entry.id === product.marketId) : undefined;
 
   return (
     <FeatureScreen
       title={product?.name ?? t('products.title')}
       description={latest ? `${t('products.latestPrice')}: ${formatCurrency(latest.price)}` : t('common.missingPrice')}
+      emoji="🥕"
+      showBack
     >
       {product ? (
         <ProductForm
@@ -39,21 +37,21 @@ export default function ProductDetailScreen() {
         />
       ) : null}
       <View className="gap-2">
-        <Text className="text-lg font-semibold text-card-foreground">{t('products.marketsWithPrices')}</Text>
-        {marketsWithPrices.length > 0 ? (
-          marketsWithPrices.map((market) => <ListRow key={market.id} title={market.name} subtitle={market.address} />)
+        <Text className="text-lg font-semibold text-card-foreground">{t('forms.market')}</Text>
+        {market ? (
+          <ListRow title={market.name} subtitle={market.address ?? undefined} />
         ) : (
           <Text className="text-sm text-muted-foreground">{t('common.empty')}</Text>
         )}
       </View>
       <PriceForm
         productId={productId}
-        markets={markets}
         onSubmit={async (values) => {
           await create(values);
         }}
       />
       <PriceHistoryList prices={items} />
+      <DeleteButton onDelete={remove} />
     </FeatureScreen>
   );
 }

@@ -3,16 +3,14 @@ import { calculateRecipeCost } from '@/lib/domain/recipes';
 const observedAt = '2026-06-24T00:00:00.000Z';
 
 describe('recipe cost engine', () => {
-  it('calculates manual market cost and cost per serving', () => {
+  it('calculates ingredient cost and cost per serving from the latest product price', () => {
     const result = calculateRecipeCost({
       servings: 2,
-      pricingStrategy: 'manual',
-      ingredients: [{ id: 'ri-1', productId: 'flour', quantity: 500, unit: 'g', marketId: 'market-1' }],
+      ingredients: [{ id: 'ri-1', productId: 'flour', quantity: 500, unit: 'g' }],
       prices: [
         {
           id: 'p-1',
           productId: 'flour',
-          marketId: 'market-1',
           price: 2,
           quantity: 1,
           unit: 'kg',
@@ -28,27 +26,25 @@ describe('recipe cost engine', () => {
     expect(result.costPerServing).toBe(0.5);
   });
 
-  it('chooses the cheapest compatible latest price across markets', () => {
+  it('uses the most recently observed price per product', () => {
     const result = calculateRecipeCost({
       servings: 1,
-      pricingStrategy: 'cheapest_available',
       ingredients: [{ id: 'ri-1', productId: 'milk', quantity: 500, unit: 'ml' }],
       prices: [
-        { id: 'expensive', productId: 'milk', marketId: 'a', price: 3, quantity: 1, unit: 'l', normalizedPrice: 3, normalizedUnit: 'l', observedAt },
-        { id: 'cheap', productId: 'milk', marketId: 'b', price: 2, quantity: 1, unit: 'l', normalizedPrice: 2, normalizedUnit: 'l', observedAt },
+        { id: 'old', productId: 'milk', price: 3, quantity: 1, unit: 'l', normalizedPrice: 3, normalizedUnit: 'l', observedAt: '2026-01-01T00:00:00.000Z' },
+        { id: 'new', productId: 'milk', price: 2, quantity: 1, unit: 'l', normalizedPrice: 2, normalizedUnit: 'l', observedAt },
       ],
     });
 
     expect(result.complete).toBe(true);
     expect(result.totalCost).toBe(1);
-    expect(result.breakdown[0]?.marketId).toBe('b');
+    expect(result.breakdown[0]?.priceId).toBe('new');
   });
 
   it('marks cost incomplete when an ingredient has no usable price', () => {
     const result = calculateRecipeCost({
       servings: 4,
-      pricingStrategy: 'manual',
-      ingredients: [{ id: 'ri-1', productId: 'eggs', quantity: 2, unit: 'unit', marketId: 'market-1' }],
+      ingredients: [{ id: 'ri-1', productId: 'eggs', quantity: 2, unit: 'unit' }],
       prices: [],
     });
 
@@ -59,16 +55,14 @@ describe('recipe cost engine', () => {
   it('does not expose partial totals when any ingredient is missing a compatible price', () => {
     const result = calculateRecipeCost({
       servings: 4,
-      pricingStrategy: 'manual',
       ingredients: [
-        { id: 'ri-1', productId: 'flour', quantity: 500, unit: 'g', marketId: 'market-1' },
-        { id: 'ri-2', productId: 'eggs', quantity: 2, unit: 'unit', marketId: 'market-1' },
+        { id: 'ri-1', productId: 'flour', quantity: 500, unit: 'g' },
+        { id: 'ri-2', productId: 'eggs', quantity: 2, unit: 'unit' },
       ],
       prices: [
         {
           id: 'p-1',
           productId: 'flour',
-          marketId: 'market-1',
           price: 2,
           quantity: 1,
           unit: 'kg',

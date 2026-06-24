@@ -29,7 +29,6 @@ export type ShoppingListItem = {
   actualQuantity: number | null;
   actualUnit: Unit | null;
   actualPrice: number | null;
-  marketId: string | null;
   productPriceId: string | null;
   createdAt: string;
   updatedAt: string;
@@ -65,7 +64,6 @@ export function createShoppingListRepository(db: AppDatabase) {
         actualQuantity: null,
         actualUnit: null,
         actualPrice: null,
-        marketId: null,
         productPriceId: null,
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -79,14 +77,12 @@ export function createShoppingListRepository(db: AppDatabase) {
       actualQuantity: number;
       actualUnit: Unit;
       actualPrice: number;
-      marketId: string;
     }): Promise<void> {
       await updateRow(db, 'shopping_list_items', input.itemId, {
         status: 'bought',
         actualQuantity: input.actualQuantity,
         actualUnit: input.actualUnit,
         actualPrice: input.actualPrice,
-        marketId: input.marketId,
         productPriceId: input.productPriceId,
         updatedAt: nowIso(),
       });

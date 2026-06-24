@@ -1,3 +1,6 @@
+import { useFocusEffect, type Href } from 'expo-router';
+import { useCallback } from 'react';
+
 import { CategoryForm } from '@/components/domain/category-form';
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { useCategories } from '@/lib/hooks/use-categories';
@@ -5,29 +8,31 @@ import { useTranslation } from '@/lib/i18n';
 
 export default function CategoriesScreen() {
   const { t } = useTranslation();
-  const { items, create, update } = useCategories();
+  const { items, create, reload } = useCategories();
+
+  useFocusEffect(
+    useCallback(() => {
+      void reload();
+    }, [reload]),
+  );
 
   return (
     <CollectionScreen
       title={t('categories.title')}
-      description={t('categories.description')}
+      emoji="🏷️"
       addLabel={t('categories.new')}
-      modalTitle={(item) => (item ? t('actions.edit') : t('categories.new'))}
+      columns={2}
+      modalTitle={t('categories.new')}
       items={items.map((category) => ({
         id: category.id,
         title: category.name,
-        subtitle: t('forms.category'),
-        editable: true,
+        emoji: category.description ?? undefined,
+        href: `/categories/${category.id}` as Href,
       }))}
-      renderForm={(onSaved, selectedCategory) => (
+      renderForm={(onSaved) => (
         <CategoryForm
-          initialValues={selectedCategory ? { name: selectedCategory.title } : undefined}
           onSubmit={async (values) => {
-            if (selectedCategory) {
-              await update(selectedCategory.id, values);
-            } else {
-              await create(values);
-            }
+            await create(values);
             onSaved();
           }}
         />

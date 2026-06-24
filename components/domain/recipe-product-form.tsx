@@ -10,7 +10,6 @@ import type { Unit } from '@/lib/domain/units';
 import { useTranslation } from '@/lib/i18n';
 import { recipeProductSchema } from '@/lib/validation/recipes';
 
-import { MarketSelector } from './market-selector';
 import { ProductSelector } from './product-selector';
 import { UnitInput } from './unit-input';
 
@@ -24,7 +23,7 @@ export function RecipeProductForm({
   const { t } = useTranslation();
   const form = useForm({
     resolver: zodResolver(recipeProductSchema),
-    defaultValues: { productId: '', quantity: 1, unit: 'unit', marketId: '' },
+    defaultValues: { productId: '', quantity: 1, unit: 'unit' },
   });
 
   return (
@@ -54,21 +53,12 @@ export function RecipeProductForm({
           render={({ field }) => <UnitInput value={field.value as Unit} onChange={field.onChange} />}
         />
       </FormField>
-      <Controller
-        control={form.control}
-        name="marketId"
-        render={({ field }) => (
-          <FormField label={t('forms.market')}>
-            <MarketSelector value={field.value ?? ''} onChange={field.onChange} />
-          </FormField>
-        )}
-      />
       <Button
         label={t('actions.add')}
         disabled={!recipeId || !onSubmit}
         onPress={form.handleSubmit((values) => {
           if (recipeId && onSubmit) {
-            return onSubmit({ recipeId, productId: values.productId, quantity: Number(values.quantity), unit: values.unit as Unit, marketId: values.marketId });
+            return onSubmit({ recipeId, productId: values.productId, quantity: Number(values.quantity), unit: values.unit as Unit });
           }
           return undefined;
         })}

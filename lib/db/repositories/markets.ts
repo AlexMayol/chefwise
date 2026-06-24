@@ -5,6 +5,7 @@ export type Market = {
   id: string;
   name: string;
   address: string | null;
+  imagePath: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -12,6 +13,7 @@ export type Market = {
 export type MarketInput = {
   name: string;
   address?: string | null;
+  imagePath?: string | null;
 };
 
 export function createMarketRepository(db: AppDatabase) {

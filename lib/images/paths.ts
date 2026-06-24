@@ -1,13 +1,14 @@
-export type ImageEntityType = 'product' | 'recipe';
-export type RelativeImagePath = `images/${'products' | 'recipes'}/${string}.jpg`;
+export type ImageEntityType = 'product' | 'recipe' | 'market';
+export type RelativeImagePath = `images/${'products' | 'recipes' | 'markets'}/${string}.jpg`;
+
+const ENTITY_DIRECTORIES = { product: 'products', recipe: 'recipes', market: 'markets' } as const;
 
 export function buildEntityImagePath(entityType: ImageEntityType, entityId: string): RelativeImagePath {
-  const directory = entityType === 'product' ? 'products' : 'recipes';
-  return `images/${directory}/${entityId}.jpg`;
+  return `images/${ENTITY_DIRECTORIES[entityType]}/${entityId}.jpg`;
 }
 
 export function isRelativeImagePath(path: string): path is RelativeImagePath {
-  return /^images\/(products|recipes)\/[^/]+\.jpg$/.test(path);
+  return /^images\/(products|recipes|markets)\/[^/]+\.jpg$/.test(path);
 }
 
 export function assertRelativeImagePath(path: string): asserts path is RelativeImagePath {

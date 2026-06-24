@@ -1,4 +1,4 @@
-export const LATEST_SCHEMA_VERSION = 1;
+export const LATEST_SCHEMA_VERSION = 5;
 
 export const REQUIRED_TABLES = [
   'markets',
@@ -7,7 +7,6 @@ export const REQUIRED_TABLES = [
   'product_prices',
   'recipes',
   'recipe_products',
-  'recipe_product_markets',
   'shopping_lists',
   'shopping_list_items',
   'pantry_items',
@@ -17,7 +16,6 @@ export const REQUIRED_TABLES = [
 export const REQUIRED_INDEXES = [
   'idx_product_prices_lookup',
   'idx_recipe_products_recipe',
-  'idx_recipe_product_markets_recipe_product',
   'idx_shopping_list_items_list',
   'idx_pantry_transactions_product',
 ] as const;
@@ -27,6 +25,7 @@ CREATE TABLE IF NOT EXISTS markets (
   id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
   address TEXT,
+  imagePath TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL
 );
@@ -34,6 +33,7 @@ CREATE TABLE IF NOT EXISTS markets (
 CREATE TABLE IF NOT EXISTS categories (
   id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
+  description TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL
 );
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
   categoryId TEXT,
+  marketId TEXT NOT NULL,
   defaultUnit TEXT NOT NULL,
   rating INTEGER,
   notes TEXT,
@@ -49,13 +50,13 @@ CREATE TABLE IF NOT EXISTS products (
   imagePath TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
-  FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE SET NULL
+  FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE SET NULL,
+  FOREIGN KEY (marketId) REFERENCES markets(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS product_prices (
   id TEXT PRIMARY KEY NOT NULL,
   productId TEXT NOT NULL,
-  marketId TEXT NOT NULL,
   price REAL NOT NULL,
   quantity REAL NOT NULL,
   unit TEXT NOT NULL,
@@ -63,8 +64,7 @@ CREATE TABLE IF NOT EXISTS product_prices (
   normalizedUnit TEXT NOT NULL,
   observedAt TEXT NOT NULL,
   createdAt TEXT NOT NULL,
-  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT,
-  FOREIGN KEY (marketId) REFERENCES markets(id) ON DELETE RESTRICT
+  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS recipes (
@@ -72,7 +72,6 @@ CREATE TABLE IF NOT EXISTS recipes (
   name TEXT NOT NULL,
   description TEXT,
   servings REAL NOT NULL,
-  pricingStrategy TEXT NOT NULL,
   imagePath TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL
@@ -88,16 +87,6 @@ CREATE TABLE IF NOT EXISTS recipe_products (
   updatedAt TEXT NOT NULL,
   FOREIGN KEY (recipeId) REFERENCES recipes(id) ON DELETE CASCADE,
   FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS recipe_product_markets (
-  id TEXT PRIMARY KEY NOT NULL,
-  recipeProductId TEXT NOT NULL,
-  marketId TEXT NOT NULL,
-  createdAt TEXT NOT NULL,
-  updatedAt TEXT NOT NULL,
-  FOREIGN KEY (recipeProductId) REFERENCES recipe_products(id) ON DELETE CASCADE,
-  FOREIGN KEY (marketId) REFERENCES markets(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS shopping_lists (
@@ -118,13 +107,11 @@ CREATE TABLE IF NOT EXISTS shopping_list_items (
   actualQuantity REAL,
   actualUnit TEXT,
   actualPrice REAL,
-  marketId TEXT,
   productPriceId TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
   FOREIGN KEY (shoppingListId) REFERENCES shopping_lists(id) ON DELETE CASCADE,
   FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT,
-  FOREIGN KEY (marketId) REFERENCES markets(id) ON DELETE RESTRICT,
   FOREIGN KEY (productPriceId) REFERENCES product_prices(id) ON DELETE RESTRICT
 );
 
@@ -155,11 +142,9 @@ CREATE TABLE IF NOT EXISTS pantry_transactions (
 );
 
 CREATE INDEX IF NOT EXISTS idx_product_prices_lookup
-  ON product_prices(productId, marketId, observedAt DESC, id DESC);
+  ON product_prices(productId, observedAt DESC, id DESC);
 CREATE INDEX IF NOT EXISTS idx_recipe_products_recipe
   ON recipe_products(recipeId, productId);
-CREATE INDEX IF NOT EXISTS idx_recipe_product_markets_recipe_product
-  ON recipe_product_markets(recipeProductId, marketId);
 CREATE INDEX IF NOT EXISTS idx_shopping_list_items_list
   ON shopping_list_items(shoppingListId, status);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_pantry_items_product

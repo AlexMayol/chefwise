@@ -3,10 +3,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/date-picker';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
-import type { Market } from '@/lib/db/repositories/markets';
 import type { ProductPriceInput } from '@/lib/db/repositories/product-prices';
 import type { Unit } from '@/lib/domain/units';
 import { useTranslation } from '@/lib/i18n';
@@ -16,16 +15,14 @@ import { UnitInput } from './unit-input';
 
 type PriceFormProps = {
   productId: string;
-  markets?: Market[];
   onSubmit(values: ProductPriceInput): Promise<void> | void;
 };
 
-export function PriceForm({ productId, markets = [], onSubmit }: PriceFormProps) {
+export function PriceForm({ productId, onSubmit }: PriceFormProps) {
   const { t } = useTranslation();
   const form = useForm({
     resolver: zodResolver(productPriceSchema),
     defaultValues: {
-      marketId: markets[0]?.id ?? '',
       price: 0,
       quantity: 1,
       unit: 'unit',
@@ -35,19 +32,6 @@ export function PriceForm({ productId, markets = [], onSubmit }: PriceFormProps)
 
   return (
     <View className="gap-4">
-      <Controller
-        control={form.control}
-        name="marketId"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.market')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            {markets.length > 0 ? (
-              <Select value={field.value} onChange={field.onChange} options={markets.map((market) => ({ label: market.name, value: market.id }))} />
-            ) : (
-              <Input value={field.value} placeholder={t('forms.market')} onChangeText={field.onChange} onBlur={field.onBlur} />
-            )}
-          </FormField>
-        )}
-      />
       <Controller
         control={form.control}
         name="price"
@@ -78,7 +62,7 @@ export function PriceForm({ productId, markets = [], onSubmit }: PriceFormProps)
         name="observedAt"
         render={({ field, fieldState }) => (
           <FormField label={t('forms.observedAt')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input value={field.value} placeholder="YYYY-MM-DD" onChangeText={field.onChange} onBlur={field.onBlur} />
+            <DatePicker value={field.value} onChange={field.onChange} />
           </FormField>
         )}
       />

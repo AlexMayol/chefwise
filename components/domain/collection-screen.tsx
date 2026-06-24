@@ -1,83 +1,53 @@
-import { Link, useFocusEffect, type Href } from 'expo-router';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useState, type ReactNode } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
-import { chunkGridRows } from '@/lib/ui/grid';
+import { GridCard, type CollectionItem } from '@/components/ui/grid-card';
 import { useTranslation } from '@/lib/i18n';
+import { chunkGridRows } from '@/lib/ui/grid';
 
-type CollectionItem = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  meta?: string;
-  href?: Href;
-  editable?: boolean;
-};
+export type { CollectionItem };
 
 type CollectionScreenProps = {
   title: string;
-  description: string;
+  emoji?: string;
+  description?: string;
   items: CollectionItem[];
   addLabel: string;
   modalTitle: string | ((item?: CollectionItem) => string);
   renderForm(onSaved: () => void, item?: CollectionItem): ReactNode;
   controls?: ReactNode;
+  onResetFilters?: () => void;
+  activeFilterCount?: number;
   footer?: ReactNode;
+  columns?: number;
 };
-
-function GridCard({ item, onPress }: { item: CollectionItem; onPress?: () => void }) {
-  const content = (
-    <Card className="min-h-28 flex-1 justify-between p-3">
-      <View className="gap-1">
-        <Text className="text-base font-bold text-card-foreground" numberOfLines={2}>
-          {item.title}
-        </Text>
-        {item.subtitle ? (
-          <Text className="text-xs text-muted-foreground" numberOfLines={2}>
-            {item.subtitle}
-          </Text>
-        ) : null}
-      </View>
-      {item.meta ? <Text className="text-xs font-semibold text-muted-foreground">{item.meta}</Text> : null}
-    </Card>
-  );
-
-  if (item.href) {
-    return (
-      <Link href={item.href} asChild>
-        <Pressable className="flex-1 active:opacity-80">{content}</Pressable>
-      </Link>
-    );
-  }
-
-  if (onPress) {
-    return (
-      <Pressable className="flex-1 active:opacity-80" onPress={onPress}>
-        {content}
-      </Pressable>
-    );
-  }
-
-  return <View className="flex-1">{content}</View>;
-}
 
 export function CollectionScreen({
   title,
+  emoji,
   description,
   items,
   addLabel,
   modalTitle,
   renderForm,
   controls,
+  onResetFilters,
+  activeFilterCount = 0,
   footer,
+  columns = 2,
 }: CollectionScreenProps) {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<CollectionItem | undefined>();
-  const rows = chunkGridRows(items, 3);
+  const rows = chunkGridRows(items, columns);
 
   function closeModal() {
     setIsModalVisible(false);
@@ -100,10 +70,14 @@ export function CollectionScreen({
 
     return (
       <View className="flex-1 bg-background">
-        <ScrollView className="flex-1" contentContainerClassName="gap-4 p-4 pb-8">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-3xl font-bold text-foreground">{resolvedModalTitle}</Text>
-            <Button label={t('actions.cancel')} variant="ghost" onPress={closeModal} />
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="gap-4"
+          contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 32, paddingHorizontal: 20 }}>
+
+          <View className="flex-row items-center justify-between gap-3">
+            <Text className="flex-1 text-3xl font-bold tracking-tight text-foreground">{resolvedModalTitle}</Text>
+            <Button label={t('actions.cancel')} variant="ghost" size="sm" onPress={closeModal} />
           </View>
           <Card className="gap-4">{renderForm(closeModal, selectedItem)}</Card>
         </ScrollView>
@@ -112,16 +86,54 @@ export function CollectionScreen({
   }
 
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerClassName="gap-4 p-4">
+    <ScrollView
+      className="flex-1 bg-background"
+      contentContainerClassName="gap-4"
+      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 16, paddingHorizontal: 20 }}>
+
       <View className="gap-2">
-        <Text className="text-3xl font-bold text-foreground">{title}</Text>
-        <Text className="text-base text-muted-foreground">{description}</Text>
+        <View className="flex-row items-center gap-2">
+          {emoji ? <Text className="text-2xl">{emoji}</Text> : null}
+          <Text className="flex-1 text-2xl font-bold tracking-tight text-foreground">{title}</Text>
+          <Button label={addLabel} size="sm" onPress={() => openModal()} />
+        </View>
+       {description ? <Text className="text-base text-muted-foreground">{description}</Text> : null}
       </View>
 
-      {controls}
+      {controls ? (
+        <>
+          <Button
+            className="self-start"
+            variant="ghost"
+            size="sm"
+            label={activeFilterCount > 0 ? `${t('common.filters')} (${activeFilterCount})` : t('common.filters')}
+            onPress={() => setFiltersOpen(true)}
+          />
+          <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom}>
+            <View className="gap-4">
+              <View className="flex-row items-center justify-between">
+                <Text className="text-xl font-bold text-foreground">{t('common.filters')}</Text>
+                <View className="flex-row items-center gap-1">
+                  {onResetFilters ? (
+                    <Button
+                      label={t('actions.reset')}
+                      variant="ghost"
+                      size="sm"
+                      disabled={activeFilterCount === 0}
+                      onPress={onResetFilters}
+                    />
+                  ) : null}
+                  <Button label={t('actions.done')} variant="ghost" size="sm" onPress={() => setFiltersOpen(false)} />
+                </View>
+              </View>
+              {controls}
+            </View>
+          </BottomSheet>
+        </>
+      ) : null}
 
       {items.length === 0 ? (
-        <EmptyState title={t('common.empty')} description={t('common.offline')} />
+        <EmptyState title={t('common.empty')} />
       ) : (
         <View className="gap-3">
           {rows.map((row, rowIndex) => (
@@ -129,7 +141,7 @@ export function CollectionScreen({
               {row.map((item) => (
                 <GridCard key={item.id} item={item} onPress={item.editable ? () => openModal(item) : undefined} />
               ))}
-              {Array.from({ length: 3 - row.length }).map((_, index) => (
+              {Array.from({ length: columns - row.length }).map((_, index) => (
                 <View key={`spacer-${index}`} className="flex-1" />
               ))}
             </View>
@@ -137,7 +149,6 @@ export function CollectionScreen({
         </View>
       )}
 
-      <Button label={addLabel} onPress={() => openModal()} />
       {footer}
     </ScrollView>
   );

@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
+import { DeleteButton } from '@/components/domain/delete-button';
 import { FeatureScreen } from '@/components/domain/feature-screen';
 import { ShoppingListItemForm } from '@/components/domain/shopping-list-item-form';
 import { ShoppingPurchaseForm } from '@/components/domain/shopping-purchase-form';
@@ -13,10 +14,10 @@ export default function ShoppingListDetailScreen() {
   const { t } = useTranslation();
   const { shoppingListId } = useLocalSearchParams<{ shoppingListId: string }>();
   const { duplicateAsDraft } = useShoppingLists();
-  const { items, addItem, markBought, markSkipped } = useShoppingListDetail(shoppingListId);
+  const { items, addItem, markBought, markSkipped, remove } = useShoppingListDetail(shoppingListId);
 
   return (
-    <FeatureScreen title={t('shopping.title')} description={t('shopping.pending')}>
+    <FeatureScreen title={t('shopping.title')} description={t('shopping.pending')} emoji="🛒" showBack>
       <ShoppingListItemForm
         shoppingListId={shoppingListId}
         onSubmit={async (values) => {
@@ -34,6 +35,7 @@ export default function ShoppingListDetailScreen() {
         <Button className="flex-1" label={t('actions.duplicate')} variant="secondary" onPress={() => void duplicateAsDraft(shoppingListId, t('shopping.new'))} />
         <Button className="flex-1" label={t('actions.buyAgain')} variant="ghost" onPress={() => void duplicateAsDraft(shoppingListId, t('shopping.new'))} />
       </View>
+      <DeleteButton onDelete={remove} />
     </FeatureScreen>
   );
 }

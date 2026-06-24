@@ -1,34 +1,59 @@
 import { Pressable, Text, type PressableProps } from 'react-native';
 
+import { elevation } from '@/lib/theme/elevation';
 import { cn } from '@/lib/utils';
+
+type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'ghost';
+type ButtonSize = 'default' | 'sm';
 
 type ButtonProps = PressableProps & {
   label: string;
-  variant?: 'primary' | 'secondary' | 'destructive' | 'ghost';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
 };
 
-const variants = {
+const containerVariants: Record<ButtonVariant, string> = {
   primary: 'bg-primary',
   secondary: 'bg-secondary',
   destructive: 'bg-destructive',
-  ghost: 'bg-transparent border border-border',
+  ghost: 'border border-border bg-transparent',
 };
 
-const textVariants = {
+const textVariants: Record<ButtonVariant, string> = {
   primary: 'text-primary-foreground',
   secondary: 'text-secondary-foreground',
   destructive: 'text-destructive-foreground',
   ghost: 'text-foreground',
 };
 
-export function Button({ label, variant = 'primary', className, disabled, ...props }: ButtonProps) {
+const sizeVariants: Record<ButtonSize, string> = {
+  default: 'px-5 py-3.5',
+  sm: 'px-3.5 py-2',
+};
+
+const textSizeVariants: Record<ButtonSize, string> = {
+  default: 'text-base',
+  sm: 'text-sm',
+};
+
+export function Button({ label, variant = 'primary', size = 'default', className, disabled, style, ...props }: ButtonProps) {
+  // Filled actions get a tinted lift; outline/ghost stay flat.
+  const lifted = (variant === 'primary' || variant === 'destructive') && !disabled;
+
   return (
     <Pressable
-      className={cn('rounded-xl px-4 py-3 active:opacity-80', variants[variant], disabled && 'opacity-50', className)}
+      className={cn(
+        'items-center justify-center rounded-2xl active:opacity-90',
+        sizeVariants[size],
+        containerVariants[variant],
+        disabled && 'opacity-50',
+        className,
+      )}
+      style={[lifted ? elevation.raised : undefined, style as object]}
       disabled={disabled}
       {...props}
     >
-      <Text className={cn('text-center text-base font-semibold', textVariants[variant])}>{label}</Text>
+      <Text className={cn('text-center font-semibold tracking-tight', textSizeVariants[size], textVariants[variant])}>{label}</Text>
     </Pressable>
   );
 }

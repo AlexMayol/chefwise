@@ -1,16 +1,25 @@
+import { useCallback } from 'react';
+
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { ShoppingListForm } from '@/components/domain/shopping-list-form';
 import { useShoppingLists } from '@/lib/hooks/use-shopping-lists';
 import { useTranslation } from '@/lib/i18n';
-import type { Href } from 'expo-router';
+import { useFocusEffect, type Href } from 'expo-router';
 
 export default function ShoppingScreen() {
   const { t } = useTranslation();
-  const { items, create } = useShoppingLists();
+  const { items, create, reload } = useShoppingLists();
+
+  useFocusEffect(
+    useCallback(() => {
+      void reload();
+    }, [reload]),
+  );
 
   return (
     <CollectionScreen
       title={t('shopping.title')}
+      emoji="🛒"
       description={`${t('shopping.draft')} · ${t('shopping.active')} · ${t('shopping.completed')}`}
       addLabel={t('shopping.new')}
       modalTitle={t('shopping.new')}

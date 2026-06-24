@@ -6,6 +6,7 @@ import { useProducts } from '@/lib/hooks/use-products';
 import { useRecipeDetail } from '@/lib/hooks/use-recipes';
 
 jest.mock('expo-router', () => ({
+  useRouter: () => ({ back: jest.fn(), push: jest.fn() }),
   useLocalSearchParams: () => ({ recipeId: 'recipe-1' }),
 }));
 
@@ -33,6 +34,7 @@ describe('recipe screens', () => {
           id: 'flour',
           name: 'Bread flour',
           categoryId: null,
+          marketId: 'central',
           defaultUnit: 'kg',
           rating: null,
           notes: null,
@@ -40,6 +42,10 @@ describe('recipe screens', () => {
           imagePath: null,
           createdAt: '',
           updatedAt: '',
+          marketName: null,
+          price: null,
+          normalizedPrice: null,
+          normalizedUnit: null,
         },
       ],
       loading: false,
@@ -49,7 +55,7 @@ describe('recipe screens', () => {
       remove: jest.fn(),
     });
     useMarketsMock.mockReturnValue({
-      items: [{ id: 'central', name: 'Central Market', address: null, createdAt: '', updatedAt: '' }],
+      items: [{ id: 'central', name: 'Central Market', address: null, imagePath: null, createdAt: '', updatedAt: '' }],
       loading: false,
       reload: jest.fn(),
       create: jest.fn(),
@@ -62,7 +68,6 @@ describe('recipe screens', () => {
         name: 'Pancakes',
         description: null,
         servings: 2,
-        pricingStrategy: 'manual',
         imagePath: null,
         createdAt: '',
         updatedAt: '',
@@ -82,12 +87,13 @@ describe('recipe screens', () => {
       reload: jest.fn(),
       addIngredient: jest.fn(),
       cook: jest.fn(),
+      remove: jest.fn(),
       calculateCost: jest.fn(async () => ({
         complete: true,
         totalCost: 1,
         costPerServing: 0.5,
         missingProductIds: [],
-        breakdown: [{ productId: 'flour', marketId: 'central', priceId: 'price-1', cost: 1 }],
+        breakdown: [{ productId: 'flour', priceId: 'price-1', cost: 1 }],
       })),
     });
   });
@@ -96,10 +102,10 @@ describe('recipe screens', () => {
     jest.clearAllMocks();
   });
 
-  it('shows product and market context for recipe cost breakdown items', async () => {
+  it('shows product context for recipe cost breakdown items', async () => {
     const screen = await render(<RecipeDetailScreen />);
 
-    await waitFor(() => expect(screen.getByText('Bread flour · Central Market')).toBeTruthy());
+    await waitFor(() => expect(screen.getAllByText('Bread flour').length).toBeGreaterThan(0));
     expect(screen.getAllByText('€1.00').length).toBeGreaterThan(0);
   });
 });

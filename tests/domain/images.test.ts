@@ -3,15 +3,17 @@ import { saveEntityImage } from '@/lib/images/storage';
 import { Directory, File } from 'expo-file-system';
 
 describe('local image paths', () => {
-  it('builds product and recipe relative image paths', () => {
+  it('builds product, recipe, and market relative image paths', () => {
     expect(buildEntityImagePath('product', 'abc')).toBe('images/products/abc.jpg');
     expect(buildEntityImagePath('recipe', 'def')).toBe('images/recipes/def.jpg');
+    expect(buildEntityImagePath('market', 'ghi')).toBe('images/markets/ghi.jpg');
   });
 
   it('rejects absolute filesystem paths before persistence', () => {
     expect(isRelativeImagePath('/var/mobile/image.jpg')).toBe(false);
     expect(isRelativeImagePath('file:///var/mobile/image.jpg')).toBe(false);
     expect(isRelativeImagePath('images/products/abc.jpg')).toBe(true);
+    expect(isRelativeImagePath('images/markets/ghi.jpg')).toBe(true);
   });
 
   it('resolves relative paths against a document directory', () => {

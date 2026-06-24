@@ -26,6 +26,7 @@ describe('i18n resources', () => {
       'common',
       'errors',
       'forms',
+      'markets',
       'navigation',
       'pantry',
       'products',

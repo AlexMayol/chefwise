@@ -10,7 +10,7 @@ export default function NotFoundScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: t('errors.deleteBlocked') }} />
+      <Stack.Screen options={{ title: t('errors.notFound') }} />
       <View style={styles.container}>
         <Text style={styles.title}>{t('common.empty')}</Text>
 

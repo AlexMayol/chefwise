@@ -33,26 +33,26 @@ function createDb(rows: ProductPrice[] = []): AppDatabase & {
 }
 
 describe('product price repository', () => {
-  it('creates immutable price history rows for the same product and market', async () => {
+  it('creates immutable price history rows for the same product', async () => {
     const db = createDb();
     const repository = createProductPriceRepository(db);
 
-    await repository.create({ productId: 'flour', marketId: 'central', price: 2, quantity: 1, unit: 'kg', observedAt: '2026-01-01' });
-    await repository.create({ productId: 'flour', marketId: 'central', price: 3, quantity: 1, unit: 'kg', observedAt: '2026-01-02' });
+    await repository.create({ productId: 'flour', price: 2, quantity: 1, unit: 'kg', observedAt: '2026-01-01' });
+    await repository.create({ productId: 'flour', price: 3, quantity: 1, unit: 'kg', observedAt: '2026-01-02' });
 
     expect(db.insertedRows).toHaveLength(2);
     expect(db.insertedRows.map((row) => row.price)).toEqual([2, 3]);
-    expect(db.insertedRows.every((row) => row.productId === 'flour' && row.marketId === 'central')).toBe(true);
+    expect(db.insertedRows.every((row) => row.productId === 'flour')).toBe(true);
   });
 
   it('looks up latest prices by observed date and id tie-break', async () => {
     const db = createDb();
     const repository = createProductPriceRepository(db);
 
-    await repository.latestForProduct('flour', 'central');
+    await repository.latestForProduct('flour');
 
-    expect(db.lastGetFirstSql).toContain('WHERE productId = ? AND marketId = ?');
+    expect(db.lastGetFirstSql).toContain('WHERE productId = ?');
     expect(db.lastGetFirstSql).toContain('ORDER BY observedAt DESC, id DESC LIMIT 1');
-    expect(db.lastGetFirstParams).toEqual(['flour', 'central']);
+    expect(db.lastGetFirstParams).toEqual(['flour']);
   });
 });

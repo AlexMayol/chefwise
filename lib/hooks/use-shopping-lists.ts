@@ -85,13 +85,12 @@ export function useShoppingListDetail(shoppingListId?: string) {
   );
 
   const markBought = useCallback(
-    async (input: { item: ShoppingListItem; actualQuantity: number; actualUnit: Unit; actualPrice: number; marketId: string }) => {
+    async (input: { item: ShoppingListItem; actualQuantity: number; actualUnit: Unit; actualPrice: number }) => {
       await markShoppingItemBought({
         item: input.item,
         actualQuantity: input.actualQuantity,
         actualUnit: input.actualUnit,
         actualPrice: input.actualPrice,
-        marketId: input.marketId,
         runInTransaction: (work) => db.withTransactionAsync(work),
         createPrice: (priceInput: ProductPriceInput) => repositories.productPrices.create(priceInput),
         updateItemBought: (boughtInput) => repositories.shoppingLists.markItemBought(boughtInput),
@@ -129,5 +128,13 @@ export function useShoppingListDetail(shoppingListId?: string) {
     [reload, repositories.shoppingLists, shoppingListId],
   );
 
-  return { items, loading, reload, addItem, markBought, markSkipped };
+  const remove = useCallback(async () => {
+    if (!shoppingListId) {
+      return;
+    }
+
+    await repositories.shoppingLists.delete(shoppingListId);
+  }, [repositories.shoppingLists, shoppingListId]);
+
+  return { items, loading, reload, addItem, markBought, markSkipped, remove };
 }

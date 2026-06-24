@@ -8,6 +8,7 @@ import { useProductDetail, useProducts } from '@/lib/hooks/use-products';
 
 jest.mock('expo-router', () => ({
   Link: ({ children }: { children: React.ReactNode }) => children,
+  useRouter: () => ({ back: jest.fn(), push: jest.fn() }),
   useLocalSearchParams: () => ({ productId: 'product-1' }),
   useFocusEffect: (effect: () => void | (() => void)) => {
     effect();
@@ -77,6 +78,7 @@ describe('catalog screens', () => {
   it('lets users filter favorites and sort products', async () => {
     const screen = await render(<ProductsScreen />);
 
+    await fireEvent.press(screen.getByText('Filters'));
     await fireEvent.press(screen.getByText('Favorites only'));
     expect(useProductsMock).toHaveBeenLastCalledWith(expect.objectContaining({ favoritesOnly: true }));
 
@@ -90,6 +92,7 @@ describe('catalog screens', () => {
         id: 'product-1',
         name: 'Bread flour',
         categoryId: null,
+        marketId: 'market-1',
         defaultUnit: 'kg',
         rating: 5,
         notes: 'High protein',
@@ -108,7 +111,6 @@ describe('catalog screens', () => {
         {
           id: 'price-1',
           productId: 'product-1',
-          marketId: 'market-1',
           price: 4,
           quantity: 1,
           unit: 'kg',
@@ -121,7 +123,6 @@ describe('catalog screens', () => {
       latest: {
         id: 'price-1',
         productId: 'product-1',
-        marketId: 'market-1',
         price: 4,
         quantity: 1,
         unit: 'kg',
@@ -135,7 +136,7 @@ describe('catalog screens', () => {
       create: jest.fn(),
     });
     useMarketsMock.mockReturnValue({
-      items: [{ id: 'market-1', name: 'Central Market', address: 'Main St', createdAt: '', updatedAt: '' }],
+      items: [{ id: 'market-1', name: 'Central Market', address: 'Main St', imagePath: null, createdAt: '', updatedAt: '' }],
       loading: false,
       reload: jest.fn(),
       create: jest.fn(),

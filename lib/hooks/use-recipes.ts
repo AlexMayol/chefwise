@@ -59,15 +59,7 @@ export function useRecipeDetail(recipeId?: string) {
     setLoading(true);
     try {
       setRecipe(await repositories.recipes.getById(recipeId));
-      const recipeIngredients = await repositories.recipes.listIngredients(recipeId);
-      setIngredients(
-        await Promise.all(
-          recipeIngredients.map(async (ingredient) => {
-            const markets = await repositories.recipes.listManualMarkets(ingredient.id);
-            return { ...ingredient, marketId: markets[0]?.marketId ?? null };
-          }),
-        ),
-      );
+      setIngredients(await repositories.recipes.listIngredients(recipeId));
     } finally {
       setLoading(false);
     }
@@ -97,11 +89,18 @@ export function useRecipeDetail(recipeId?: string) {
 
     return calculateRecipeCost({
       servings: recipe.servings,
-      pricingStrategy: recipe.pricingStrategy,
       ingredients,
       prices,
     });
   }, [ingredients, recipe, repositories.productPrices]);
+
+  const remove = useCallback(async () => {
+    if (!recipeId) {
+      return;
+    }
+
+    await repositories.recipes.delete(recipeId);
+  }, [recipeId, repositories.recipes]);
 
   const cook = useCallback(async () => {
     const result = consumeRecipeBatch({
@@ -124,5 +123,5 @@ export function useRecipeDetail(recipeId?: string) {
     }
   }, [ingredients, pantry, recipe?.name]);
 
-  return { recipe, ingredients, loading, reload, addIngredient, calculateCost: cost, cook };
+  return { recipe, ingredients, loading, reload, addIngredient, calculateCost: cost, cook, remove };
 }

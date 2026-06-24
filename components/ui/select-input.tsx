@@ -1,0 +1,57 @@
+import { useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+
+import { cn } from '@/lib/utils';
+
+import { BottomSheet } from './bottom-sheet';
+import type { SelectOption } from './select';
+
+type SelectInputProps<T extends string> = {
+  value?: T;
+  options: SelectOption<T>[];
+  onChange(value: T): void;
+  placeholder?: string;
+};
+
+// Dropdown-style select: a trigger showing the current choice that opens a
+// scrollable option list in a bottom sheet. Scales to many options where the
+// pill `Select` gets cramped.
+export function SelectInput<T extends string>({ value, options, onChange, placeholder }: SelectInputProps<T>) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((option) => option.value === value);
+
+  return (
+    <View>
+      <Pressable
+        className="flex-row items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 active:opacity-80"
+        onPress={() => setOpen(true)}
+      >
+        <Text className={cn('text-base', selected ? 'text-foreground' : 'text-muted-foreground')}>
+          {selected?.label ?? placeholder ?? ''}
+        </Text>
+        <Text className="text-base text-muted-foreground">▾</Text>
+      </Pressable>
+      <BottomSheet visible={open} onClose={() => setOpen(false)}>
+        <ScrollView style={{ maxHeight: 360 }}>
+          <View className="gap-1">
+            {options.map((option) => {
+              const isSelected = option.value === value;
+              return (
+                <Pressable
+                  key={option.value}
+                  className={cn('rounded-2xl px-4 py-3 active:opacity-80', isSelected && 'bg-primary/10')}
+                  onPress={() => {
+                    onChange(option.value);
+                    setOpen(false);
+                  }}
+                >
+                  <Text className={cn('text-base', isSelected ? 'font-semibold text-primary' : 'text-foreground')}>{option.label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </BottomSheet>
+    </View>
+  );
+}

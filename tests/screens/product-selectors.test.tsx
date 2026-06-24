@@ -3,7 +3,7 @@ import { render } from '@testing-library/react-native';
 import { PantryAdjustmentForm } from '@/components/domain/pantry-adjustment-form';
 import { RecipeProductForm } from '@/components/domain/recipe-product-form';
 import { ShoppingListItemForm } from '@/components/domain/shopping-list-item-form';
-import type { Product } from '@/lib/db/repositories/products';
+import type { ProductListItem } from '@/lib/db/repositories/products';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useProducts } from '@/lib/hooks/use-products';
 
@@ -18,11 +18,12 @@ jest.mock('@/lib/hooks/use-products', () => ({
 const useMarketsMock = useMarkets as jest.MockedFunction<typeof useMarkets>;
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
 
-const products: Product[] = [
+const products: ProductListItem[] = [
   {
     id: 'rice',
     name: 'Favorite rice',
     categoryId: null,
+    marketId: 'central',
     defaultUnit: 'kg',
     rating: null,
     notes: null,
@@ -30,11 +31,16 @@ const products: Product[] = [
     imagePath: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    marketName: null,
+    price: null,
+    normalizedPrice: null,
+    normalizedUnit: null,
   },
   {
     id: 'oats',
     name: 'Plain oats',
     categoryId: null,
+    marketId: 'central',
     defaultUnit: 'kg',
     rating: null,
     notes: null,
@@ -42,6 +48,10 @@ const products: Product[] = [
     imagePath: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    marketName: null,
+    price: null,
+    normalizedPrice: null,
+    normalizedUnit: null,
   },
 ];
 

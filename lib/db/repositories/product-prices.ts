@@ -7,7 +7,6 @@ import { createId, insertRow, nowIso } from './base';
 export type ProductPrice = {
   id: string;
   productId: string;
-  marketId: string;
   price: number;
   quantity: number;
   unit: Unit;
@@ -19,7 +18,6 @@ export type ProductPrice = {
 
 export type ProductPriceInput = {
   productId: string;
-  marketId: string;
   price: number;
   quantity: number;
   unit: Unit;
@@ -45,12 +43,10 @@ export function createProductPriceRepository(db: AppDatabase) {
         [productId],
       );
     },
-    async latestForProduct(productId: string, marketId?: string): Promise<ProductPrice | null> {
-      const marketClause = marketId ? ' AND marketId = ?' : '';
-      const params = marketId ? [productId, marketId] : [productId];
+    async latestForProduct(productId: string): Promise<ProductPrice | null> {
       return db.getFirstAsync<ProductPrice>(
-        `SELECT * FROM product_prices WHERE productId = ?${marketClause} ORDER BY observedAt DESC, id DESC LIMIT 1`,
-        params,
+        'SELECT * FROM product_prices WHERE productId = ? ORDER BY observedAt DESC, id DESC LIMIT 1',
+        [productId],
       );
     },
   };

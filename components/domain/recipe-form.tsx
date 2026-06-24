@@ -5,7 +5,6 @@ import { View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import type { RecipeInput } from '@/lib/db/repositories/recipes';
 import { useTranslation } from '@/lib/i18n';
 import { recipeSchema, type RecipeFormValues } from '@/lib/validation/recipes';
@@ -18,7 +17,6 @@ export function RecipeForm({ onSubmit }: { onSubmit(values: RecipeInput): Promis
       name: '',
       description: '',
       servings: 1,
-      pricingStrategy: 'manual',
       imagePath: null,
       ingredients: [],
     },
@@ -51,20 +49,6 @@ export function RecipeForm({ onSubmit }: { onSubmit(values: RecipeInput): Promis
           <FormField label={t('forms.servings')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
             <Input keyboardType="decimal-pad" value={String(field.value)} placeholder={t('forms.servings')} onChangeText={field.onChange} onBlur={field.onBlur} />
           </FormField>
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="pricingStrategy"
-        render={({ field }) => (
-          <Select
-            value={field.value}
-            onChange={field.onChange}
-            options={[
-              { label: t('recipes.manual'), value: 'manual' },
-              { label: t('recipes.cheapestAvailable'), value: 'cheapest_available' },
-            ]}
-          />
         )}
       />
       <Button label={t('actions.save')} onPress={form.handleSubmit((values) => onSubmit(values as RecipeFormValues))} />

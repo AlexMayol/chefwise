@@ -7,6 +7,7 @@ import { Platform } from 'react-native';
 import { resources, type SupportedLocale } from './resources';
 
 const LANGUAGE_STORAGE_KEY = 'chefwise.locale';
+const DEFAULT_LOCALE: SupportedLocale = 'es';
 
 function isWebServerRender(): boolean {
   return Platform.OS === 'web' && typeof window === 'undefined';
@@ -14,16 +15,16 @@ function isWebServerRender(): boolean {
 
 export function getDeviceDefaultLocale(): SupportedLocale {
   if (isWebServerRender()) {
-    return 'en';
+    return DEFAULT_LOCALE;
   }
 
   const languageCode = getLocales()[0]?.languageCode;
-  return languageCode === 'es' ? 'es' : 'en';
+  return languageCode === 'en' ? 'en' : DEFAULT_LOCALE;
 }
 
 export async function getPersistedLocale(): Promise<SupportedLocale> {
   if (isWebServerRender()) {
-    return 'en';
+    return DEFAULT_LOCALE;
   }
 
   const stored = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);

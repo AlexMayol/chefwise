@@ -10,7 +10,6 @@ import { useTranslation } from '@/lib/i18n';
 import { Button } from '../ui/button';
 import { FormField } from '../ui/form-field';
 import { Input } from '../ui/input';
-import { MarketSelector } from './market-selector';
 import { UnitInput } from './unit-input';
 
 type ShoppingPurchaseFormProps = {
@@ -20,7 +19,6 @@ type ShoppingPurchaseFormProps = {
     actualQuantity: number;
     actualUnit: Unit;
     actualPrice: number;
-    marketId: string;
   }): Promise<void> | void;
   onSkipped(itemId: string): Promise<void> | void;
 };
@@ -33,7 +31,6 @@ export function ShoppingPurchaseForm({ item, onBought, onSkipped }: ShoppingPurc
       actualQuantity: item.actualQuantity ?? item.plannedQuantity,
       actualUnit: item.actualUnit ?? item.plannedUnit,
       actualPrice: item.actualPrice ?? 0,
-      marketId: item.marketId ?? '',
     },
   });
 
@@ -57,15 +54,6 @@ export function ShoppingPurchaseForm({ item, onBought, onSkipped }: ShoppingPurc
         render={({ field, fieldState }) => (
           <FormField label={t('forms.price')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
             <Input keyboardType="decimal-pad" value={String(field.value)} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="marketId"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.market')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <MarketSelector value={field.value} onChange={field.onChange} />
           </FormField>
         )}
       />

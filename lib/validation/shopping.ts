@@ -10,7 +10,6 @@ export const shoppingListItemSchema = z.object({
   actualQuantity: positiveNumberSchema.optional(),
   actualUnit: unitSchema.optional(),
   actualPrice: positiveNumberSchema.optional(),
-  marketId: z.string().optional(),
 });
 
 export const shoppingListSchema = z.object({
@@ -23,7 +22,6 @@ export const shoppingPurchaseSchema = z.object({
   actualQuantity: positiveNumberSchema,
   actualUnit: unitSchema,
   actualPrice: positiveNumberSchema,
-  marketId: nameSchema,
 });
 
 export type ShoppingListFormValues = z.infer<typeof shoppingListSchema>;

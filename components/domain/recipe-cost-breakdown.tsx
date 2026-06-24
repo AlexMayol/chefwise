@@ -12,7 +12,6 @@ type RecipeCostBreakdownProps = {
   complete?: boolean;
   breakdown?: RecipeCostBreakdownItem[];
   productNamesById?: Record<string, string>;
-  marketNamesById?: Record<string, string>;
 };
 
 export function RecipeCostBreakdown({
@@ -21,7 +20,6 @@ export function RecipeCostBreakdown({
   complete = true,
   breakdown = [],
   productNamesById = {},
-  marketNamesById = {},
 }: RecipeCostBreakdownProps) {
   const { t } = useTranslation();
 
@@ -36,8 +34,8 @@ export function RecipeCostBreakdown({
       {!complete ? <Text className="text-sm text-destructive">{t('recipes.incompleteCost')}</Text> : null}
       {breakdown.map((item) => (
         <ListRow
-          key={`${item.productId}-${item.marketId}-${item.priceId}`}
-          title={`${productNamesById[item.productId] ?? item.productId} · ${marketNamesById[item.marketId] ?? item.marketId}`}
+          key={`${item.productId}-${item.priceId}`}
+          title={productNamesById[item.productId] ?? item.productId}
           subtitle={formatCurrency(item.cost)}
         />
       ))}

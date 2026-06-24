@@ -22,12 +22,12 @@ export function Select<T extends string>({ value, options, onChange }: SelectPro
           <Pressable
             key={option.value}
             className={cn(
-              'rounded-full border border-border px-3 py-2',
-              selected ? 'bg-primary' : 'bg-background',
+              'rounded-full border px-4 py-2 active:opacity-80',
+              selected ? 'border-primary bg-primary' : 'border-border bg-muted',
             )}
             onPress={() => onChange(option.value)}
           >
-            <Text className={cn('text-sm', selected ? 'text-primary-foreground' : 'text-foreground')}>{option.label}</Text>
+            <Text className={cn('text-sm font-medium', selected ? 'text-primary-foreground' : 'text-foreground')}>{option.label}</Text>
           </Pressable>
         );
       })}

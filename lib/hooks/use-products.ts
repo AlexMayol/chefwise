@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useAppDatabase } from '@/lib/db/provider';
-import type { Product, ProductInput, ProductSort } from '@/lib/db/repositories/products';
+import type { Product, ProductInput, ProductListItem, ProductSort } from '@/lib/db/repositories/products';
+import type { Unit } from '@/lib/domain/units';
+
+type InitialPrice = { price: number; quantity: number; unit: Unit };
 
 export function useProducts(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}) {
   const { repositories } = useAppDatabase();
-  const [items, setItems] = useState<Product[]>([]);
+  const [items, setItems] = useState<ProductListItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const reload = useCallback(async () => {
@@ -22,12 +25,21 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
   }, [reload]);
 
   const create = useCallback(
-    async (input: ProductInput) => {
+    async (input: ProductInput, initialPrice?: InitialPrice) => {
       const product = await repositories.products.create(input);
+      if (initialPrice && initialPrice.price > 0) {
+        await repositories.productPrices.create({
+          productId: product.id,
+          price: initialPrice.price,
+          quantity: initialPrice.quantity,
+          unit: initialPrice.unit,
+          observedAt: new Date().toISOString(),
+        });
+      }
       await reload();
       return product;
     },
-    [reload, repositories.products],
+    [reload, repositories.productPrices, repositories.products],
   );
 
   const update = useCallback(

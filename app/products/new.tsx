@@ -11,10 +11,10 @@ export default function NewProductScreen() {
   const { create } = useProducts();
 
   return (
-    <FeatureScreen title={t('products.new')} description={t('common.offline')}>
+    <FeatureScreen title={t('products.new')} description={t('common.offline')} emoji="🥕" showBack>
       <ProductForm
-        onSubmit={async (values) => {
-          await create(values);
+        onSubmit={async (values, initialPrice) => {
+          await create(values, initialPrice);
           router.back();
         }}
       />
