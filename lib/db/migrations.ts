@@ -25,7 +25,6 @@ export async function runMigrations(db: AppDatabase): Promise<void> {
 
   if (currentVersion < 1) {
     await db.execAsync(SCHEMA_SQL);
-    await runSeeds(db);
   }
 
   if (currentVersion < 2) {
@@ -79,5 +78,11 @@ export async function runMigrations(db: AppDatabase): Promise<void> {
 
   if (currentVersion < LATEST_SCHEMA_VERSION) {
     await db.execAsync(`PRAGMA user_version = ${LATEST_SCHEMA_VERSION}`);
+  }
+
+  // Seed last, after the destructive rebuild blocks above (which drop/recreate the products
+  // and child tables). Seeding inside the `< 1` block would insert rows the later blocks wipe.
+  if (currentVersion < 1) {
+    await runSeeds(db);
   }
 }

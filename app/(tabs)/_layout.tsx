@@ -1,5 +1,15 @@
 import { SymbolView, unstable_getMaterialSymbolSourceAsync, type SymbolViewProps } from 'expo-symbols';
 import { Tabs } from 'expo-router';
+import {
+  List,
+  Package,
+  Settings,
+  ShoppingCart,
+  Store,
+  Tag,
+  Utensils,
+  type LucideIcon,
+} from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Image, Platform, type ColorValue, type ImageSourcePropType } from 'react-native';
 
@@ -37,7 +47,22 @@ function MaterialTabIcon({ symbol, color }: { symbol: string; color: ColorValue 
   return <Image source={source} style={{ width: ICON_SIZE, height: ICON_SIZE, tintColor: color }} />;
 }
 
+// expo-font.renderToImageAsync (used by Material symbols) is unavailable on web, so map to lucide icons.
+const webIcons: Record<string, LucideIcon> = {
+  shopping_cart: ShoppingCart,
+  category: Tag,
+  store: Store,
+  restaurant: Utensils,
+  list: List,
+  inventory: Package,
+  settings: Settings,
+};
+
 function TabIcon({ tab, color }: { tab: AppTab; color: ColorValue }) {
+  if (Platform.OS === 'web') {
+    const Icon = webIcons[tab.icon.web] ?? List;
+    return <Icon size={ICON_SIZE} color={String(color)} />;
+  }
   if (Platform.OS === 'ios') {
     return (
       <SymbolView
@@ -77,7 +102,11 @@ export default function TabLayout() {
         <Tabs.Screen
           key={tab.name}
           name={tab.name}
-          options={{ title: t(tab.titleKey), tabBarIcon: ({ color }) => <TabIcon tab={tab} color={color} /> }}
+          options={{
+            title: t(tab.titleKey),
+            tabBarIcon: ({ color }) => <TabIcon tab={tab} color={color} />,
+            href: tab.hidden ? null : undefined,
+          }}
         />
       ))}
     </Tabs>

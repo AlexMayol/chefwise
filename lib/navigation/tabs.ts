@@ -15,6 +15,8 @@ export type AppTab = {
     android: string;
     web: string;
   };
+  // ponytail: hidden from the tab bar but route stays registered; flip to show again.
+  hidden?: boolean;
 };
 
 export const appTabs: AppTab[] = [
@@ -42,11 +44,13 @@ export const appTabs: AppTab[] = [
     name: 'shopping/index',
     titleKey: 'navigation.shopping',
     icon: { ios: 'list.bullet', android: 'list', web: 'list' },
+    hidden: true,
   },
   {
     name: 'pantry/index',
     titleKey: 'navigation.pantry',
     icon: { ios: 'cabinet', android: 'inventory', web: 'inventory' },
+    hidden: true,
   },
   {
     name: 'settings/index',
