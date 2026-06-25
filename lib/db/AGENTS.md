@@ -17,7 +17,7 @@
 
 ## Data Rules
 
-- Products, markets, recipes, pantry, and shopping records use restrictive foreign keys where immutable or active records depend on them.
+- Deleting a product cascades: its prices, recipe lines, shopping list items, pantry items, and pantry transactions go with it. Markets stay restrictive (`products.marketId` is `ON DELETE RESTRICT`).
 - Deleting a category sets `products.categoryId` to null.
 - Pantry has one current item per product via `idx_pantry_items_product`.
 - Store booleans as SQLite integers and map at repository boundaries.

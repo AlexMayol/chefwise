@@ -61,6 +61,7 @@ describe('market detail screen', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      assign: jest.fn(),
     });
   });
 
@@ -78,7 +79,7 @@ describe('market detail screen', () => {
   it('opens the edit flow and saves changes', async () => {
     const screen = await render(<MarketDetailScreen />);
 
-    await fireEvent.press(screen.getByText('Edit'));
+    await fireEvent.press(screen.getByLabelText('Edit'));
     await fireEvent.changeText(screen.getByDisplayValue('Lidl'), 'Aldi');
     await fireEvent.press(screen.getByText('Save'));
 

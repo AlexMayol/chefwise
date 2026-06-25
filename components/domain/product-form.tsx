@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { CreatableSelect } from '@/components/ui/creatable-select';
@@ -23,14 +24,15 @@ type InitialPrice = { price: number; quantity: number; unit: Unit };
 
 type ProductFormProps = {
   initialValues?: Partial<ProductFormValues>;
+  // Defaults to true when initialValues is set; pass false to prefill a create form.
+  isEditing?: boolean;
   onSubmit(values: ProductInput, initialPrice?: InitialPrice): Promise<void> | void;
 };
 
-export function ProductForm({ initialValues, onSubmit }: ProductFormProps) {
+export function ProductForm({ initialValues, isEditing = Boolean(initialValues), onSubmit }: ProductFormProps) {
   const { t } = useTranslation();
   const { items: categories, create: createCategory } = useCategories();
   const { items: markets, create: createMarket } = useMarkets();
-  const isEditing = Boolean(initialValues);
   const draftImageId = initialValues?.name || 'draft-product';
   const form = useForm({
     resolver: zodResolver(productSchema),
@@ -48,6 +50,13 @@ export function ProductForm({ initialValues, onSubmit }: ProductFormProps) {
       ...initialValues,
     },
   });
+
+  // Markets load async; preselect the first one once they arrive (create only).
+  useEffect(() => {
+    if (!isEditing && !form.getValues('marketId') && markets.length > 0) {
+      form.setValue('marketId', markets[0].id);
+    }
+  }, [markets, isEditing, form]);
 
   return (
     <View className="gap-4">
@@ -165,7 +174,6 @@ export function ProductForm({ initialValues, onSubmit }: ProductFormProps) {
           </FormField>
         )}
       />
-      <Text className="text-sm text-muted-foreground">{t('common.offline')}</Text>
       <Button
         label={t('actions.save')}
         onPress={form.handleSubmit((values) => {

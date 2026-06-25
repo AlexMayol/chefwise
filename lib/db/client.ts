@@ -16,6 +16,8 @@ export type AppDatabase = {
   getAllAsync<T>(sql: string, params?: SqlParameter[] | Record<string, SqlParameter>): Promise<T[]>;
   runAsync(sql: string, params?: SqlParameter[] | Record<string, SqlParameter>): Promise<RunResult>;
   withTransactionAsync<T>(work: () => Promise<T>): Promise<T>;
+  // Consolidates WAL into a single byte image — used for backup export.
+  serializeAsync(databaseName?: string): Promise<Uint8Array>;
 };
 
 export async function openAppDatabase(): Promise<AppDatabase> {

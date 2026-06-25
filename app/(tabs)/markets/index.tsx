@@ -4,12 +4,12 @@ import { CollectionScreen } from '@/components/domain/collection-screen';
 import { MarketForm } from '@/components/domain/market-form';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useTranslation } from '@/lib/i18n';
-import { resolveImageUri } from '@/lib/images/storage';
+import { resolveEntityImageUri } from '@/lib/images/storage';
 import { useFocusEffect, type Href } from 'expo-router';
 
 export default function MarketsScreen() {
   const { t } = useTranslation();
-  const { items, create, reload } = useMarkets();
+  const { items, loading, create, reload } = useMarkets();
 
   // Refresh when returning from the edit/detail screen (it uses a separate hook instance).
   useFocusEffect(
@@ -24,11 +24,13 @@ export default function MarketsScreen() {
       emoji="🏪"
       addLabel={t('markets.new')}
       modalTitle={t('navigation.markets')}
+      loading={loading}
       items={items.map((market) => ({
         id: market.id,
         title: market.name,
         subtitle: market.address ?? undefined,
-        imageUri: resolveImageUri(market.imagePath) ?? undefined,
+        imageUri: resolveEntityImageUri(market.imagePath) ?? undefined,
+        emoji: '🏪',
         href: `/markets/${market.id}` as Href,
       }))}
       renderForm={(onSaved) => (

@@ -11,7 +11,7 @@ export default function NewMarketScreen() {
   const { create } = useMarkets();
 
   return (
-    <FeatureScreen title={t('navigation.markets')} description={t('common.offline')} emoji="🏪" showBack>
+    <FeatureScreen title={t('navigation.markets')} emoji="🏪" showBack>
       <MarketForm
         onSubmit={async (values) => {
           await create(values);

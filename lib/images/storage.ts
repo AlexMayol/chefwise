@@ -62,19 +62,36 @@ export async function deleteEntityImage(relativePath: string | null | undefined)
   assertRelativeImagePath(relativePath);
 
   const fs = FileSystem as unknown as {
-    File?: new (base: { uri: string } | string, path?: string) => { delete(): void };
+    File?: new (base: { uri: string } | string, path?: string) => { exists: boolean; delete(): void };
     deleteAsync?: (uri: string, options?: { idempotent?: boolean }) => Promise<void>;
   };
 
   if (fs.File) {
-    new fs.File(getDocumentUri(), relativePath).delete();
+    // File.delete() throws if the file is gone; the legacy deleteAsync was idempotent.
+    const file = new fs.File(getDocumentUri(), relativePath);
+    if (file.exists) {
+      file.delete();
+    }
   } else if (fs.deleteAsync) {
     await fs.deleteAsync(resolveImageUri(relativePath, getDocumentUri()) ?? '', { idempotent: true });
   }
 }
 
 export function resolveEntityImageUri(relativePath: string | null | undefined): string | null {
-  return resolveImageUri(relativePath, getDocumentUri());
+  const uri = resolveImageUri(relativePath, getDocumentUri());
+  if (!uri || !File) {
+    return uri;
+  }
+
+  // Images are stored at a deterministic path, so overwriting one keeps the same URI and
+  // React Native keeps serving its stale cached copy. Append the file's mtime to bust it.
+  // ponytail: one sync stat per render is fine at local-catalog scale; cache the mtime in the DB row if grids grow large
+  try {
+    const version = new File(uri).modificationTime;
+    return version ? `${uri}?v=${version}` : uri;
+  } catch {
+    return uri;
+  }
 }
 
 export { resolveImageUri };

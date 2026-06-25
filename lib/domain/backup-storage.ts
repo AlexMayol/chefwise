@@ -5,6 +5,7 @@ import { APP_DATABASE_DIRECTORY, APP_DATABASE_NAME } from '@/lib/db/client';
 import { exportBackup, importBackup, type BackupExportResult } from './backup';
 
 export type LocalBackupSource = {
+  databaseBytes?: Uint8Array;
   databaseFileUri?: string;
   imagePaths?: string[];
 };
@@ -49,9 +50,9 @@ export function collectRelativeFilePaths(directory: CollectableDirectory, relati
   });
 }
 
-export async function exportBackupToCache({ databaseFileUri, imagePaths = [] }: LocalBackupSource): Promise<BackupExportResult & { uri: string }> {
+export async function exportBackupToCache({ databaseBytes: providedBytes, databaseFileUri, imagePaths = [] }: LocalBackupSource): Promise<BackupExportResult & { uri: string }> {
   const resolvedImagePaths = imagePaths.length > 0 ? imagePaths : collectRelativeFilePaths(new Directory(Paths.document, 'images'));
-  const databaseBytes = await (databaseFileUri ? new File(databaseFileUri) : getDatabaseFile()).bytes();
+  const databaseBytes = providedBytes ?? (await (databaseFileUri ? new File(databaseFileUri) : getDatabaseFile()).bytes());
   const imageFiles = await Promise.all(
     resolvedImagePaths.map(async (path) => ({
       path,

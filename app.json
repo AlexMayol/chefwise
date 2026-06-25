@@ -45,7 +45,13 @@
       ],
       "expo-sqlite",
       "expo-localization",
-      "@react-native-community/datetimepicker"
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Allow Chefwise to take photos of your products, markets, and recipes."
+        }
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true

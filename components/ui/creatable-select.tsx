@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { BottomSheet } from './bottom-sheet';
 import { Button } from './button';
@@ -39,13 +39,11 @@ export function CreatableSelect<T extends string>({
   };
 
   return (
-    <View className="gap-2">
-      {options.length > 0 ? (
+    <View className="flex-row items-center gap-2">
+      <View className="flex-1">
         <SelectInput value={value} options={options} onChange={onChange} placeholder={emptyLabel} />
-      ) : emptyLabel ? (
-        <Text className="text-sm text-muted-foreground">{emptyLabel}</Text>
-      ) : null}
-      <Button variant="ghost" label={addLabel} onPress={() => setOpen(true)} />
+      </View>
+      <Button variant="ghost" label="+" accessibilityLabel={addLabel} className="px-4" onPress={() => setOpen(true)} />
       <BottomSheet visible={open} onClose={() => setOpen(false)}>
         <ScrollView style={{ maxHeight: 480 }} keyboardShouldPersistTaps="handled">
           {renderCreateForm(handleCreated)}

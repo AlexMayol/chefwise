@@ -59,6 +59,24 @@ export async function runMigrations(db: AppDatabase): Promise<void> {
     await addColumnIfMissing(db, 'categories', 'description', 'TEXT');
   }
 
+  if (currentVersion < 6) {
+    // ponytail: destructive rebuild — pre-release, no data to preserve. v6 switches
+    // every table that references products from ON DELETE RESTRICT to CASCADE so a
+    // product (a core entity) deletes its prices, recipe lines, list items, and pantry
+    // rows with it. Drop the child tables and let SCHEMA_SQL recreate them with the new
+    // delete rules; products/recipes/markets/categories rows survive.
+    await db.execAsync(`
+      PRAGMA foreign_keys = OFF;
+      DROP TABLE IF EXISTS pantry_transactions;
+      DROP TABLE IF EXISTS pantry_items;
+      DROP TABLE IF EXISTS shopping_list_items;
+      DROP TABLE IF EXISTS product_prices;
+      DROP TABLE IF EXISTS recipe_products;
+      PRAGMA foreign_keys = ON;
+    `);
+    await db.execAsync(SCHEMA_SQL);
+  }
+
   if (currentVersion < LATEST_SCHEMA_VERSION) {
     await db.execAsync(`PRAGMA user_version = ${LATEST_SCHEMA_VERSION}`);
   }

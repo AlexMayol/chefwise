@@ -58,7 +58,16 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
     [reload, repositories.products],
   );
 
-  return { items, loading, reload, create, update, remove };
+  // Apply the same patch to many products (e.g. reassign category/market), then reload once.
+  const assign = useCallback(
+    async (ids: string[], patch: Partial<ProductInput>) => {
+      await Promise.all(ids.map((id) => repositories.products.update(id, patch)));
+      await reload();
+    },
+    [reload, repositories.products],
+  );
+
+  return { items, loading, reload, create, update, remove, assign };
 }
 
 export function useProductDetail(productId?: string) {

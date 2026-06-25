@@ -8,7 +8,7 @@ import { useFocusEffect, type Href } from 'expo-router';
 
 export default function ShoppingScreen() {
   const { t } = useTranslation();
-  const { items, create, reload } = useShoppingLists();
+  const { items, loading, create, reload } = useShoppingLists();
 
   useFocusEffect(
     useCallback(() => {
@@ -22,6 +22,7 @@ export default function ShoppingScreen() {
       emoji="🛒"
       addLabel={t('shopping.new')}
       modalTitle={t('shopping.new')}
+      loading={loading}
       items={items.map((list) => ({
         id: list.id,
         title: list.name,

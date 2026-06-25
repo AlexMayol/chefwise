@@ -8,7 +8,7 @@ import { useTranslation } from '@/lib/i18n';
 
 export default function CategoriesScreen() {
   const { t } = useTranslation();
-  const { items, create, reload } = useCategories();
+  const { items, loading, create, reload } = useCategories();
 
   useFocusEffect(
     useCallback(() => {
@@ -22,6 +22,7 @@ export default function CategoriesScreen() {
       emoji="🏷️"
       addLabel={t('categories.new')}
       columns={2}
+      loading={loading}
       modalTitle={t('categories.new')}
       items={items.map((category) => ({
         id: category.id,

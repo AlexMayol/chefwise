@@ -12,7 +12,7 @@ export default function NewRecipeScreen() {
   const { create } = useRecipes();
 
   return (
-    <FeatureScreen title={t('recipes.new')} description={t('common.offline')} emoji="🍳" showBack>
+    <FeatureScreen title={t('recipes.new')} emoji="🍳" showBack>
       <RecipeForm
         onSubmit={async (values) => {
           await create(values);

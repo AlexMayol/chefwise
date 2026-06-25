@@ -46,6 +46,7 @@ describe('catalog screens', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      assign: jest.fn(),
     });
     useProductDetailMock.mockReturnValue({
       item: null,

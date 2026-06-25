@@ -27,6 +27,7 @@ function createDb(rows: ProductPrice[] = []): AppDatabase & {
       return { changes: 1 };
     },
     withTransactionAsync: async <T,>(work: () => Promise<T>) => work(),
+    serializeAsync: async () => new Uint8Array(),
   };
 
   return db;

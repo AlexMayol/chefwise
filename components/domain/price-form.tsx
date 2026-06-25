@@ -3,7 +3,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
-import { DatePicker } from '@/components/ui/date-picker';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import type { ProductPriceInput } from '@/lib/db/repositories/product-prices';
@@ -57,15 +56,7 @@ export function PriceForm({ productId, onSubmit }: PriceFormProps) {
           render={({ field }) => <UnitInput value={field.value as Unit} onChange={field.onChange} />}
         />
       </FormField>
-      <Controller
-        control={form.control}
-        name="observedAt"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.observedAt')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <DatePicker value={field.value} onChange={field.onChange} />
-          </FormField>
-        )}
-      />
+      {/* ponytail: observedAt defaults to now; re-add a date field when native datepicker is back */}
       <Button
         label={t('actions.add')}
         onPress={form.handleSubmit((values) => onSubmit({ productId, ...(values as ProductPriceFormValues) }))}
