@@ -72,6 +72,7 @@ describe('product selectors', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      assign: jest.fn(),
     });
   });
 

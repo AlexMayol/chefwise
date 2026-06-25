@@ -8,7 +8,7 @@ import { useFocusEffect, type Href } from 'expo-router';
 
 export default function RecipesScreen() {
   const { t } = useTranslation();
-  const { items, create, reload } = useRecipes();
+  const { items, loading, create, reload } = useRecipes();
 
   useFocusEffect(
     useCallback(() => {
@@ -22,6 +22,7 @@ export default function RecipesScreen() {
       emoji="🍳"
       addLabel={t('recipes.new')}
       modalTitle={t('recipes.new')}
+      loading={loading}
       items={items.map((recipe) => ({
         id: recipe.id,
         title: recipe.name,

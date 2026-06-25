@@ -1,6 +1,7 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState, type ReactNode } from 'react';
 import { ScrollView, Text, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { GridCard, type CollectionItem } from '@/components/ui/grid-card';
+import { LoadingState } from '@/components/ui/loading-state';
 import { useTranslation } from '@/lib/i18n';
 import { chunkGridRows } from '@/lib/ui/grid';
 
@@ -18,6 +20,7 @@ type CollectionScreenProps = {
   emoji?: string;
   description?: string;
   items: CollectionItem[];
+  loading?: boolean;
   addLabel: string;
   modalTitle: string | ((item?: CollectionItem) => string);
   renderForm(onSaved: () => void, item?: CollectionItem): ReactNode;
@@ -33,6 +36,7 @@ export function CollectionScreen({
   emoji,
   description,
   items,
+  loading = false,
   addLabel,
   modalTitle,
   renderForm,
@@ -72,8 +76,7 @@ export function CollectionScreen({
       <View className="flex-1 bg-background">
         <ScrollView
           className="flex-1"
-          contentContainerClassName="gap-4"
-          contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 32, paddingHorizontal: 20 }}>
+          contentContainerStyle={{ gap: 16, paddingTop: insets.top + 16, paddingBottom: 32, paddingHorizontal: 20 }}>
 
           <View className="flex-row items-center justify-between gap-3">
             <Text className="flex-1 text-3xl font-bold tracking-tight text-foreground">{resolvedModalTitle}</Text>
@@ -88,14 +91,13 @@ export function CollectionScreen({
   return (
     <ScrollView
       className="flex-1 bg-background"
-      contentContainerClassName="gap-4"
-      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 16, paddingHorizontal: 20 }}>
+      contentContainerStyle={{ gap: 16, paddingTop: insets.top + 16, paddingBottom: 16, paddingHorizontal: 20 }}>
 
       <View className="gap-2">
         <View className="flex-row items-center gap-2">
           {emoji ? <Text className="text-2xl">{emoji}</Text> : null}
           <Text className="flex-1 text-2xl font-bold tracking-tight text-foreground">{title}</Text>
-          <Button label={addLabel} size="sm" onPress={() => openModal()} />
+          <Button label={addLabel} variant="ghost" size="sm" onPress={() => openModal()} />
         </View>
        {description ? <Text className="text-base text-muted-foreground">{description}</Text> : null}
       </View>
@@ -132,10 +134,12 @@ export function CollectionScreen({
         </>
       ) : null}
 
-      {items.length === 0 ? (
+      {loading && items.length === 0 ? (
+        <LoadingState />
+      ) : items.length === 0 ? (
         <EmptyState title={t('common.empty')} />
       ) : (
-        <View className="gap-3">
+        <Animated.View entering={FadeIn.duration(250)} className="gap-3">
           {rows.map((row, rowIndex) => (
             <View key={row.map((item) => item.id).join('-') || rowIndex} className="flex-row gap-3">
               {row.map((item) => (
@@ -146,7 +150,7 @@ export function CollectionScreen({
               ))}
             </View>
           ))}
-        </View>
+        </Animated.View>
       )}
 
       {footer}

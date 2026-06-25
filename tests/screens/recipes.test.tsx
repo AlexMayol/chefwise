@@ -53,6 +53,7 @@ describe('recipe screens', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      assign: jest.fn(),
     });
     useMarketsMock.mockReturnValue({
       items: [{ id: 'central', name: 'Central Market', address: null, imagePath: null, createdAt: '', updatedAt: '' }],

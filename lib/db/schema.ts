@@ -1,4 +1,4 @@
-export const LATEST_SCHEMA_VERSION = 5;
+export const LATEST_SCHEMA_VERSION = 6;
 
 export const REQUIRED_TABLES = [
   'markets',
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS product_prices (
   normalizedUnit TEXT NOT NULL,
   observedAt TEXT NOT NULL,
   createdAt TEXT NOT NULL,
-  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT
+  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS recipes (
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS recipe_products (
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
   FOREIGN KEY (recipeId) REFERENCES recipes(id) ON DELETE CASCADE,
-  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT
+  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS shopping_lists (
@@ -111,8 +111,8 @@ CREATE TABLE IF NOT EXISTS shopping_list_items (
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
   FOREIGN KEY (shoppingListId) REFERENCES shopping_lists(id) ON DELETE CASCADE,
-  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT,
-  FOREIGN KEY (productPriceId) REFERENCES product_prices(id) ON DELETE RESTRICT
+  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE,
+  FOREIGN KEY (productPriceId) REFERENCES product_prices(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS pantry_items (
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS pantry_items (
   quantity REAL NOT NULL,
   unit TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
-  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT
+  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS pantry_transactions (
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS pantry_transactions (
   note TEXT,
   shoppingListItemId TEXT,
   recipeId TEXT,
-  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE RESTRICT,
+  FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE,
   FOREIGN KEY (pantryItemId) REFERENCES pantry_items(id) ON DELETE SET NULL,
   FOREIGN KEY (shoppingListItemId) REFERENCES shopping_list_items(id) ON DELETE SET NULL,
   FOREIGN KEY (recipeId) REFERENCES recipes(id) ON DELETE SET NULL

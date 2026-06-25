@@ -8,6 +8,7 @@ function createDb(): AppDatabase {
     getAllAsync: async () => [],
     runAsync: async () => ({ changes: 1 }),
     withTransactionAsync: async (work) => work(),
+    serializeAsync: async () => new Uint8Array(),
   };
 }
 

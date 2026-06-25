@@ -13,7 +13,7 @@ export default function SettingsScreen() {
   const version = Constants.expoConfig?.version ?? '1.0.0';
 
   return (
-    <FeatureScreen title={t('settings.title')} description={t('common.offline')} emoji="⚙️">
+    <FeatureScreen title={t('settings.title')} emoji="⚙️">
       <View className="gap-2">
         <Text className="text-base font-semibold text-card-foreground">{t('settings.language')}</Text>
         <Select<SupportedLocale>

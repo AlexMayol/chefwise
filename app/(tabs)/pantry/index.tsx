@@ -9,7 +9,7 @@ import { useTranslation } from '@/lib/i18n';
 
 export default function PantryScreen() {
   const { t } = useTranslation();
-  const { items, transactions, adjust, reload } = usePantry();
+  const { items, transactions, loading, adjust, reload } = usePantry();
 
   useFocusEffect(
     useCallback(() => {
@@ -23,6 +23,7 @@ export default function PantryScreen() {
       emoji="🥫"
       addLabel={t('pantry.add')}
       modalTitle={t('pantry.add')}
+      loading={loading}
       items={items.map((item) => ({
         id: item.id,
         title: item.productId,

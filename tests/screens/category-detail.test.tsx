@@ -61,6 +61,7 @@ describe('category detail screen', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      assign: jest.fn(),
     });
   });
 
@@ -78,7 +79,7 @@ describe('category detail screen', () => {
   it('opens the edit flow and saves changes', async () => {
     const screen = await render(<CategoryDetailScreen />);
 
-    await fireEvent.press(screen.getByText('Edit'));
+    await fireEvent.press(screen.getByLabelText('Edit'));
     await fireEvent.changeText(screen.getByDisplayValue('Postres'), 'Desserts');
     await fireEvent.press(screen.getByText('Save'));
 

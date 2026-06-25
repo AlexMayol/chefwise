@@ -8,7 +8,7 @@ import { FormField } from '@/components/ui/form-field';
 import { Select } from '@/components/ui/select';
 import type { ProductSort } from '@/lib/db/repositories/products';
 import { formatCurrency } from '@/lib/formatting/currency';
-import { resolveImageUri } from '@/lib/images/storage';
+import { resolveEntityImageUri } from '@/lib/images/storage';
 import { useProducts } from '@/lib/hooks/use-products';
 import { useTranslation } from '@/lib/i18n';
 import { useFocusEffect, type Href } from 'expo-router';
@@ -20,7 +20,7 @@ export default function ProductsScreen() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [minimumRating, setMinimumRating] = useState<MinimumRatingFilter>('none');
   const [sort, setSort] = useState<ProductSort>('name');
-  const { items, create, reload } = useProducts({
+  const { items, loading, create, reload } = useProducts({
     favoritesOnly,
     minRating: minimumRating === 'none' ? undefined : Number(minimumRating),
     sort,
@@ -39,6 +39,7 @@ export default function ProductsScreen() {
       addLabel={t('products.new')}
       modalTitle={t('products.new')}
       columns={2}
+      loading={loading}
       items={items.map((product) => ({
         id: product.id,
         title: `${product.isFavorite ? '★ ' : ''}${product.name}`,
@@ -47,7 +48,7 @@ export default function ProductsScreen() {
           product.normalizedPrice != null
             ? `${formatCurrency(product.normalizedPrice)}/${product.normalizedUnit}`
             : t('common.missingPrice'),
-        imageUri: resolveImageUri(product.imagePath) ?? undefined,
+        imageUri: resolveEntityImageUri(product.imagePath) ?? undefined,
         emoji: '🥕',
         href: `/products/${product.id}` as Href,
       }))}

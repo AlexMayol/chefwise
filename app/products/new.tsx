@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { FeatureScreen } from '@/components/domain/feature-screen';
 import { ProductForm } from '@/components/domain/product-form';
@@ -9,10 +9,13 @@ export default function NewProductScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { create } = useProducts();
+  const { categoryId, marketId } = useLocalSearchParams<{ categoryId?: string; marketId?: string }>();
 
   return (
-    <FeatureScreen title={t('products.new')} description={t('common.offline')} emoji="🥕" showBack>
+    <FeatureScreen title={t('products.new')} emoji="🥕" showBack>
       <ProductForm
+        isEditing={false}
+        initialValues={{ ...(categoryId ? { categoryId } : {}), ...(marketId ? { marketId } : {}) }}
         onSubmit={async (values, initialPrice) => {
           await create(values, initialPrice);
           router.back();

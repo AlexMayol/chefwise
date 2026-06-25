@@ -12,7 +12,7 @@ export default function NewShoppingListScreen() {
   const { create } = useShoppingLists();
 
   return (
-    <FeatureScreen title={t('shopping.new')} description={t('common.offline')} emoji="🛒" showBack>
+    <FeatureScreen title={t('shopping.new')} emoji="🛒" showBack>
       <ShoppingListForm
         onSubmit={async (values) => {
           await create(values);

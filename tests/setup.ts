@@ -2,11 +2,12 @@ jest.mock('expo-localization', () => ({
   getLocales: () => [{ languageCode: 'en', languageTag: 'en-US' }],
 }));
 
-jest.mock('@react-native-community/datetimepicker', () => ({
-  __esModule: true,
-  default: () => null,
-  DateTimePickerAndroid: { open: jest.fn() },
-}));
+jest.mock('react-native-reanimated', () => {
+  const { View } = require('react-native');
+  // ponytail: minimal mock — only Animated.View + FadeIn().duration() are used in app code
+  const fade = { duration: () => fade };
+  return { __esModule: true, default: { View }, FadeIn: fade };
+});
 
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaProvider: ({ children }: { children: unknown }) => children,
