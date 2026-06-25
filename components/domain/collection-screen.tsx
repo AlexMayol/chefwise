@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState, type ReactNode } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { GridCard, type CollectionItem } from '@/components/ui/grid-card';
 import { LoadingState } from '@/components/ui/loading-state';
+import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { useTranslation } from '@/lib/i18n';
 import { chunkGridRows } from '@/lib/ui/grid';
 
@@ -73,26 +74,18 @@ export function CollectionScreen({
     const resolvedModalTitle = typeof modalTitle === 'function' ? modalTitle(selectedItem) : modalTitle;
 
     return (
-      <View className="flex-1 bg-background">
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ gap: 16, paddingTop: insets.top + 16, paddingBottom: 32, paddingHorizontal: 20 }}>
-
-          <View className="flex-row items-center justify-between gap-3">
-            <Text className="flex-1 text-3xl font-bold tracking-tight text-foreground">{resolvedModalTitle}</Text>
-            <Button label={t('actions.cancel')} variant="ghost" size="sm" onPress={closeModal} />
-          </View>
-          <Card className="gap-4">{renderForm(closeModal, selectedItem)}</Card>
-        </ScrollView>
-      </View>
+      <ScreenScaffold paddingBottom={32}>
+        <View className="flex-row items-center justify-between gap-3">
+          <Text className="flex-1 text-3xl font-bold tracking-tight text-foreground">{resolvedModalTitle}</Text>
+          <Button label={t('actions.cancel')} variant="ghost" size="sm" onPress={closeModal} />
+        </View>
+        <Card className="gap-4">{renderForm(closeModal, selectedItem)}</Card>
+      </ScreenScaffold>
     );
   }
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentContainerStyle={{ gap: 16, paddingTop: insets.top + 16, paddingBottom: 16, paddingHorizontal: 20 }}>
-
+    <ScreenScaffold>
       <View className="gap-2">
         <View className="flex-row items-center gap-2">
           {emoji ? <Text className="text-2xl">{emoji}</Text> : null}
@@ -154,6 +147,6 @@ export function CollectionScreen({
       )}
 
       {footer}
-    </ScrollView>
+    </ScreenScaffold>
   );
 }

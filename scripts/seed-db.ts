@@ -11,6 +11,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { LATEST_SCHEMA_VERSION, SCHEMA_SQL } from '../lib/db/schema.ts';
 import { createId, nowIso } from '../lib/db/repositories/base.ts';
 import { DEFAULT_CATEGORIES } from '../lib/db/seeds/categories-data.ts';
+import { DEFAULT_MARKETS } from '../lib/db/seeds/markets-data.ts';
+import { DEFAULT_PRODUCTS } from '../lib/db/seeds/products-data.ts';
 
 const args = process.argv.slice(2);
 const force = args.includes('--force');
@@ -38,9 +40,42 @@ const timestamp = nowIso();
 const insertCategory = db.prepare(
   'INSERT INTO categories (id, name, description, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)',
 );
+const categoryIds: string[] = [];
 for (const { name, description } of DEFAULT_CATEGORIES[lang]) {
-  insertCategory.run(createId('category'), name, description, timestamp, timestamp);
+  const id = createId('category');
+  categoryIds.push(id);
+  insertCategory.run(id, name, description, timestamp, timestamp);
+}
+
+const insertMarket = db.prepare(
+  'INSERT INTO markets (id, name, address, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)',
+);
+const marketIds: string[] = [];
+for (const { name, address } of DEFAULT_MARKETS[lang]) {
+  const id = createId('market');
+  marketIds.push(id);
+  insertMarket.run(id, name, address, timestamp, timestamp);
+}
+
+const insertProduct = db.prepare(
+  'INSERT INTO products (id, name, categoryId, marketId, defaultUnit, rating, notes, isFavorite, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+);
+for (const p of DEFAULT_PRODUCTS[lang]) {
+  insertProduct.run(
+    createId('product'),
+    p.name,
+    categoryIds[p.categoryIndex] ?? null,
+    marketIds[p.marketIndex],
+    p.defaultUnit,
+    p.rating,
+    p.notes,
+    p.isFavorite ? 1 : 0,
+    timestamp,
+    timestamp,
+  );
 }
 
 db.close();
-console.log(`Seeded ${DEFAULT_CATEGORIES[lang].length} categories (${lang}) into ${outPath} (schema v${LATEST_SCHEMA_VERSION}).`);
+console.log(
+  `Seeded ${DEFAULT_CATEGORIES[lang].length} categories, ${DEFAULT_MARKETS[lang].length} markets, ${DEFAULT_PRODUCTS[lang].length} products (${lang}) into ${outPath} (schema v${LATEST_SCHEMA_VERSION}).`,
+);

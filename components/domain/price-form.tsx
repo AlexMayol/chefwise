@@ -3,8 +3,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ControlledInput } from '@/components/ui/controlled-input';
 import { FormField } from '@/components/ui/form-field';
-import { Input } from '@/components/ui/input';
 import type { ProductPriceInput } from '@/lib/db/repositories/product-prices';
 import type { Unit } from '@/lib/domain/units';
 import { useTranslation } from '@/lib/i18n';
@@ -31,24 +31,8 @@ export function PriceForm({ productId, onSubmit }: PriceFormProps) {
 
   return (
     <View className="gap-4">
-      <Controller
-        control={form.control}
-        name="price"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.price')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input keyboardType="decimal-pad" value={String(field.value)} placeholder={t('forms.price')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="quantity"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.quantity')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input keyboardType="decimal-pad" value={String(field.value)} placeholder={t('forms.quantity')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
+      <ControlledInput control={form.control} name="price" label={t('forms.price')} placeholder={t('forms.price')} keyboardType="decimal-pad" />
+      <ControlledInput control={form.control} name="quantity" label={t('forms.quantity')} placeholder={t('forms.quantity')} keyboardType="decimal-pad" />
       <FormField label={t('forms.unit')}>
         <Controller
           control={form.control}

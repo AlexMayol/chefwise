@@ -1,20 +1,15 @@
-import { useCallback } from 'react';
-
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { ShoppingListForm } from '@/components/domain/shopping-list-form';
+import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useShoppingLists } from '@/lib/hooks/use-shopping-lists';
 import { useTranslation } from '@/lib/i18n';
-import { useFocusEffect, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
 
 export default function ShoppingScreen() {
   const { t } = useTranslation();
   const { items, loading, create, reload } = useShoppingLists();
 
-  useFocusEffect(
-    useCallback(() => {
-      void reload();
-    }, [reload]),
-  );
+  useReloadOnFocus(reload);
 
   return (
     <CollectionScreen

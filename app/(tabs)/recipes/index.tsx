@@ -1,20 +1,15 @@
-import { useCallback } from 'react';
-
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { RecipeForm } from '@/components/domain/recipe-form';
 import { useRecipes } from '@/lib/hooks/use-recipes';
+import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
-import { useFocusEffect, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
 
 export default function RecipesScreen() {
   const { t } = useTranslation();
   const { items, loading, create, reload } = useRecipes();
 
-  useFocusEffect(
-    useCallback(() => {
-      void reload();
-    }, [reload]),
-  );
+  useReloadOnFocus(reload);
 
   return (
     <CollectionScreen

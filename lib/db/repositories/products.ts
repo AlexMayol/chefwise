@@ -1,7 +1,7 @@
 import type { NormalizedUnit, Unit } from '@/lib/domain/units';
 
 import type { AppDatabase } from '../client';
-import { createId, fromSqlBoolean, insertRow, nowIso, toSqlBoolean, updateRow } from './base';
+import { createCrudRepository, createId, fromSqlBoolean, insertRow, nowIso, toSqlBoolean, updateRow } from './base';
 
 export type Product = {
   id: string;
@@ -50,7 +50,12 @@ function mapProduct(row: ProductRow): Product {
 }
 
 export function createProductRepository(db: AppDatabase) {
+  // getById + delete come from the base (with the boolean row mapper); list/create/update
+  // stay custom for the price join and isFavorite int<->bool conversion.
+  const base = createCrudRepository<Product, ProductInput, ProductRow>(db, 'products', 'product', mapProduct);
+
   return {
+    ...base,
     async list(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}): Promise<ProductListItem[]> {
       const clauses: string[] = [];
       const params: number[] = [];
@@ -95,10 +100,6 @@ export function createProductRepository(db: AppDatabase) {
         normalizedUnit: row.normalizedUnit,
       }));
     },
-    async getById(id: string): Promise<Product | null> {
-      const row = await db.getFirstAsync<ProductRow>('SELECT * FROM products WHERE id = ?', [id]);
-      return row ? mapProduct(row) : null;
-    },
     async create(input: ProductInput): Promise<Product> {
       const timestamp = nowIso();
       const row: ProductRow = {
@@ -125,9 +126,6 @@ export function createProductRepository(db: AppDatabase) {
         updatedAt: nowIso(),
       };
       await updateRow(db, 'products', id, patch);
-    },
-    async delete(id: string): Promise<void> {
-      await db.runAsync('DELETE FROM products WHERE id = ?', [id]);
     },
   };
 }

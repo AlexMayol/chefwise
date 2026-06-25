@@ -1,6 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { Alert, Image, Pressable, Text, View } from 'react-native';
 
+import { IconButton } from '@/components/ui/icon-button';
 import { saveEntityImage, deleteEntityImage, resolveEntityImageUri } from '@/lib/images/storage';
 import { useTranslation } from '@/lib/i18n';
 
@@ -51,13 +52,14 @@ export function EntityImageField({ entityType, entityId, value, onChange }: Enti
     return (
       <View className="relative">
         <Image source={{ uri }} className="h-44 w-full rounded-2xl" resizeMode="cover" />
-        <Pressable
+        <IconButton
           onPress={() => void removeImage()}
-          hitSlop={8}
+          size="sm"
+          variant="overlay"
           accessibilityLabel={t('actions.delete')}
-          className="absolute right-2 top-2 h-8 w-8 items-center justify-center rounded-full bg-background/80 active:opacity-70">
+          className="absolute right-2 top-2">
           <Text className="text-base font-semibold text-foreground">✕</Text>
-        </Pressable>
+        </IconButton>
       </View>
     );
   }

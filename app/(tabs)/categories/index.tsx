@@ -1,20 +1,16 @@
-import { useFocusEffect, type Href } from 'expo-router';
-import { useCallback } from 'react';
+import { type Href } from 'expo-router';
 
 import { CategoryForm } from '@/components/domain/category-form';
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { useCategories } from '@/lib/hooks/use-categories';
+import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 
 export default function CategoriesScreen() {
   const { t } = useTranslation();
   const { items, loading, create, reload } = useCategories();
 
-  useFocusEffect(
-    useCallback(() => {
-      void reload();
-    }, [reload]),
-  );
+  useReloadOnFocus(reload);
 
   return (
     <CollectionScreen

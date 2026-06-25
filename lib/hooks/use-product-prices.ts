@@ -1,31 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useAppDatabase } from '@/lib/db/provider';
 import type { ProductPrice, ProductPriceInput } from '@/lib/db/repositories/product-prices';
 
+import { useDetail } from './use-detail';
+
 export function useProductPrices(productId?: string) {
   const { repositories } = useAppDatabase();
-  const [items, setItems] = useState<ProductPrice[]>([]);
-  const [loading, setLoading] = useState(Boolean(productId));
-
-  const reload = useCallback(async () => {
-    if (!productId) {
-      setItems([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      setItems(await repositories.productPrices.listForProduct(productId));
-    } finally {
-      setLoading(false);
-    }
-  }, [productId, repositories.productPrices]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
+  const load = useCallback((id: string) => repositories.productPrices.listForProduct(id), [repositories.productPrices]);
+  const { item: items, loading, reload } = useDetail<ProductPrice[]>(productId, load, []);
 
   const create = useCallback(
     async (input: ProductPriceInput) => {

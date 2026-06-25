@@ -1,22 +1,17 @@
-import { useCallback } from 'react';
-
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { MarketForm } from '@/components/domain/market-form';
 import { useMarkets } from '@/lib/hooks/use-markets';
+import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
-import { useFocusEffect, type Href } from 'expo-router';
+import { type Href } from 'expo-router';
 
 export default function MarketsScreen() {
   const { t } = useTranslation();
   const { items, loading, create, reload } = useMarkets();
 
   // Refresh when returning from the edit/detail screen (it uses a separate hook instance).
-  useFocusEffect(
-    useCallback(() => {
-      void reload();
-    }, [reload]),
-  );
+  useReloadOnFocus(reload);
 
   return (
     <CollectionScreen

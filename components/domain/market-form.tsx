@@ -1,35 +1,26 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ControlledInput } from '@/components/ui/controlled-input';
 import { FormField } from '@/components/ui/form-field';
-import { Input } from '@/components/ui/input';
 import type { MarketInput } from '@/lib/db/repositories/markets';
 import { useTranslation } from '@/lib/i18n';
 import { marketSchema, type MarketFormValues } from '@/lib/validation/markets';
 
+import { DeleteButton } from './delete-button';
 import { EntityImageField } from './entity-image-field';
 
 type MarketFormProps = {
   initialValues?: Partial<MarketFormValues>;
   onSubmit(values: MarketInput): Promise<void> | void;
-  // When provided, a Delete button sits next to Save and runs this on press.
+  // When provided, a Delete button (handles "in use" errors + back navigation) is shown.
   onDelete?(): Promise<void>;
 };
 
 export function MarketForm({ initialValues, onSubmit, onDelete }: MarketFormProps) {
   const { t } = useTranslation();
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-
-  async function handleDelete() {
-    try {
-      await onDelete?.();
-    } catch {
-      setDeleteError(t('errors.deleteBlocked'));
-    }
-  }
 
   // ponytail: name-based draft id matches product-form; revisit if image filenames must survive rename
   const draftImageId = initialValues?.name || 'draft-market';
@@ -40,24 +31,8 @@ export function MarketForm({ initialValues, onSubmit, onDelete }: MarketFormProp
 
   return (
     <View className="gap-4">
-      <Controller
-        control={form.control}
-        name="name"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.name')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input value={field.value} placeholder={t('navigation.markets')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="address"
-        render={({ field }) => (
-          <FormField label={t('forms.address')}>
-            <Input value={field.value ?? ''} placeholder={t('forms.address')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
+      <ControlledInput control={form.control} name="name" label={t('forms.name')} placeholder={t('navigation.markets')} />
+      <ControlledInput control={form.control} name="address" label={t('forms.address')} placeholder={t('forms.address')} />
       <Controller
         control={form.control}
         name="imagePath"
@@ -67,11 +42,8 @@ export function MarketForm({ initialValues, onSubmit, onDelete }: MarketFormProp
           </FormField>
         )}
       />
-      <View className="flex-row gap-3">
-        <Button className="flex-1" label={t('actions.save')} onPress={form.handleSubmit(onSubmit)} />
-        {onDelete ? <Button className="flex-1" variant="destructive" label={t('actions.delete')} onPress={() => void handleDelete()} /> : null}
-      </View>
-      {deleteError ? <Text className="text-sm text-destructive">{deleteError}</Text> : null}
+      <Button label={t('actions.save')} onPress={form.handleSubmit(onSubmit)} />
+      {onDelete ? <DeleteButton onDelete={onDelete} /> : null}
     </View>
   );
 }

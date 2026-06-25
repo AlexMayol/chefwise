@@ -8,11 +8,13 @@ import { MarketForm } from '@/components/domain/market-form';
 import { ProductGrid } from '@/components/domain/product-grid';
 import { BackButton } from '@/components/ui/back-button';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { Button } from '@/components/ui/button';
 import { EditButton } from '@/components/ui/edit-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useProducts } from '@/lib/hooks/use-products';
+import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 
 export default function MarketDetailScreen() {
@@ -21,18 +23,18 @@ export default function MarketDetailScreen() {
   const insets = useSafeAreaInsets();
   const { marketId } = useLocalSearchParams<{ marketId: string }>();
   const { items, update, remove } = useMarkets();
-  const { items: products, assign } = useProducts();
+  const { items: products, assign, reload } = useProducts();
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
+
+  useReloadOnFocus(reload);
 
   const market = items.find((item) => item.id === marketId);
   const linkedProducts = products.filter((product) => product.marketId === marketId);
   const candidates = products.filter((product) => product.marketId !== marketId);
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentContainerStyle={{ gap: 16, paddingTop: insets.top + 16, paddingBottom: 16, paddingHorizontal: 20 }}>
+    <ScreenScaffold>
       <View className="gap-2">
         <View className="flex-row items-center gap-3">
           <BackButton />
@@ -83,14 +85,11 @@ export default function MarketDetailScreen() {
                 await update(marketId, values);
                 setEditing(false);
               }}
-              onDelete={async () => {
-                await remove(marketId);
-                router.back();
-              }}
+              onDelete={() => remove(marketId)}
             />
           </ScrollView>
         ) : null}
       </BottomSheet>
-    </ScrollView>
+    </ScreenScaffold>
   );
 }

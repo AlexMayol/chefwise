@@ -4,6 +4,8 @@ import { useAppDatabase } from '@/lib/db/provider';
 import type { Product, ProductInput, ProductListItem, ProductSort } from '@/lib/db/repositories/products';
 import type { Unit } from '@/lib/domain/units';
 
+import { useDetail } from './use-detail';
+
 type InitialPrice = { price: number; quantity: number; unit: Unit };
 
 export function useProducts(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}) {
@@ -72,27 +74,8 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
 
 export function useProductDetail(productId?: string) {
   const { repositories } = useAppDatabase();
-  const [item, setItem] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(Boolean(productId));
-
-  const reload = useCallback(async () => {
-    if (!productId) {
-      setItem(null);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      setItem(await repositories.products.getById(productId));
-    } finally {
-      setLoading(false);
-    }
-  }, [productId, repositories.products]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
+  const load = useCallback((id: string) => repositories.products.getById(id), [repositories.products]);
+  const { item, loading, reload } = useDetail<Product | null>(productId, load, null);
 
   const update = useCallback(
     async (input: Partial<ProductInput>) => {

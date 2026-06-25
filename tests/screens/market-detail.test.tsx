@@ -8,6 +8,9 @@ jest.mock('expo-router', () => ({
   Link: ({ children }: { children: React.ReactNode }) => children,
   useLocalSearchParams: () => ({ marketId: 'market-1' }),
   useRouter: () => ({ back: jest.fn() }),
+  useFocusEffect: (effect: () => void | (() => void)) => {
+    effect();
+  },
 }));
 
 jest.mock('@/lib/hooks/use-markets', () => ({

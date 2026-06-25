@@ -1,73 +1,39 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useAppDatabase } from '@/lib/db/provider';
 import type { Recipe, RecipeInput, RecipeProduct, RecipeProductInput } from '@/lib/db/repositories/recipes';
 import { calculateRecipeCost } from '@/lib/domain/recipes';
 import { consumeRecipeBatch } from '@/lib/domain/pantry';
+import { useCollection } from './use-collection';
+import { useDetail } from './use-detail';
 import { usePantry } from './use-pantry';
 
 export function useRecipes() {
   const { repositories } = useAppDatabase();
-  const [items, setItems] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const reload = useCallback(async () => {
-    setLoading(true);
-    try {
-      setItems(await repositories.recipes.list());
-    } finally {
-      setLoading(false);
-    }
-  }, [repositories.recipes]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
-
-  const create = useCallback(
-    async (input: RecipeInput) => {
-      const recipe = await repositories.recipes.create(input);
-      await reload();
-      return recipe;
-    },
-    [reload, repositories.recipes],
-  );
+  const collection = useCollection<Recipe, RecipeInput>(repositories.recipes);
 
   const addIngredient = useCallback(
     async (input: RecipeProductInput): Promise<RecipeProduct> => repositories.recipes.addIngredient(input),
     [repositories.recipes],
   );
 
-  return { items, loading, reload, create, addIngredient };
+  return { ...collection, addIngredient };
 }
 
 export function useRecipeDetail(recipeId?: string) {
   const { repositories } = useAppDatabase();
   const pantry = usePantry();
-  const [recipe, setRecipe] = useState<Recipe | null>(null);
-  const [ingredients, setIngredients] = useState<RecipeProduct[]>([]);
-  const [loading, setLoading] = useState(Boolean(recipeId));
+  const loadRecipe = useCallback((id: string) => repositories.recipes.getById(id), [repositories.recipes]);
+  const loadIngredients = useCallback((id: string) => repositories.recipes.listIngredients(id), [repositories.recipes]);
+  const recipeState = useDetail<Recipe | null>(recipeId, loadRecipe, null);
+  const ingredientsState = useDetail<RecipeProduct[]>(recipeId, loadIngredients, []);
+  const recipe = recipeState.item;
+  const ingredients = ingredientsState.item;
+  const loading = recipeState.loading || ingredientsState.loading;
 
   const reload = useCallback(async () => {
-    if (!recipeId) {
-      setRecipe(null);
-      setIngredients([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      setRecipe(await repositories.recipes.getById(recipeId));
-      setIngredients(await repositories.recipes.listIngredients(recipeId));
-    } finally {
-      setLoading(false);
-    }
-  }, [recipeId, repositories.recipes]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
+    await Promise.all([recipeState.reload(), ingredientsState.reload()]);
+  }, [recipeState.reload, ingredientsState.reload]);
 
   const addIngredient = useCallback(
     async (input: RecipeProductInput) => {

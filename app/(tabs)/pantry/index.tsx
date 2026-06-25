@@ -1,21 +1,15 @@
-import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
-
 import { CollectionScreen } from '@/components/domain/collection-screen';
 import { PantryAdjustmentForm } from '@/components/domain/pantry-adjustment-form';
 import { PantryTransactionList } from '@/components/domain/pantry-transaction-list';
 import { usePantry } from '@/lib/hooks/use-pantry';
+import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 
 export default function PantryScreen() {
   const { t } = useTranslation();
   const { items, transactions, loading, adjust, reload } = usePantry();
 
-  useFocusEffect(
-    useCallback(() => {
-      void reload();
-    }, [reload]),
-  );
+  useReloadOnFocus(reload);
 
   return (
     <CollectionScreen

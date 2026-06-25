@@ -87,17 +87,24 @@ export async function updateRow<T extends Record<string, unknown>>(
   await db.runAsync(`UPDATE ${table} SET ${assignments} WHERE id = ?`, values);
 }
 
-export function createCrudRepository<T extends { id: string }, CreateInput extends Record<string, unknown>>(
-  db: AppDatabase,
-  table: string,
-  prefix: string,
-) {
+// `mapRow` converts a raw DB row to the model (e.g. SQLite int -> boolean). Omit it
+// when the row already matches the model (the markets/categories case). `Row` is the
+// stored shape; it defaults to `T` so existing callers need no extra type argument.
+export function createCrudRepository<
+  T extends { id: string },
+  CreateInput extends Record<string, unknown>,
+  Row = T,
+>(db: AppDatabase, table: string, prefix: string, mapRow?: (row: Row) => T) {
+  const map = mapRow ?? ((row: Row) => row as unknown as T);
+
   return {
     async list(): Promise<T[]> {
-      return db.getAllAsync<T>(`SELECT * FROM ${table} ORDER BY createdAt DESC`);
+      const rows = await db.getAllAsync<Row>(`SELECT * FROM ${table} ORDER BY createdAt DESC`);
+      return rows.map(map);
     },
     async getById(id: string): Promise<T | null> {
-      return db.getFirstAsync<T>(`SELECT * FROM ${table} WHERE id = ?`, [id]);
+      const row = await db.getFirstAsync<Row>(`SELECT * FROM ${table} WHERE id = ?`, [id]);
+      return row ? map(row) : null;
     },
     async create(input: CreateInput): Promise<T> {
       const timestamp = nowIso();
@@ -106,9 +113,10 @@ export function createCrudRepository<T extends { id: string }, CreateInput exten
         ...input,
         createdAt: timestamp,
         updatedAt: timestamp,
-      } as unknown as T & Record<string, unknown>;
+      } as unknown as Row & Record<string, unknown>;
 
-      return insertRow(db, table, row) as Promise<T>;
+      await insertRow(db, table, row);
+      return map(row);
     },
     async update(id: string, input: Partial<CreateInput>): Promise<void> {
       await updateRow(db, table, id, { ...input, updatedAt: nowIso() });

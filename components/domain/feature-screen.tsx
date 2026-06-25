@@ -1,6 +1,5 @@
 import { Link, type Href } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 import type React from 'react';
 
 import { BackButton } from '@/components/ui/back-button';
@@ -8,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ListRow } from '@/components/ui/list-row';
+import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { useTranslation } from '@/lib/i18n';
 import { shouldRenderListEmptyState } from '@/lib/ui/feature-screen';
 
@@ -24,14 +24,10 @@ type FeatureScreenProps = {
 
 export function FeatureScreen({ title, description, emoji, showBack, addHref, addLabel, rows, children }: FeatureScreenProps) {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const hasList = rows !== undefined;
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentContainerStyle={{ gap: 16, paddingTop: insets.top + 16, paddingBottom: 16, paddingHorizontal: 20 }}>
-
+    <ScreenScaffold>
       <View className="gap-2">
         <View className="flex-row items-center gap-3">
           {showBack ? <BackButton /> : null}
@@ -62,6 +58,6 @@ export function FeatureScreen({ title, description, emoji, showBack, addHref, ad
         )
           )
         : null}
-    </ScrollView>
+    </ScreenScaffold>
   );
 }

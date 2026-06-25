@@ -3,8 +3,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ControlledInput } from '@/components/ui/controlled-input';
 import { FormField } from '@/components/ui/form-field';
-import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import type { PantryTransactionType } from '@/lib/db/repositories/pantry';
 import type { Unit } from '@/lib/domain/units';
@@ -52,15 +52,7 @@ export function PantryAdjustmentForm({
           />
         )}
       />
-      <Controller
-        control={form.control}
-        name="quantity"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.quantity')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input keyboardType="decimal-pad" value={String(field.value)} placeholder={t('forms.quantity')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
+      <ControlledInput control={form.control} name="quantity" label={t('forms.quantity')} placeholder={t('forms.quantity')} keyboardType="decimal-pad" />
       <FormField label={t('forms.unit')}>
         <Controller
           control={form.control}

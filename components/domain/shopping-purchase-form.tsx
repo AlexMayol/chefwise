@@ -8,8 +8,8 @@ import { shoppingPurchaseSchema, type ShoppingPurchaseFormValues } from '@/lib/v
 import { useTranslation } from '@/lib/i18n';
 
 import { Button } from '../ui/button';
+import { ControlledInput } from '../ui/controlled-input';
 import { FormField } from '../ui/form-field';
-import { Input } from '../ui/input';
 import { UnitInput } from './unit-input';
 
 type ShoppingPurchaseFormProps = {
@@ -36,27 +36,11 @@ export function ShoppingPurchaseForm({ item, onBought, onSkipped }: ShoppingPurc
 
   return (
     <View className="gap-3">
-      <Controller
-        control={form.control}
-        name="actualQuantity"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.quantity')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input keyboardType="decimal-pad" value={String(field.value)} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
+      <ControlledInput control={form.control} name="actualQuantity" label={t('forms.quantity')} keyboardType="decimal-pad" />
       <FormField label={t('forms.unit')}>
         <Controller control={form.control} name="actualUnit" render={({ field }) => <UnitInput value={field.value as Unit} onChange={field.onChange} />} />
       </FormField>
-      <Controller
-        control={form.control}
-        name="actualPrice"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.price')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input keyboardType="decimal-pad" value={String(field.value)} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
+      <ControlledInput control={form.control} name="actualPrice" label={t('forms.price')} keyboardType="decimal-pad" />
       <View className="flex-row gap-2">
         <Button
           className="flex-1"

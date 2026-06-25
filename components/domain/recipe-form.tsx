@@ -1,10 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
-import { FormField } from '@/components/ui/form-field';
-import { Input } from '@/components/ui/input';
+import { ControlledInput } from '@/components/ui/controlled-input';
 import type { RecipeInput } from '@/lib/db/repositories/recipes';
 import { useTranslation } from '@/lib/i18n';
 import { recipeSchema, type RecipeFormValues } from '@/lib/validation/recipes';
@@ -24,33 +23,9 @@ export function RecipeForm({ onSubmit }: { onSubmit(values: RecipeInput): Promis
 
   return (
     <View className="gap-4">
-      <Controller
-        control={form.control}
-        name="name"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.name')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input value={field.value} placeholder={t('recipes.new')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormField label={t('forms.description')}>
-            <Input multiline value={field.value ?? ''} placeholder={t('forms.description')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="servings"
-        render={({ field, fieldState }) => (
-          <FormField label={t('forms.servings')} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
-            <Input keyboardType="decimal-pad" value={String(field.value)} placeholder={t('forms.servings')} onChangeText={field.onChange} onBlur={field.onBlur} />
-          </FormField>
-        )}
-      />
+      <ControlledInput control={form.control} name="name" label={t('forms.name')} placeholder={t('recipes.new')} />
+      <ControlledInput control={form.control} name="description" label={t('forms.description')} placeholder={t('forms.description')} multiline />
+      <ControlledInput control={form.control} name="servings" label={t('forms.servings')} placeholder={t('forms.servings')} keyboardType="decimal-pad" />
       <Button label={t('actions.save')} onPress={form.handleSubmit((values) => onSubmit(values as RecipeFormValues))} />
     </View>
   );

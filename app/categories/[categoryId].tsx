@@ -8,11 +8,13 @@ import { CategoryForm } from '@/components/domain/category-form';
 import { ProductGrid } from '@/components/domain/product-grid';
 import { BackButton } from '@/components/ui/back-button';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { Button } from '@/components/ui/button';
 import { EditButton } from '@/components/ui/edit-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useCategories } from '@/lib/hooks/use-categories';
 import { useProducts } from '@/lib/hooks/use-products';
+import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 
 export default function CategoryDetailScreen() {
@@ -21,18 +23,18 @@ export default function CategoryDetailScreen() {
   const insets = useSafeAreaInsets();
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
   const { items, update, remove } = useCategories();
-  const { items: products, assign } = useProducts();
+  const { items: products, assign, reload } = useProducts();
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
+
+  useReloadOnFocus(reload);
 
   const category = items.find((item) => item.id === categoryId);
   const linkedProducts = products.filter((product) => product.categoryId === categoryId);
   const candidates = products.filter((product) => product.categoryId !== categoryId);
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentContainerStyle={{ gap: 16, paddingTop: insets.top + 16, paddingBottom: 16, paddingHorizontal: 20 }}>
+    <ScreenScaffold>
       <View className="flex-row items-center gap-3">
         <BackButton />
         {category?.description ? <Text className="text-3xl">{category.description}</Text> : null}
@@ -76,14 +78,11 @@ export default function CategoryDetailScreen() {
                 await update(categoryId, values);
                 setEditing(false);
               }}
-              onDelete={async () => {
-                await remove(categoryId);
-                router.back();
-              }}
+              onDelete={() => remove(categoryId)}
             />
           </ScrollView>
         ) : null}
       </BottomSheet>
-    </ScrollView>
+    </ScreenScaffold>
   );
 }

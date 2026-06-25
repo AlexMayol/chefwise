@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useAppDatabase } from '@/lib/db/provider';
 import type { ProductPriceInput } from '@/lib/db/repositories/product-prices';
@@ -6,33 +6,13 @@ import type { ShoppingList, ShoppingListInput, ShoppingListItem, ShoppingListIte
 import { recordPurchaseInPantry } from '@/lib/domain/pantry';
 import { canCompleteShoppingList, markShoppingItemBought } from '@/lib/domain/shopping';
 import type { Unit } from '@/lib/domain/units';
+import { useCollection } from './use-collection';
+import { useDetail } from './use-detail';
 
 export function useShoppingLists() {
   const { repositories } = useAppDatabase();
-  const [items, setItems] = useState<ShoppingList[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const reload = useCallback(async () => {
-    setLoading(true);
-    try {
-      setItems(await repositories.shoppingLists.list());
-    } finally {
-      setLoading(false);
-    }
-  }, [repositories.shoppingLists]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
-
-  const create = useCallback(
-    async (input: ShoppingListInput) => {
-      const list = await repositories.shoppingLists.create(input);
-      await reload();
-      return list;
-    },
-    [reload, repositories.shoppingLists],
-  );
+  const collection = useCollection<ShoppingList, ShoppingListInput>(repositories.shoppingLists);
+  const { reload } = collection;
 
   const addItem = useCallback(
     async (input: ShoppingListItemInput) => repositories.shoppingLists.addItem(input),
@@ -48,32 +28,13 @@ export function useShoppingLists() {
     [reload, repositories.shoppingLists],
   );
 
-  return { items, loading, reload, create, addItem, duplicateAsDraft };
+  return { ...collection, addItem, duplicateAsDraft };
 }
 
 export function useShoppingListDetail(shoppingListId?: string) {
   const { db, repositories } = useAppDatabase();
-  const [items, setItems] = useState<ShoppingListItem[]>([]);
-  const [loading, setLoading] = useState(Boolean(shoppingListId));
-
-  const reload = useCallback(async () => {
-    if (!shoppingListId) {
-      setItems([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      setItems(await repositories.shoppingLists.listItems(shoppingListId));
-    } finally {
-      setLoading(false);
-    }
-  }, [repositories.shoppingLists, shoppingListId]);
-
-  useEffect(() => {
-    void reload();
-  }, [reload]);
+  const load = useCallback((id: string) => repositories.shoppingLists.listItems(id), [repositories.shoppingLists]);
+  const { item: items, loading, reload } = useDetail<ShoppingListItem[]>(shoppingListId, load, []);
 
   const addItem = useCallback(
     async (input: ShoppingListItemInput) => {
