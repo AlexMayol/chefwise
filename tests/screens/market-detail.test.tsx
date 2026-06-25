@@ -56,6 +56,7 @@ describe('market detail screen', () => {
       create: jest.fn(),
       update,
       remove: jest.fn(),
+      removeMany: jest.fn(),
     });
     useProductsMock.mockReturnValue({
       items: [product('product-1', 'Tomato', 'market-1'), product('product-2', 'Bread', 'market-2')],
@@ -64,6 +65,7 @@ describe('market detail screen', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
       assign: jest.fn(),
     });
   });

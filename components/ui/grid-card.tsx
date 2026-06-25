@@ -17,10 +17,12 @@ export type CollectionItem = {
 export function GridCard({
   item,
   onPress,
+  onLongPress,
   selected,
 }: {
   item: CollectionItem;
   onPress?: () => void;
+  onLongPress?: () => void;
   // When defined, the card becomes a selectable checkbox (navigation is ignored).
   selected?: boolean;
 }) {
@@ -61,14 +63,16 @@ export function GridCard({
   if (item.href && selected === undefined) {
     return (
       <Link href={item.href} asChild>
-        <Pressable className="flex-1 active:opacity-80">{content}</Pressable>
+        <Pressable className="flex-1 active:opacity-80" onLongPress={onLongPress}>
+          {content}
+        </Pressable>
       </Link>
     );
   }
 
-  if (onPress) {
+  if (onPress || onLongPress) {
     return (
-      <Pressable className="flex-1 active:opacity-80" onPress={onPress}>
+      <Pressable className="flex-1 active:opacity-80" onPress={onPress} onLongPress={onLongPress}>
         {content}
       </Pressable>
     );

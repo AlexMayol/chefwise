@@ -56,6 +56,7 @@ describe('category detail screen', () => {
       create: jest.fn(),
       update,
       remove: jest.fn(),
+      removeMany: jest.fn(),
     });
     useProductsMock.mockReturnValue({
       items: [product('product-1', 'Tiramisu', 'category-1'), product('product-2', 'Bread', 'category-2')],
@@ -64,6 +65,7 @@ describe('category detail screen', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
       assign: jest.fn(),
     });
   });

@@ -18,9 +18,11 @@ const useCategoriesMock = useCategories as jest.MockedFunction<typeof useCategor
 
 describe('categories screen', () => {
   const create = jest.fn(async () => ({ id: 'new', name: '', description: null, createdAt: '', updatedAt: '' }));
+  const removeMany = jest.fn(async () => {});
 
   beforeEach(() => {
     create.mockClear();
+    removeMany.mockClear();
     useCategoriesMock.mockReturnValue({
       items: [{ id: 'category-1', name: 'Postres', description: '🍰', createdAt: '', updatedAt: '' }],
       loading: false,
@@ -28,6 +30,7 @@ describe('categories screen', () => {
       create,
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany,
     });
   });
 
@@ -49,5 +52,23 @@ describe('categories screen', () => {
     await fireEvent.press(screen.getByText('Save'));
 
     expect(create).toHaveBeenCalledWith({ name: 'Drinks', description: null });
+  });
+
+  it('bulk-deletes selected categories via long-press, with confirmation', async () => {
+    const screen = await render(<CategoriesScreen />);
+
+    // Long-press enters selection mode (fireEvent bubbles to the card's Pressable).
+    await fireEvent(screen.getByText('Postres'), 'longPress');
+    expect(screen.getByText('1 selected')).toBeTruthy();
+
+    // First Delete (action bar) opens the confirmation sheet, not the deletion.
+    await fireEvent.press(screen.getByText('Delete'));
+    expect(removeMany).not.toHaveBeenCalled();
+    expect(screen.getByText('Delete 1 item?')).toBeTruthy();
+
+    // Confirm: the sheet's Delete actually runs the bulk delete.
+    const deleteButtons = screen.getAllByText('Delete');
+    await fireEvent.press(deleteButtons[deleteButtons.length - 1]);
+    expect(removeMany).toHaveBeenCalledWith(['category-1']);
   });
 });

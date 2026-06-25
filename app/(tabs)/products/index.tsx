@@ -20,7 +20,7 @@ export default function ProductsScreen() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [minimumRating, setMinimumRating] = useState<MinimumRatingFilter>('none');
   const [sort, setSort] = useState<ProductSort>('name');
-  const { items, loading, create, reload } = useProducts({
+  const { items, loading, create, reload, removeMany } = useProducts({
     favoritesOnly,
     minRating: minimumRating === 'none' ? undefined : Number(minimumRating),
     sort,
@@ -40,6 +40,7 @@ export default function ProductsScreen() {
       modalTitle={t('products.new')}
       columns={2}
       loading={loading}
+      onDeleteSelected={removeMany}
       items={items.map((product) => ({
         id: product.id,
         title: `${product.isFavorite ? '★ ' : ''}${product.name}`,

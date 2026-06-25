@@ -54,5 +54,19 @@ export function useCollection<T, Input>(repo: CrudRepository<T, Input>) {
     [reload, repo],
   );
 
-  return { items, loading, reload, create, update, remove };
+  // Delete many at once. allSettled so one FK-blocked delete doesn't abort the
+  // rest; reload once; throw if any failed so the UI can show the blocked message.
+  // ponytail: loop of single deletes, add a bulk DELETE…WHERE id IN(…) only if list sizes ever make this slow
+  const removeMany = useCallback(
+    async (ids: string[]) => {
+      const results = await Promise.allSettled(ids.map((id) => repo.delete(id)));
+      await reload();
+      if (results.some((result) => result.status === 'rejected')) {
+        throw new Error('partial-delete');
+      }
+    },
+    [reload, repo],
+  );
+
+  return { items, loading, reload, create, update, remove, removeMany };
 }

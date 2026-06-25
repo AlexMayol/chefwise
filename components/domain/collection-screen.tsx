@@ -1,5 +1,5 @@
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -30,6 +30,8 @@ type CollectionScreenProps = {
   activeFilterCount?: number;
   footer?: ReactNode;
   columns?: number;
+  // When provided, long-pressing a card enters multi-select mode for bulk delete.
+  onDeleteSelected?: (ids: string[]) => Promise<void>;
 };
 
 export function CollectionScreen({
@@ -46,13 +48,63 @@ export function CollectionScreen({
   activeFilterCount = 0,
   footer,
   columns = 2,
+  onDeleteSelected,
 }: CollectionScreenProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<CollectionItem | undefined>();
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const rows = chunkGridRows(items, columns);
+  const selectionActive = selectedIds.size > 0;
+
+  // Drop ids that no longer exist after a reload (e.g. deleted, or list refiltered).
+  useEffect(() => {
+    setSelectedIds((current) => {
+      if (current.size === 0) {
+        return current;
+      }
+      const present = new Set(items.map((item) => item.id));
+      const next = new Set([...current].filter((id) => present.has(id)));
+      return next.size === current.size ? current : next;
+    });
+  }, [items]);
+
+  function clearSelection() {
+    setSelectedIds(new Set());
+    setConfirmOpen(false);
+    setDeleteError(null);
+  }
+
+  function toggleSelected(id: string) {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  async function confirmDelete() {
+    if (!onDeleteSelected) {
+      return;
+    }
+    try {
+      await onDeleteSelected([...selectedIds]);
+      clearSelection();
+    } catch {
+      // Some items were FK-blocked; deletable ones are already gone (the prune
+      // effect drops them from the selection). Keep the rest selected + show why.
+      setConfirmOpen(false);
+      setDeleteError(t('errors.deleteBlocked'));
+    }
+  }
 
   function closeModal() {
     setIsModalVisible(false);
@@ -66,7 +118,10 @@ export function CollectionScreen({
 
   useFocusEffect(
     useCallback(() => {
-      return closeModal;
+      return () => {
+        closeModal();
+        clearSelection();
+      };
     }, []),
   );
 
@@ -136,7 +191,19 @@ export function CollectionScreen({
           {rows.map((row, rowIndex) => (
             <View key={row.map((item) => item.id).join('-') || rowIndex} className="flex-row gap-3">
               {row.map((item) => (
-                <GridCard key={item.id} item={item} onPress={item.editable ? () => openModal(item) : undefined} />
+                <GridCard
+                  key={item.id}
+                  item={item}
+                  selected={selectionActive ? selectedIds.has(item.id) : undefined}
+                  onLongPress={onDeleteSelected ? () => setSelectedIds(new Set([item.id])) : undefined}
+                  onPress={
+                    selectionActive
+                      ? () => toggleSelected(item.id)
+                      : item.editable
+                        ? () => openModal(item)
+                        : undefined
+                  }
+                />
               ))}
               {Array.from({ length: columns - row.length }).map((_, index) => (
                 <View key={`spacer-${index}`} className="flex-1" />
@@ -147,6 +214,36 @@ export function CollectionScreen({
       )}
 
       {footer}
+
+      {selectionActive ? (
+        <View className="gap-2">
+          {deleteError ? <Text className="text-sm text-destructive">{deleteError}</Text> : null}
+          <View className="flex-row items-center gap-2">
+            <Text className="flex-1 text-base font-bold text-foreground">
+              {t('selection.selectedCount', { count: selectedIds.size })}
+            </Text>
+            <Button label={t('actions.cancel')} variant="ghost" size="sm" onPress={clearSelection} />
+            <Button label={t('actions.delete')} variant="destructive" size="sm" onPress={() => setConfirmOpen(true)} />
+          </View>
+        </View>
+      ) : null}
+
+      <BottomSheet visible={confirmOpen} onClose={() => setConfirmOpen(false)} bottomInset={insets.bottom}>
+        <View className="gap-4">
+          <Text className="text-xl font-bold text-foreground">
+            {t('selection.confirmDeleteTitle', { count: selectedIds.size })}
+          </Text>
+          <View className="flex-row justify-end gap-2">
+            <Button label={t('actions.cancel')} variant="ghost" size="sm" onPress={() => setConfirmOpen(false)} />
+            <Button
+              label={t('actions.delete')}
+              variant="destructive"
+              size="sm"
+              onPress={() => void confirmDelete()}
+            />
+          </View>
+        </View>
+      </BottomSheet>
     </ScreenScaffold>
   );
 }

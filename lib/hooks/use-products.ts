@@ -60,6 +60,19 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
     [reload, repositories.products],
   );
 
+  // Delete many at once. allSettled so one FK-blocked delete doesn't abort the
+  // rest; reload once; throw if any failed so the UI can show the blocked message.
+  const removeMany = useCallback(
+    async (ids: string[]) => {
+      const results = await Promise.allSettled(ids.map((id) => repositories.products.delete(id)));
+      await reload();
+      if (results.some((result) => result.status === 'rejected')) {
+        throw new Error('partial-delete');
+      }
+    },
+    [reload, repositories.products],
+  );
+
   // Apply the same patch to many products (e.g. reassign category/market), then reload once.
   const assign = useCallback(
     async (ids: string[], patch: Partial<ProductInput>) => {
@@ -69,7 +82,7 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
     [reload, repositories.products],
   );
 
-  return { items, loading, reload, create, update, remove, assign };
+  return { items, loading, reload, create, update, remove, removeMany, assign };
 }
 
 export function useProductDetail(productId?: string) {

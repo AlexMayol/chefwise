@@ -46,6 +46,7 @@ describe('catalog screens', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
       assign: jest.fn(),
     });
     useProductDetailMock.mockReturnValue({
@@ -69,6 +70,7 @@ describe('catalog screens', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
     });
   });
 
@@ -143,6 +145,7 @@ describe('catalog screens', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
     });
 
     const screen = await render(<ProductDetailScreen />);

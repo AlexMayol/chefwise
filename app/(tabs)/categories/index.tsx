@@ -8,7 +8,7 @@ import { useTranslation } from '@/lib/i18n';
 
 export default function CategoriesScreen() {
   const { t } = useTranslation();
-  const { items, loading, create, reload } = useCategories();
+  const { items, loading, create, reload, removeMany } = useCategories();
 
   useReloadOnFocus(reload);
 
@@ -20,6 +20,7 @@ export default function CategoriesScreen() {
       columns={2}
       loading={loading}
       modalTitle={t('categories.new')}
+      onDeleteSelected={removeMany}
       items={items.map((category) => ({
         id: category.id,
         title: category.name,

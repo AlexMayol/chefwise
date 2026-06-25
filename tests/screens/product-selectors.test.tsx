@@ -64,6 +64,7 @@ describe('product selectors', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
     });
     useProductsMock.mockReturnValue({
       items: products,
@@ -72,6 +73,7 @@ describe('product selectors', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
       assign: jest.fn(),
     });
   });

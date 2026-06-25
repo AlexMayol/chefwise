@@ -53,6 +53,7 @@ describe('recipe screens', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
       assign: jest.fn(),
     });
     useMarketsMock.mockReturnValue({
@@ -62,6 +63,7 @@ describe('recipe screens', () => {
       create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      removeMany: jest.fn(),
     });
     useRecipeDetailMock.mockReturnValue({
       recipe: {

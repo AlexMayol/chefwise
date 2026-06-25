@@ -31,6 +31,7 @@ describe('i18n resources', () => {
       'pantry',
       'products',
       'recipes',
+      'selection',
       'settings',
       'shopping',
       'validation',

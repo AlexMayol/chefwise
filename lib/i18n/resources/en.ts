@@ -72,6 +72,12 @@ export const en = {
       exportFailed: 'Export failed.',
       missingPantryItems: 'Some pantry items are missing.',
     },
+    selection: {
+      selectedCount_one: '{{count}} selected',
+      selectedCount_other: '{{count}} selected',
+      confirmDeleteTitle_one: 'Delete {{count}} item?',
+      confirmDeleteTitle_other: 'Delete {{count}} items?',
+    },
     products: {
       title: 'Products',
       new: 'New product',

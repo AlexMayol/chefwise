@@ -8,7 +8,7 @@ import { type Href } from 'expo-router';
 
 export default function MarketsScreen() {
   const { t } = useTranslation();
-  const { items, loading, create, reload } = useMarkets();
+  const { items, loading, create, reload, removeMany } = useMarkets();
 
   // Refresh when returning from the edit/detail screen (it uses a separate hook instance).
   useReloadOnFocus(reload);
@@ -20,6 +20,7 @@ export default function MarketsScreen() {
       addLabel={t('markets.new')}
       modalTitle={t('navigation.markets')}
       loading={loading}
+      onDeleteSelected={removeMany}
       items={items.map((market) => ({
         id: market.id,
         title: market.name,
