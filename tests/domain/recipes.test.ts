@@ -1,6 +1,26 @@
-import { calculateRecipeCost } from '@/lib/domain/recipes';
+import { calculateRecipeCost, calculateRecipeCosts } from '@/lib/domain/recipes';
 
 const observedAt = '2026-06-24T00:00:00.000Z';
+
+describe('batch recipe cost', () => {
+  it('keys each recipe cost by id, sharing one price pool', () => {
+    const prices = [
+      { id: 'p-1', offerId: 'o-1', productId: 'flour', normalizedPrice: 2, normalizedUnit: 'kg' as const, observedAt },
+    ];
+    const costs = calculateRecipeCosts(
+      [
+        { id: 'r-1', servings: 2, ingredients: [{ productId: 'flour', quantity: 500, unit: 'g' }] },
+        { id: 'r-2', servings: 1, ingredients: [{ productId: 'sugar', quantity: 100, unit: 'g' }] },
+      ],
+      prices,
+    );
+
+    expect(costs['r-1'].totalCost).toBe(1);
+    expect(costs['r-1'].complete).toBe(true);
+    expect(costs['r-2'].complete).toBe(false); // sugar has no price
+    expect(costs['r-2'].totalCost).toBeNull();
+  });
+});
 
 describe('recipe cost engine', () => {
   it('calculates ingredient cost and cost per serving from an offer price', () => {

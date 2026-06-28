@@ -32,7 +32,7 @@ describe('product repository list enrichment', () => {
     expect(db.lastGetAllSql).toContain('COUNT(DISTINCT off.marketId)');
     expect(db.lastGetAllSql).toContain('bestImagePath');
     // bestImagePath comes from the top-rated offer that actually has an image.
-    expect(db.lastGetAllSql).toMatch(/imagePath IS NOT NULL[\s\S]*ORDER BY[\s\S]*rating DESC/);
+    expect(db.lastGetAllSql).toMatch(/imagePath IS NOT NULL[\s\S]*ORDER BY[\s\S]*rating DESC[\s\S]*createdAt DESC/);
     expect(db.lastGetAllSql).not.toContain('LEFT JOIN markets');
     expect(db.lastGetAllSql).toContain('p.isFavorite = 1');
     expect(db.lastGetAllSql).not.toContain('p.rating');

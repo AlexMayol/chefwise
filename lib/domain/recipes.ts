@@ -100,3 +100,17 @@ export function calculateRecipeCost({
     missingProductIds,
   };
 }
+
+// Cost for many recipes at once (the listing screen), reusing the single-recipe engine.
+// `prices` is the latest price of every offer across all products, built once upstream.
+// ponytail: O(recipes × ingredients × prices) scan — fine at local-app scale.
+export function calculateRecipeCosts(
+  recipes: { id: string; servings: number; ingredients: RecipeCostIngredient[] }[],
+  prices: RecipeCostPrice[],
+): Record<string, RecipeCostResult> {
+  const result: Record<string, RecipeCostResult> = {};
+  for (const recipe of recipes) {
+    result[recipe.id] = calculateRecipeCost({ servings: recipe.servings, ingredients: recipe.ingredients, prices });
+  }
+  return result;
+}

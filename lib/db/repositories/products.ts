@@ -77,7 +77,7 @@ export function createProductRepository(db: AppDatabase) {
                 (SELECT img.imagePath
                    FROM product_offers img
                   WHERE img.productId = p.id AND img.imagePath IS NOT NULL
-                  ORDER BY img.rating DESC, img.updatedAt DESC, img.id DESC
+                  ORDER BY img.rating DESC, img.createdAt DESC, img.id DESC
                   LIMIT 1) AS bestImagePath
          FROM products p
          LEFT JOIN (

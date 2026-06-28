@@ -2,6 +2,7 @@ import { Link, useLocalSearchParams, type Href } from 'expo-router';
 import { ChevronRight, MoreVertical, Plus, Star } from 'lucide-react-native';
 import { useMemo, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DeleteButton } from '@/components/domain/delete-button';
@@ -31,6 +32,7 @@ import { useProductOffers } from '@/lib/hooks/use-product-offers';
 import { useProductDetail } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
+import { pickBestOfferImagePath } from '@/lib/domain/products';
 import { resolveEntityImageUri } from '@/lib/images/storage';
 import type { DesignTokens } from '@/lib/theme/tokens';
 import { productEmoji } from '@/lib/ui/category-emoji';
@@ -100,6 +102,11 @@ export default function ProductDetailScreen() {
     return values.length ? Math.min(...values) : null;
   }, [offers]);
 
+  const avatarImageUri = useMemo(
+    () => resolveEntityImageUri(pickBestOfferImagePath(offers)) ?? undefined,
+    [offers],
+  );
+
   if (!product) {
     return (
       <ScreenScaffold>
@@ -135,12 +142,15 @@ export default function ProductDetailScreen() {
 
         <View className="flex-row items-start gap-4">
           <View className="relative size-[72px] shrink-0">
-            <EntityAvatar emoji={emoji} size={72} circle />
+            <EntityAvatar imageUri={avatarImageUri} emoji={emoji} size={72} circle />
             {product.isFavorite ? (
-              <View className="absolute -bottom-1 -right-1 flex-row items-center gap-1 rounded-full border border-primary bg-background px-2 py-0.5">
+              <Animated.View
+                entering={FadeIn.duration(250)}
+                exiting={FadeOut.duration(250)}
+                className="absolute -bottom-1 -right-1 flex-row items-center gap-1 rounded-full border border-primary bg-background px-2 py-0.5">
                 <Star size={12} color={tokens.primary} fill={tokens.primary} />
                 <Text className="text-xs font-semibold text-primary">{t('forms.favorite')}</Text>
-              </View>
+              </Animated.View>
             ) : null}
           </View>
           <View className="flex-1 gap-1">

@@ -1,23 +1,115 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useAppDatabase } from '@/lib/db/provider';
 import type { Recipe, RecipeInput, RecipeProduct, RecipeProductInput } from '@/lib/db/repositories/recipes';
-import { calculateRecipeCost } from '@/lib/domain/recipes';
+import { calculateRecipeCost, calculateRecipeCosts, type RecipeCostPrice } from '@/lib/domain/recipes';
 import { consumeRecipeBatch } from '@/lib/domain/pantry';
+import { productEmoji } from '@/lib/ui/category-emoji';
 import { useCollection } from './use-collection';
 import { useDetail } from './use-detail';
 import { usePantry } from './use-pantry';
+
+// An ingredient list entry without the recipeId (it's implied by the recipe being saved).
+type IngredientDraft = Omit<RecipeProductInput, 'recipeId'>;
 
 export function useRecipes() {
   const { repositories } = useAppDatabase();
   const collection = useCollection<Recipe, RecipeInput>(repositories.recipes);
 
-  const addIngredient = useCallback(
-    async (input: RecipeProductInput): Promise<RecipeProduct> => repositories.recipes.addIngredient(input),
-    [repositories.recipes],
+  // Create a recipe and its ingredients together (the guided form submits both at once).
+  const createWithIngredients = useCallback(
+    async (input: RecipeInput, ingredients: IngredientDraft[]): Promise<Recipe> => {
+      const recipe = await repositories.recipes.create(input);
+      if (ingredients.length > 0) {
+        await repositories.recipes.setIngredients(recipe.id, ingredients);
+      }
+      await collection.reload();
+      return recipe;
+    },
+    [collection.reload, repositories.recipes],
   );
 
-  return { ...collection, addIngredient };
+  return { ...collection, createWithIngredients };
+}
+
+// A recipe enriched for the listing cards: cost (reusing the cost engine) + the emoji strip
+// derived from each ingredient's product category. Loads everything once, computes in memory.
+export type RecipeOverview = Recipe & {
+  totalCost: number | null;
+  costPerServing: number | null;
+  complete: boolean;
+  ingredientCount: number;
+  ingredientEmojis: string[];
+};
+
+export function useRecipeOverviews() {
+  const { repositories } = useAppDatabase();
+  const [items, setItems] = useState<RecipeOverview[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const reload = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [recipes, products, categories, offers] = await Promise.all([
+        repositories.recipes.list(),
+        repositories.products.list(),
+        repositories.categories.list(),
+        repositories.productOffers.listAll(),
+      ]);
+      const ingredientLists = await Promise.all(recipes.map((recipe) => repositories.recipes.listIngredients(recipe.id)));
+
+      const prices: RecipeCostPrice[] = offers
+        .filter((offer) => offer.normalizedPrice != null && offer.normalizedUnit != null && offer.observedAt != null)
+        .map((offer) => ({
+          id: offer.id,
+          offerId: offer.id,
+          productId: offer.productId,
+          normalizedPrice: offer.normalizedPrice!,
+          normalizedUnit: offer.normalizedUnit!,
+          observedAt: offer.observedAt!,
+        }));
+
+      const costs = calculateRecipeCosts(
+        recipes.map((recipe, index) => ({ id: recipe.id, servings: recipe.servings, ingredients: ingredientLists[index] })),
+        prices,
+      );
+
+      const categoryIdByProduct = new Map(products.map((product) => [product.id, product.categoryId]));
+
+      setItems(
+        recipes.map((recipe, index) => {
+          const ingredients = ingredientLists[index];
+          const cost = costs[recipe.id];
+          return {
+            ...recipe,
+            totalCost: cost.totalCost,
+            costPerServing: cost.costPerServing,
+            complete: cost.complete,
+            ingredientCount: ingredients.length,
+            ingredientEmojis: ingredients.map((ingredient) =>
+              productEmoji(categoryIdByProduct.get(ingredient.productId) ?? null, categories),
+            ),
+          };
+        }),
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [repositories]);
+
+  useEffect(() => {
+    void reload();
+  }, [reload]);
+
+  const toggleFavorite = useCallback(
+    async (id: string, value: boolean) => {
+      await repositories.recipes.update(id, { isFavorite: value });
+      await reload();
+    },
+    [reload, repositories.recipes],
+  );
+
+  return { items, loading, reload, toggleFavorite };
 }
 
 export function useRecipeDetail(recipeId?: string) {
@@ -43,6 +135,29 @@ export function useRecipeDetail(recipeId?: string) {
     },
     [reload, repositories.recipes],
   );
+
+  // Save edits to the recipe and its full ingredient list (the guided edit form submits both).
+  const save = useCallback(
+    async (input: Partial<RecipeInput>, newIngredients?: Omit<RecipeProductInput, 'recipeId'>[]) => {
+      if (!recipeId) {
+        return;
+      }
+      await repositories.recipes.update(recipeId, input);
+      if (newIngredients) {
+        await repositories.recipes.setIngredients(recipeId, newIngredients);
+      }
+      await reload();
+    },
+    [recipeId, reload, repositories.recipes],
+  );
+
+  const toggleFavorite = useCallback(async () => {
+    if (!recipeId || !recipe) {
+      return;
+    }
+    await repositories.recipes.update(recipeId, { isFavorite: !recipe.isFavorite });
+    await reload();
+  }, [recipe, recipeId, reload, repositories.recipes]);
 
   const cost = useCallback(async () => {
     if (!recipe) {
@@ -102,5 +217,5 @@ export function useRecipeDetail(recipeId?: string) {
     }
   }, [ingredients, pantry, recipe?.name]);
 
-  return { recipe, ingredients, loading, reload, addIngredient, calculateCost: cost, cook, remove };
+  return { recipe, ingredients, loading, reload, addIngredient, save, toggleFavorite, calculateCost: cost, cook, remove };
 }

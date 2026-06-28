@@ -23,6 +23,7 @@ describe('app repository bundle', () => {
     expect(repositories.productOffers.listForProduct).toEqual(expect.any(Function));
     expect(repositories.productOfferPrices.create).toEqual(expect.any(Function));
     expect(repositories.productPrices.create).toEqual(expect.any(Function));
+    expect(repositories.recipeCategories.create).toEqual(expect.any(Function));
     expect(repositories.recipes.list).toEqual(expect.any(Function));
     expect(repositories.shoppingLists.list).toEqual(expect.any(Function));
     expect(repositories.pantry.listItems).toEqual(expect.any(Function));

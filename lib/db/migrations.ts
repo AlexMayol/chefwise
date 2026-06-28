@@ -1,6 +1,7 @@
 import type { AppDatabase } from './client';
 import { LATEST_SCHEMA_VERSION, SCHEMA_SQL } from './schema';
 import { runSeeds } from './seeds';
+import { seedDefaultRecipeCategories } from './seeds/recipe-categories';
 
 type UserVersionRow = {
   user_version: number;
@@ -115,6 +116,32 @@ export async function runMigrations(db: AppDatabase): Promise<void> {
       PRAGMA foreign_keys = ON;
     `);
     await db.execAsync(SCHEMA_SQL);
+  }
+
+  if (currentVersion < 9) {
+    // Additive (not a destructive rebuild): recipe_categories is a brand-new table with no
+    // dependents, and recipes gains two nullable columns. ON DELETE SET NULL makes deleting a
+    // category leave its recipes uncategorized with no app code. Seeded here (not in runSeeds)
+    // so the defaults land once for both fresh installs (version 0) and existing v8 dev DBs.
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS recipe_categories (
+        id TEXT PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        emoji TEXT,
+        description TEXT,
+        sortOrder INTEGER NOT NULL DEFAULT 0,
+        createdAt TEXT NOT NULL,
+        updatedAt TEXT NOT NULL
+      );
+    `);
+    await addColumnIfMissing(
+      db,
+      'recipes',
+      'recipeCategoryId',
+      'TEXT REFERENCES recipe_categories(id) ON DELETE SET NULL',
+    );
+    await addColumnIfMissing(db, 'recipes', 'isFavorite', 'INTEGER NOT NULL DEFAULT 0');
+    await seedDefaultRecipeCategories(db);
   }
 
   if (currentVersion < LATEST_SCHEMA_VERSION) {

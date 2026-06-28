@@ -45,6 +45,10 @@ jest.mock('@/components/domain/product-form', () => ({
   ProductForm: () => null,
 }));
 
+jest.mock('@/lib/images/storage', () => ({
+  resolveEntityImageUri: (path: string | null | undefined) => (path ? `resolved://${path}` : null),
+}));
+
 const useCategoriesMock = useCategories as jest.MockedFunction<typeof useCategories>;
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
 const useProductDetailMock = useProductDetail as jest.MockedFunction<typeof useProductDetail>;
@@ -219,5 +223,84 @@ describe('catalog screens', () => {
 
     expect(screen.getByText('Bread flour')).toBeTruthy();
     expect(screen.getAllByText('Central Market').length).toBeGreaterThan(0);
+    expect(screen.getByText('Favorite')).toBeTruthy();
+  });
+
+  it('uses the highest-rated offer image for the product hero avatar', async () => {
+    useProductDetailMock.mockReturnValue({
+      item: {
+        id: 'product-1',
+        name: 'Baguette',
+        categoryId: 'cat-bakery',
+        defaultUnit: 'unit',
+        isFavorite: false,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      },
+      loading: false,
+      reload: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+    });
+    useCategoriesMock.mockReturnValue({
+      items: [{ id: 'cat-bakery', name: 'Bakery', description: '🥖', createdAt: '', updatedAt: '' }],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+      removeMany: jest.fn(),
+    });
+    useProductOffersMock.mockReturnValue({
+      items: [
+        {
+          id: 'offer-1',
+          productId: 'product-1',
+          marketId: 'market-1',
+          brand: null,
+          quantity: 1,
+          unit: 'unit',
+          rating: null,
+          imagePath: null,
+          description: null,
+          createdAt: '2026-01-02T00:00:00.000Z',
+          updatedAt: '2026-01-02T00:00:00.000Z',
+          marketName: 'City Supermarket',
+          price: 1.25,
+          normalizedPrice: 1.25,
+          normalizedUnit: 'unit',
+          observedAt: '2026-01-02T00:00:00.000Z',
+        },
+        {
+          id: 'offer-2',
+          productId: 'product-1',
+          marketId: 'market-2',
+          brand: 'Hacendado',
+          quantity: 1,
+          unit: 'unit',
+          rating: 5,
+          imagePath: 'images/offers/corner-bakery.jpg',
+          description: 'Wena wea',
+          createdAt: '2026-01-03T00:00:00.000Z',
+          updatedAt: '2026-01-03T00:00:00.000Z',
+          marketName: 'Corner Bakery',
+          price: 2.3,
+          normalizedPrice: 2.3,
+          normalizedUnit: 'unit',
+          observedAt: '2026-01-03T00:00:00.000Z',
+        },
+      ],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      createWithPrice: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+    });
+
+    const screen = await render(<ProductDetailScreen />);
+
+    // Hero uses the Corner Bakery photo; only the unrated City Supermarket row falls back to emoji.
+    expect(screen.getAllByText('🥖').length).toBe(1);
   });
 });

@@ -6,6 +6,7 @@ import { createProductOfferPriceRepository } from './product-offer-prices';
 import { createProductOfferRepository } from './product-offers';
 import { createProductPriceRepository } from './product-prices';
 import { createProductRepository } from './products';
+import { createRecipeCategoryRepository } from './recipe-categories';
 import { createRecipeRepository } from './recipes';
 import { createShoppingListRepository } from './shopping-lists';
 
@@ -18,6 +19,7 @@ export function createAppRepositories(db: AppDatabase) {
     productOfferPrices: createProductOfferPriceRepository(db),
     // Kept for the shopping "bought" flow only; the catalog/recipes use offers now.
     productPrices: createProductPriceRepository(db),
+    recipeCategories: createRecipeCategoryRepository(db),
     recipes: createRecipeRepository(db),
     shoppingLists: createShoppingListRepository(db),
     pantry: createPantryRepository(db),

@@ -1,4 +1,4 @@
-export const LATEST_SCHEMA_VERSION = 8;
+export const LATEST_SCHEMA_VERSION = 9;
 
 export const REQUIRED_TABLES = [
   'markets',
@@ -7,6 +7,7 @@ export const REQUIRED_TABLES = [
   'product_offers',
   'product_offer_prices',
   'product_prices',
+  'recipe_categories',
   'recipes',
   'recipe_products',
   'shopping_lists',
@@ -102,14 +103,29 @@ CREATE TABLE IF NOT EXISTS product_prices (
   FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
 );
 
+-- Recipe categories classify recipes by meal type (Main dishes, Desserts…). Separate from
+-- product categories: emoji lives in its own column (product categories overload description).
+CREATE TABLE IF NOT EXISTS recipe_categories (
+  id TEXT PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  emoji TEXT,
+  description TEXT,
+  sortOrder INTEGER NOT NULL DEFAULT 0,
+  createdAt TEXT NOT NULL,
+  updatedAt TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS recipes (
   id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
   description TEXT,
   servings REAL NOT NULL,
+  recipeCategoryId TEXT,
+  isFavorite INTEGER NOT NULL DEFAULT 0,
   imagePath TEXT,
   createdAt TEXT NOT NULL,
-  updatedAt TEXT NOT NULL
+  updatedAt TEXT NOT NULL,
+  FOREIGN KEY (recipeCategoryId) REFERENCES recipe_categories(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS recipe_products (
