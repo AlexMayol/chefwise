@@ -6,7 +6,7 @@ import { saveEntityImage, deleteEntityImage, resolveEntityImageUri } from '@/lib
 import { useTranslation } from '@/lib/i18n';
 
 type EntityImageFieldProps = {
-  entityType: 'product' | 'recipe' | 'market';
+  entityType: 'product' | 'recipe' | 'market' | 'offer';
   entityId: string;
   value?: string | null;
   onChange(path: string | null): void;

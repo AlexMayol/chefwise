@@ -1,8 +1,8 @@
 import { Search, SlidersHorizontal } from 'lucide-react-native';
 import { Pressable, View } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
-import { getDesignTokens } from '@/lib/theme/tokens';
+
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 
 import { Input } from './input';
 
@@ -19,7 +19,7 @@ type SearchBarProps = {
 // Search field with a leading magnifier and an optional trailing filter button.
 // Shared by the products / categories / markets lists.
 export function SearchBar({ value, onChangeText, placeholder, onFilter, filterActive, filterLabel }: SearchBarProps) {
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   return (
     <View className="flex-row items-center gap-2">

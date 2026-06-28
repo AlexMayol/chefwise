@@ -14,13 +14,11 @@ import { LoadingState } from '@/components/ui/loading-state';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SearchBar } from '@/components/ui/search-bar';
 import { Select } from '@/components/ui/select';
-import { useColorScheme } from '@/components/useColorScheme';
 import { mostTrackedCategoryId, productCountsByCategory } from '@/lib/domain/category-stats';
 import { useCategories } from '@/lib/hooks/use-categories';
 import { useProducts } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
-import { getDesignTokens } from '@/lib/theme/tokens';
 import { categoryEmoji } from '@/lib/ui/category-emoji';
 
 type CategorySort = 'name' | 'most_products';
@@ -28,7 +26,6 @@ type CategorySort = 'name' | 'most_products';
 export default function CategoriesScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const tokens = getDesignTokens(useColorScheme());
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<CategorySort>('name');
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -92,11 +89,11 @@ export default function CategoriesScreen() {
 
       <BottomActionBar>
         <Link href="/categories/new" asChild>
-          <Button label={t('categories.new')} icon={<Plus size={18} color={tokens.primaryForeground} />} />
+          <Button label={t('categories.new')} icon={<Plus size={18} />} />
         </Link>
       </BottomActionBar>
 
-      <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom}>
+      <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom} resizable={false}>
         <View className="gap-4">
           <View className="flex-row items-center justify-between">
             <Text className="text-xl font-bold text-foreground">{t('common.filters')}</Text>

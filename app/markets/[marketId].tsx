@@ -19,7 +19,7 @@ import { EntityAvatar } from '@/components/ui/entity-avatar';
 import { IconButton } from '@/components/ui/icon-button';
 import { LoadingState } from '@/components/ui/loading-state';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
-import { useColorScheme } from '@/components/useColorScheme';
+
 import type { MarketOfferListItem } from '@/lib/db/repositories/product-offers';
 import { marketStats } from '@/lib/domain/market-stats';
 import { formatCurrency } from '@/lib/formatting/currency';
@@ -32,7 +32,7 @@ import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
 import { productEmoji } from '@/lib/ui/category-emoji';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { cn } from '@/lib/utils';
 
 const MARKET_EMOJI = '🏪';
@@ -41,7 +41,7 @@ export default function MarketDetailScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
   const { marketId } = useLocalSearchParams<{ marketId: string }>();
   const { items: markets, update, remove } = useMarkets();
   const { items: products } = useProducts();
@@ -58,11 +58,7 @@ export default function MarketDetailScreen() {
   const market = markets.find((item) => item.id === marketId);
 
   const productInfo = useMemo(
-    () => new Map(products.map((product) => [product.id, { bestNormalizedPrice: product.bestNormalizedPrice, rating: product.rating }])),
-    [products],
-  );
-  const productImage = useMemo(
-    () => new Map(products.map((product) => [product.id, resolveEntityImageUri(product.imagePath) ?? undefined])),
+    () => new Map(products.map((product) => [product.id, { bestNormalizedPrice: product.bestNormalizedPrice }])),
     [products],
   );
   const productGlyph = useMemo(
@@ -122,7 +118,7 @@ export default function MarketDetailScreen() {
               <OfferLine
                 key={offer.id}
                 offer={offer}
-                imageUri={productImage.get(offer.productId)}
+                imageUri={resolveEntityImageUri(offer.imagePath) ?? undefined}
                 emoji={productGlyph.get(offer.productId)}
                 separator={index > 0}
                 right={
@@ -178,13 +174,13 @@ export default function MarketDetailScreen() {
       />
 
       <BottomSheet visible={editing} onClose={() => setEditing(false)} bottomInset={insets.bottom}>
-        <View className="gap-4">
+        <View className="flex-1 gap-4">
           <FormScreenHeader
             title={t('markets.edit')}
             onCancel={() => setEditing(false)}
             onSave={() => editFormRef.current?.submit()}
           />
-          <ScrollView style={{ maxHeight: 480 }} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
             <MarketForm
               ref={editFormRef}
               initialValues={market}
@@ -198,7 +194,7 @@ export default function MarketDetailScreen() {
         </View>
       </BottomSheet>
 
-      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom}>
+      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom} resizable={false}>
         <View className="gap-3">
           <Pressable
             className="rounded-xl px-4 py-3 active:opacity-70"

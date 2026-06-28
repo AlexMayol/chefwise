@@ -157,7 +157,7 @@ export function CollectionScreen({
             label={activeFilterCount > 0 ? `${t('common.filters')} (${activeFilterCount})` : t('common.filters')}
             onPress={() => setFiltersOpen(true)}
           />
-          <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom}>
+          <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom} resizable={false}>
             <View className="gap-4">
               <View className="flex-row items-center justify-between">
                 <Text className="text-xl font-bold text-foreground">{t('common.filters')}</Text>
@@ -226,7 +226,7 @@ export function CollectionScreen({
         </View>
       ) : null}
 
-      <BottomSheet visible={confirmOpen} onClose={() => setConfirmOpen(false)} bottomInset={insets.bottom}>
+      <BottomSheet visible={confirmOpen} onClose={() => setConfirmOpen(false)} bottomInset={insets.bottom} resizable={false}>
         <View className="gap-4">
           <Text className="text-xl font-bold text-foreground">
             {t('selection.confirmDeleteTitle', { count: selectedIds.size })}

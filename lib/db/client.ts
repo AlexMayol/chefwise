@@ -18,6 +18,9 @@ export type AppDatabase = {
   withTransactionAsync<T>(work: () => Promise<T>): Promise<T>;
   // Consolidates WAL into a single byte image — used for backup export.
   serializeAsync(databaseName?: string): Promise<Uint8Array>;
+  // Releases the file so the on-disk database can be swapped — used for backup import.
+  // Optional so lightweight test doubles need not implement it; the real connection always does.
+  closeAsync?(): Promise<void>;
 };
 
 export async function openAppDatabase(): Promise<AppDatabase> {

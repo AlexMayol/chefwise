@@ -3,12 +3,12 @@ import { Alert, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { useAppDatabase } from '@/lib/db/provider';
-import { exportBackupToCache, pickAndValidateBackup } from '@/lib/domain/backup-storage';
+import { exportBackupToCache, pickAndValidateBackup, replaceLocalBackupData } from '@/lib/domain/backup-storage';
 import { useTranslation } from '@/lib/i18n';
 
 export function BackupActions() {
   const { t } = useTranslation();
-  const { db } = useAppDatabase();
+  const { db, importDatabase } = useAppDatabase();
   const [message, setMessage] = useState<string | null>(null);
 
   async function handleExport() {
@@ -21,7 +21,8 @@ export function BackupActions() {
         await Sharing.shareAsync(uri, { mimeType: 'application/zip', dialogTitle: t('backup.exportLocalData') });
       }
       setMessage(t('backup.exportSuccess'));
-    } catch {
+    } catch (error) {
+      console.warn('[backup] export failed', error);
       setMessage(t('errors.exportFailed'));
     }
   }
@@ -33,9 +34,18 @@ export function BackupActions() {
         text: t('actions.confirm'),
         style: 'destructive',
         onPress: () =>
-          void pickAndValidateBackup()
-            .then(() => setMessage(t('backup.importSuccess')))
-            .catch(() => setMessage(t('errors.importFailed'))),
+          void importDatabase((beforeReplace) =>
+            pickAndValidateBackup((input) => replaceLocalBackupData(input, { beforeReplace })),
+          )
+            .then((imported) => {
+              if (imported) {
+                setMessage(t('backup.importSuccess'));
+              }
+            })
+            .catch((error: unknown) => {
+              console.warn('[backup] import failed', error);
+              setMessage(t('errors.importFailed'));
+            }),
       },
     ]);
   }

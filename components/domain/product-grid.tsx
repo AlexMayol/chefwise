@@ -20,7 +20,7 @@ export function productToCollectionItem(product: ProductListItem, missingPriceLa
       product.bestNormalizedPrice != null
         ? `${formatCurrency(product.bestNormalizedPrice)}/${product.bestNormalizedUnit}`
         : missingPriceLabel,
-    imageUri: resolveEntityImageUri(product.imagePath) ?? undefined,
+    imageUri: resolveEntityImageUri(product.bestImagePath) ?? undefined,
     emoji,
     href: `/products/${product.id}` as Href,
   };

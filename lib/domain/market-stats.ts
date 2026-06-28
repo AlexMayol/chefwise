@@ -1,8 +1,8 @@
 // Derived market metrics from its offers + per-product info (no new DB queries).
 // Structural inputs so callers pass MarketOfferListItem[] / ProductListItem-derived maps,
 // and tests stay light.
-type MarketOffer = { productId: string; normalizedPrice: number | null; observedAt: string | null };
-type ProductInfo = { bestNormalizedPrice: number | null; rating: number | null };
+type MarketOffer = { productId: string; normalizedPrice: number | null; observedAt: string | null; rating: number | null };
+type ProductInfo = { bestNormalizedPrice: number | null };
 
 export type MarketStats = {
   productsTracked: number;
@@ -24,6 +24,7 @@ export function marketStats(
   const products = new Set<string>();
   const cheapest = new Set<string>();
   const recent = new Set<string>();
+  const ratings: number[] = [];
   let lastUpdated: string | null = null;
 
   for (const offer of offers) {
@@ -33,17 +34,14 @@ export function marketStats(
     if (offer.normalizedPrice != null && info?.bestNormalizedPrice != null && offer.normalizedPrice <= info.bestNormalizedPrice + 1e-6) {
       cheapest.add(offer.productId);
     }
+    // Rating now lives on the offer, so the market's average is over its offers' ratings.
+    if (offer.rating != null) ratings.push(offer.rating);
     if (offer.observedAt) {
       if (!lastUpdated || offer.observedAt > lastUpdated) lastUpdated = offer.observedAt;
       if (now - new Date(offer.observedAt).getTime() <= recentMs) recent.add(offer.productId);
     }
   }
 
-  const ratings: number[] = [];
-  products.forEach((id) => {
-    const rating = productInfo.get(id)?.rating;
-    if (rating != null) ratings.push(rating);
-  });
   const avgRating = ratings.length ? ratings.reduce((total, value) => total + value, 0) / ratings.length : null;
 
   return {

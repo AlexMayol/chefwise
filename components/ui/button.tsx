@@ -1,6 +1,8 @@
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { cloneElement, isValidElement } from 'react';
 import { Pressable, Text, type PressableProps } from 'react-native';
 
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { elevation } from '@/lib/theme/elevation';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +42,18 @@ const textSizeVariants: Record<ButtonSize, string> = {
 };
 
 export function Button({ label, variant = 'primary', size = 'default', icon, className, disabled, style, ...props }: ButtonProps) {
+  const tokens = useDesignTokens();
+  const iconColor = {
+    primary: tokens.primaryForeground,
+    secondary: tokens.secondaryForeground,
+    destructive: tokens.destructiveForeground,
+    ghost: tokens.foreground,
+  }[variant];
+  const renderedIcon =
+    icon && isValidElement(icon)
+      ? cloneElement(icon as ReactElement<{ color?: string }>, { color: iconColor })
+      : icon;
+
   // Filled actions get a tinted lift; outline/ghost stay flat.
   const lifted = (variant === 'primary' || variant === 'destructive') && !disabled;
 
@@ -56,7 +70,7 @@ export function Button({ label, variant = 'primary', size = 'default', icon, cla
       disabled={disabled}
       {...props}
     >
-      {icon}
+      {renderedIcon}
       <Text className={cn('text-center font-semibold tracking-tight', textSizeVariants[size], textVariants[variant])}>{label}</Text>
     </Pressable>
   );

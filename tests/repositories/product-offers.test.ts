@@ -35,6 +35,30 @@ describe('product offer repository', () => {
     expect(offer.productId).toBe('p1');
     expect(offer.marketId).toBe('m1');
     expect(offer.id.startsWith('offer-')).toBe(true);
+    // The per-offer fields default to null when omitted.
+    expect(offer.rating).toBeNull();
+    expect(offer.imagePath).toBeNull();
+    expect(offer.description).toBeNull();
+  });
+
+  it('persists the per-offer rating, image and description', async () => {
+    const db = createDb();
+    const repository = createProductOfferRepository(db);
+
+    const offer = await repository.create({
+      productId: 'p1',
+      marketId: 'm1',
+      quantity: 1,
+      unit: 'kg',
+      rating: 4,
+      imagePath: 'images/offers/o1.jpg',
+      description: 'Organic, vine-ripened',
+    });
+
+    expect(offer.rating).toBe(4);
+    expect(offer.imagePath).toBe('images/offers/o1.jpg');
+    expect(offer.description).toBe('Organic, vine-ripened');
+    expect(db.inserted[0]).toMatchObject({ rating: 4, imagePath: 'images/offers/o1.jpg', description: 'Organic, vine-ripened' });
   });
 
   it('lists a product\'s offers with their latest price, cheapest first', async () => {

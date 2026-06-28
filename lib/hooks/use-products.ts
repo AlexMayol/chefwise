@@ -5,7 +5,7 @@ import type { Product, ProductInput, ProductListItem, ProductSort } from '@/lib/
 
 import { useDetail } from './use-detail';
 
-export function useProducts(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}) {
+export function useProducts(options: { favoritesOnly?: boolean; sort?: ProductSort } = {}) {
   const { repositories } = useAppDatabase();
   const [items, setItems] = useState<ProductListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
     } finally {
       setLoading(false);
     }
-  }, [options.favoritesOnly, options.minRating, options.sort, repositories.products]);
+  }, [options.favoritesOnly, options.sort, repositories.products]);
 
   useEffect(() => {
     void reload();

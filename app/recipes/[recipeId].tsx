@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DeleteButton } from '@/components/domain/delete-button';
@@ -59,21 +59,25 @@ export default function RecipeDetailScreen() {
       <DeleteButton onDelete={remove} />
 
       <BottomSheet visible={addOpen} onClose={() => setAddOpen(false)} bottomInset={insets.bottom}>
-        <FormScreenHeader
-          title={t('recipes.addIngredient')}
-          onCancel={() => setAddOpen(false)}
-          onSave={() => addFormRef.current?.submit()}
-        />
-        <RecipeProductForm
-          ref={addFormRef}
-          recipeId={recipeId}
-          hideSubmit
-          onSubmit={async (values) => {
-            await addIngredient(values);
-            setCost(await calculateCost());
-            setAddOpen(false);
-          }}
-        />
+        <View className="flex-1 gap-4">
+          <FormScreenHeader
+            title={t('recipes.addIngredient')}
+            onCancel={() => setAddOpen(false)}
+            onSave={() => addFormRef.current?.submit()}
+          />
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+            <RecipeProductForm
+              ref={addFormRef}
+              recipeId={recipeId}
+              hideSubmit
+              onSubmit={async (values) => {
+                await addIngredient(values);
+                setCost(await calculateCost());
+                setAddOpen(false);
+              }}
+            />
+          </ScrollView>
+        </View>
       </BottomSheet>
     </FeatureScreen>
   );

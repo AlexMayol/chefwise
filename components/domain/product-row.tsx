@@ -2,10 +2,9 @@ import { Link, type Href } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
+
 import { EntityAvatar } from '@/components/ui/entity-avatar';
-import { RatingStars } from '@/components/ui/rating-stars';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { cn } from '@/lib/utils';
 
 export type ProductRowItem = {
@@ -13,7 +12,6 @@ export type ProductRowItem = {
   name: string;
   imageUri?: string;
   emoji?: string;
-  rating: number | null;
   // Optional muted line under the name (e.g. "3 offers").
   subtitle?: string;
   priceLabel: string;
@@ -24,10 +22,10 @@ export type ProductRowItem = {
   href: Href;
 };
 
-// A single product line: thumbnail, name + optional subtitle + rating, price (+ optional
+// A single product line: thumbnail, name + optional subtitle, price (+ optional
 // market) + chevron.
 export function ProductRow({ item, separator }: { item: ProductRowItem; separator?: boolean }) {
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   return (
     <Link href={item.href} asChild>
@@ -39,7 +37,6 @@ export function ProductRow({ item, separator }: { item: ProductRowItem; separato
             {item.name}
           </Text>
           {item.subtitle ? <Text className="text-xs text-muted-foreground">{item.subtitle}</Text> : null}
-          {item.rating != null ? <RatingStars value={item.rating} /> : null}
         </View>
         <View className="items-end gap-0.5">
           <Text className={cn('text-sm', item.hasPrice ? 'font-semibold text-foreground' : 'text-muted-foreground')}>

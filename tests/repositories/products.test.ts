@@ -24,15 +24,18 @@ describe('product repository list enrichment', () => {
     const db = createDb();
     const repository = createProductRepository(db);
 
-    await repository.list({ favoritesOnly: true, minRating: 3, sort: 'favorites_first' });
+    await repository.list({ favoritesOnly: true, sort: 'favorites_first' });
 
     expect(db.lastGetAllSql).toContain('product_offers');
     expect(db.lastGetAllSql).toContain('product_offer_prices');
     expect(db.lastGetAllSql).toContain('MIN(lp.normalizedPrice)');
     expect(db.lastGetAllSql).toContain('COUNT(DISTINCT off.marketId)');
+    expect(db.lastGetAllSql).toContain('bestImagePath');
+    // bestImagePath comes from the top-rated offer that actually has an image.
+    expect(db.lastGetAllSql).toMatch(/imagePath IS NOT NULL[\s\S]*ORDER BY[\s\S]*rating DESC/);
     expect(db.lastGetAllSql).not.toContain('LEFT JOIN markets');
     expect(db.lastGetAllSql).toContain('p.isFavorite = 1');
-    expect(db.lastGetAllSql).toContain('p.rating >= ?');
+    expect(db.lastGetAllSql).not.toContain('p.rating');
     expect(db.lastGetAllSql).toContain('p.isFavorite DESC');
   });
 
@@ -43,16 +46,14 @@ describe('product repository list enrichment', () => {
         name: 'Flour',
         categoryId: null,
         defaultUnit: 'kg',
-        rating: 4,
-        notes: null,
         isFavorite: 1,
-        imagePath: null,
         createdAt: '2026-01-01',
         updatedAt: '2026-01-01',
         offerCount: 2,
         marketCount: 2,
         bestNormalizedPrice: 2.5,
         bestNormalizedUnit: 'kg',
+        bestImagePath: null,
       },
     ]);
     const repository = createProductRepository(db);

@@ -1,12 +1,12 @@
 import { Lightbulb } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
-import { getDesignTokens } from '@/lib/theme/tokens';
+
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 
 // A soft "tip" callout with a lightbulb. Used by the create screens.
 export function TipCard({ title, children }: { title?: string; children: string }) {
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   return (
     <View className="flex-row gap-3 rounded-2xl bg-secondary p-4">

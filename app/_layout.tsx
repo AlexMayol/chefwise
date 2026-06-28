@@ -11,6 +11,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { AppDatabaseProvider } from '@/lib/db/provider';
+import { resolveThemeName } from '@/lib/hooks/use-design-tokens';
 import { useThemePreference } from '@/lib/hooks/use-theme-preference';
 import '@/lib/i18n';
 import { getDesignTokenVariables } from '@/lib/theme/tokens';
@@ -54,8 +55,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { preference } = useThemePreference();
-  const resolved = preference === 'system' ? colorScheme : preference;
-  const themeName = resolved === 'dark' ? 'dark' : 'light';
+  const themeName = resolveThemeName(preference, colorScheme);
 
   return (
     <SafeAreaProvider>

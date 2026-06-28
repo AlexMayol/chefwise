@@ -62,6 +62,17 @@ export function useOffer(offerId?: string) {
   const load = useCallback((id: string) => repositories.productOffers.getById(id), [repositories.productOffers]);
   const { item, loading, reload } = useDetail<ProductOffer | null>(offerId, load, null);
 
+  const update = useCallback(
+    async (input: Partial<ProductOfferInput>) => {
+      if (!offerId) {
+        return;
+      }
+      await repositories.productOffers.update(offerId, input);
+      await reload();
+    },
+    [offerId, reload, repositories.productOffers],
+  );
+
   const remove = useCallback(async () => {
     if (!offerId) {
       return;
@@ -69,7 +80,7 @@ export function useOffer(offerId?: string) {
     await repositories.productOffers.delete(offerId);
   }, [offerId, repositories.productOffers]);
 
-  return { item, loading, reload, remove };
+  return { item, loading, reload, update, remove };
 }
 
 // Every offer across all markets — for the markets list aggregates.

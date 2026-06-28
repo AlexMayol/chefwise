@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react-native';
 
 import ProductDetailScreen from '@/app/products/[productId]';
 import ProductsScreen from '@/app/(tabs)/products';
+import { useCategories } from '@/lib/hooks/use-categories';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useProductOffers } from '@/lib/hooks/use-product-offers';
 import { useProductDetail, useProducts } from '@/lib/hooks/use-products';
@@ -44,6 +45,7 @@ jest.mock('@/components/domain/product-form', () => ({
   ProductForm: () => null,
 }));
 
+const useCategoriesMock = useCategories as jest.MockedFunction<typeof useCategories>;
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
 const useProductDetailMock = useProductDetail as jest.MockedFunction<typeof useProductDetail>;
 const useProductOffersMock = useProductOffers as jest.MockedFunction<typeof useProductOffers>;
@@ -99,8 +101,73 @@ describe('catalog screens', () => {
     await fireEvent.press(screen.getByText('Favorites only'));
     expect(useProductsMock).toHaveBeenLastCalledWith(expect.objectContaining({ favoritesOnly: true }));
 
-    await fireEvent.press(screen.getByText('Highest rated'));
-    expect(useProductsMock).toHaveBeenLastCalledWith(expect.objectContaining({ sort: 'highest_rated' }));
+    await fireEvent.press(screen.getByText('Favorites first'));
+    expect(useProductsMock).toHaveBeenLastCalledWith(expect.objectContaining({ sort: 'favorites_first' }));
+  });
+
+  it('shows category emojis in the category filter picker', async () => {
+    useCategoriesMock.mockReturnValue({
+      items: [
+        { id: 'cat-1', name: 'Dairy & Eggs', description: '🧀', createdAt: '', updatedAt: '' },
+        { id: 'cat-2', name: 'Vegetables', description: '🥬', createdAt: '', updatedAt: '' },
+      ],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+      removeMany: jest.fn(),
+    });
+
+    const screen = await render(<ProductsScreen />);
+    await fireEvent.press(screen.getByText('All Categories'));
+
+    expect(screen.getByText('🥬')).toBeTruthy();
+    expect(screen.getByText('🧀')).toBeTruthy();
+  });
+
+  it('shows the category stored emoji in section headers, not the keyword fallback', async () => {
+    useCategoriesMock.mockReturnValue({
+      items: [{ id: 'cat-1', name: 'Dairy & Eggs', description: '🧀', createdAt: '', updatedAt: '' }],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+      removeMany: jest.fn(),
+    });
+    useProductsMock.mockReturnValue({
+      items: [
+        {
+          id: 'product-1',
+          name: 'Huevos L',
+          categoryId: 'cat-1',
+          defaultUnit: 'unit',
+          isFavorite: false,
+          offerCount: 1,
+          marketCount: 1,
+          bestNormalizedPrice: 0.2,
+          bestNormalizedUnit: 'unit',
+          bestImagePath: null,
+          createdAt: '',
+          updatedAt: '',
+        },
+      ],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+      removeMany: jest.fn(),
+      assign: jest.fn(),
+    });
+
+    const screen = await render(<ProductsScreen />);
+
+    // "Dairy & Eggs" is not in the keyword map, so the buggy header rendered 🛒.
+    expect(screen.queryByText('🛒')).toBeNull();
+    // header emoji + product row emoji both come from the stored 🧀
+    expect(screen.getAllByText('🧀').length).toBe(2);
   });
 
   it('shows product detail with its offers and prices', async () => {
@@ -110,10 +177,7 @@ describe('catalog screens', () => {
         name: 'Bread flour',
         categoryId: null,
         defaultUnit: 'kg',
-        rating: 5,
-        notes: 'High protein',
         isFavorite: true,
-        imagePath: null,
         createdAt: '2026-01-01T00:00:00.000Z',
         updatedAt: '2026-01-01T00:00:00.000Z',
       },
@@ -131,6 +195,9 @@ describe('catalog screens', () => {
           brand: null,
           quantity: 1,
           unit: 'kg',
+          rating: null,
+          imagePath: null,
+          description: null,
           createdAt: '',
           updatedAt: '',
           marketName: 'Central Market',

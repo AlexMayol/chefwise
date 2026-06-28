@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { openAppDatabase, type AppDatabase } from './client';
@@ -9,6 +9,10 @@ import { i18n } from '@/lib/i18n';
 type DatabaseContextValue = {
   db: AppDatabase;
   repositories: AppRepositories;
+  // Closes the live connection, runs the on-disk swap, then reopens against the new file so
+  // every screen re-queries the imported data. Reopens even if the swap throws, so a failed
+  // import never leaves the app with a dead connection. Returns the result of `runImport`.
+  importDatabase<T>(runImport: (beforeReplace: () => Promise<void>) => Promise<T>): Promise<T>;
 };
 
 const DatabaseContext = createContext<DatabaseContextValue | null>(null);
@@ -38,7 +42,29 @@ export function AppDatabaseProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo(() => (db ? { db, repositories: createAppRepositories(db) } : null), [db]);
+  const importDatabase = useCallback(
+    async <T,>(runImport: (beforeReplace: () => Promise<void>) => Promise<T>): Promise<T> => {
+      let closed = false;
+      try {
+        return await runImport(async () => {
+          await db?.closeAsync?.();
+          closed = true;
+        });
+      } finally {
+        if (closed) {
+          const database = await openAppDatabase();
+          await runMigrations(database);
+          setDb(database);
+        }
+      }
+    },
+    [db],
+  );
+
+  const value = useMemo(
+    () => (db ? { db, repositories: createAppRepositories(db), importDatabase } : null),
+    [db, importDatabase],
+  );
 
   if (error) {
     return (

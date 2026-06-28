@@ -20,7 +20,7 @@ import { FormScreenHeader } from '@/components/ui/form-screen-header';
 import { IconButton } from '@/components/ui/icon-button';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SearchBar } from '@/components/ui/search-bar';
-import { useColorScheme } from '@/components/useColorScheme';
+
 import { bestMarketByProduct } from '@/lib/domain/category-insights';
 import { formatCurrency } from '@/lib/formatting/currency';
 import { useCategories } from '@/lib/hooks/use-categories';
@@ -29,14 +29,14 @@ import { useProducts } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { categoryEmoji } from '@/lib/ui/category-emoji';
 
 export default function CategoryDetailScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
   const { items: categories, update, remove } = useCategories();
   const { items: products, assign, reload } = useProducts();
@@ -64,9 +64,8 @@ export default function CategoryDetailScreen() {
     return {
       id: product.id,
       name: product.name,
-      imageUri: resolveEntityImageUri(product.imagePath) ?? undefined,
+      imageUri: resolveEntityImageUri(product.bestImagePath) ?? undefined,
       emoji: category?.description || '🥕',
-      rating: product.rating,
       subtitle: t('categories.offerCount', { count: product.offerCount }),
       hasPrice,
       priceLabel: hasPrice
@@ -147,13 +146,13 @@ export default function CategoryDetailScreen() {
 
       <BottomSheet visible={editing} onClose={() => setEditing(false)} bottomInset={insets.bottom}>
         {category ? (
-          <View className="gap-4">
+          <View className="flex-1 gap-4">
             <FormScreenHeader
               title={t('categories.edit')}
               onCancel={() => setEditing(false)}
               onSave={() => editFormRef.current?.submit()}
             />
-            <ScrollView style={{ maxHeight: 480 }} keyboardShouldPersistTaps="handled">
+            <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
               <CategoryForm
                 ref={editFormRef}
                 initialValues={{ name: category.name, description: category.description }}
@@ -168,7 +167,7 @@ export default function CategoryDetailScreen() {
         ) : null}
       </BottomSheet>
 
-      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom}>
+      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom} resizable={false}>
         <View className="gap-3">
           <Pressable
             className="rounded-xl px-4 py-3 active:opacity-70"

@@ -14,12 +14,22 @@ function offerQuantity(unit: Unit): number {
 
 async function seedOffer(
   db: AppDatabase,
-  offer: { productId: string; marketId: string; brand: string | null; quantity: number; unit: Unit; price: number; timestamp: string },
+  offer: {
+    productId: string;
+    marketId: string;
+    brand: string | null;
+    quantity: number;
+    unit: Unit;
+    price: number;
+    rating?: number | null;
+    description?: string | null;
+    timestamp: string;
+  },
 ): Promise<void> {
   const offerId = createId('offer');
   await db.runAsync(
-    'INSERT INTO product_offers (id, productId, marketId, brand, quantity, unit, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-    [offerId, offer.productId, offer.marketId, offer.brand, offer.quantity, offer.unit, offer.timestamp, offer.timestamp],
+    'INSERT INTO product_offers (id, productId, marketId, brand, quantity, unit, rating, imagePath, description, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [offerId, offer.productId, offer.marketId, offer.brand, offer.quantity, offer.unit, offer.rating ?? null, null, offer.description ?? null, offer.timestamp, offer.timestamp],
   );
   const normalized = normalizePrice({ price: offer.price, quantity: offer.quantity, unit: offer.unit });
   await db.runAsync(
@@ -54,14 +64,12 @@ export async function seedDevData(db: AppDatabase): Promise<void> {
     const categoryName = categoryNames[product.categoryIndex]?.name;
     const productId = createId('product');
     await db.runAsync(
-      'INSERT INTO products (id, name, categoryId, defaultUnit, rating, notes, isFavorite, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO products (id, name, categoryId, defaultUnit, isFavorite, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [
         productId,
         product.name,
         (categoryName && categoryIdByName.get(categoryName)) ?? null,
         product.defaultUnit,
-        product.rating,
-        product.notes,
         product.isFavorite ? 1 : 0,
         timestamp,
         timestamp,
@@ -70,6 +78,7 @@ export async function seedDevData(db: AppDatabase): Promise<void> {
 
     const quantity = offerQuantity(product.defaultUnit);
     const price = 1 + (index % 9) * 0.5;
+    // Rating/notes describe the product at a market now, so they seed its first offer.
     await seedOffer(db, {
       productId,
       marketId: marketIds[product.marketIndex],
@@ -77,6 +86,8 @@ export async function seedDevData(db: AppDatabase): Promise<void> {
       quantity,
       unit: product.defaultUnit,
       price,
+      rating: product.rating,
+      description: product.notes,
       timestamp,
     });
 

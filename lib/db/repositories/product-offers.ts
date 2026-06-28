@@ -10,6 +10,9 @@ export type ProductOffer = {
   brand: string | null;
   quantity: number;
   unit: Unit;
+  rating: number | null;
+  imagePath: string | null;
+  description: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -20,6 +23,9 @@ export type ProductOfferInput = {
   brand?: string | null;
   quantity: number;
   unit: Unit;
+  rating?: number | null;
+  imagePath?: string | null;
+  description?: string | null;
 };
 
 // Offer plus the data comparison views surface: which market, and the latest price for it.
@@ -72,6 +78,9 @@ export function createProductOfferRepository(db: AppDatabase) {
         brand: input.brand ?? null,
         quantity: input.quantity,
         unit: input.unit,
+        rating: input.rating ?? null,
+        imagePath: input.imagePath ?? null,
+        description: input.description ?? null,
         createdAt: timestamp,
         updatedAt: timestamp,
       };

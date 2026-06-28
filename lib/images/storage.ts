@@ -3,7 +3,7 @@ import { Directory, File, Paths } from 'expo-file-system';
 
 import { assertRelativeImagePath, buildEntityImagePath, resolveImageUri, type ImageEntityType, type RelativeImagePath } from './paths';
 
-const ENTITY_DIRECTORIES: Record<ImageEntityType, string> = { product: 'products', recipe: 'recipes', market: 'markets' };
+const ENTITY_DIRECTORIES: Record<ImageEntityType, string> = { product: 'products', recipe: 'recipes', market: 'markets', offer: 'offers' };
 
 function getDocumentUri(): string {
   const legacyFileSystem = FileSystem as unknown as { documentDirectory?: string };

@@ -29,7 +29,7 @@ export function GridCard({
   // In selectable mode always reserve a 2px border (color-only toggle) so selecting
   // a card never changes its box size and reshuffles the grid.
   const selectable = selected !== undefined;
-  const border = selectable ? (selected ? 'border-2 border-primary' : 'border-2 border-transparent') : '';
+  const border = selectable ? (selected ? 'border-2 border-primary' : 'border-2 border-border') : '';
   const content = (
     <Card className={`flex-1 justify-between p-3 ${item.imageUri || item.emoji ? 'min-h-28' : ''} ${border}`}>
       {selectable ? (

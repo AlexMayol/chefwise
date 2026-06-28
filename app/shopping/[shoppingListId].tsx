@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DeleteButton } from '@/components/domain/delete-button';
@@ -40,20 +40,24 @@ export default function ShoppingListDetailScreen() {
       <DeleteButton onDelete={remove} />
 
       <BottomSheet visible={addOpen} onClose={() => setAddOpen(false)} bottomInset={insets.bottom}>
-        <FormScreenHeader
-          title={t('shopping.addItem')}
-          onCancel={() => setAddOpen(false)}
-          onSave={() => addFormRef.current?.submit()}
-        />
-        <ShoppingListItemForm
-          ref={addFormRef}
-          shoppingListId={shoppingListId}
-          hideSubmit
-          onSubmit={async (values) => {
-            await addItem(values);
-            setAddOpen(false);
-          }}
-        />
+        <View className="flex-1 gap-4">
+          <FormScreenHeader
+            title={t('shopping.addItem')}
+            onCancel={() => setAddOpen(false)}
+            onSave={() => addFormRef.current?.submit()}
+          />
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+            <ShoppingListItemForm
+              ref={addFormRef}
+              shoppingListId={shoppingListId}
+              hideSubmit
+              onSubmit={async (values) => {
+                await addItem(values);
+                setAddOpen(false);
+              }}
+            />
+          </ScrollView>
+        </View>
       </BottomSheet>
     </FeatureScreen>
   );

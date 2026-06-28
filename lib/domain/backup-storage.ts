@@ -22,8 +22,18 @@ type CollectableDirectory = CollectableFileSystemEntry & {
   list: () => CollectableFileSystemEntry[];
 };
 
+function databaseDirectory() {
+  return APP_DATABASE_DIRECTORY ?? Paths.document;
+}
+
 function getDatabaseFile() {
-  return APP_DATABASE_DIRECTORY ? new File(APP_DATABASE_DIRECTORY, APP_DATABASE_NAME) : new File(Paths.document, APP_DATABASE_NAME);
+  return new File(databaseDirectory(), APP_DATABASE_NAME);
+}
+
+// The live SQLite connection keeps the main file plus its WAL/SHM/journal sidecars. Replacing
+// only the main file leaves a stale WAL that gets replayed over the imported data on next open.
+function databaseFilesToClear() {
+  return ['', '-wal', '-shm', '-journal'].map((suffix) => new File(databaseDirectory(), `${APP_DATABASE_NAME}${suffix}`));
 }
 
 function isDirectoryEntry(entry: CollectableFileSystemEntry): entry is CollectableDirectory {
@@ -72,13 +82,19 @@ export async function exportBackupToCache({ databaseBytes: providedBytes, databa
   return { ...backup, uri: archive.uri };
 }
 
-export async function replaceLocalBackupData({
-  databaseBytes,
-  imageFiles,
-}: {
-  databaseBytes: Uint8Array;
-  imageFiles: Array<{ path: string; bytes: Uint8Array }>;
-}): Promise<void> {
+export async function replaceLocalBackupData(
+  {
+    databaseBytes,
+    imageFiles,
+  }: {
+    databaseBytes: Uint8Array;
+    imageFiles: Array<{ path: string; bytes: Uint8Array }>;
+  },
+  // beforeReplace closes the live SQLite connection so the db file can be safely swapped.
+  // It runs after staging (so a staging failure leaves the connection untouched) but before
+  // any destructive change to the live document directory.
+  options: { beforeReplace?: () => Promise<void> } = {},
+): Promise<void> {
   const stagingDirectory = new Directory(Paths.cache, 'backup-import-staging');
 
   if (stagingDirectory.exists) {
@@ -113,11 +129,14 @@ export async function replaceLocalBackupData({
       file.write(image.bytes);
     }
 
-    const databaseFile = getDatabaseFile();
-    if (databaseFile.exists) {
-      databaseFile.delete();
+    await options.beforeReplace?.();
+
+    for (const file of databaseFilesToClear()) {
+      if (file.exists) {
+        file.delete();
+      }
     }
-    await stagedDatabase.copy(databaseFile);
+    await stagedDatabase.copy(getDatabaseFile());
 
     const imagesDirectory = new Directory(Paths.document, 'images');
     if (imagesDirectory.exists) {
@@ -131,20 +150,23 @@ export async function replaceLocalBackupData({
   }
 }
 
+// Returns true when a backup was imported, false when the user canceled the picker.
 export async function pickAndValidateBackup(
   replaceLocalData: Parameters<typeof importBackup>[0]['replaceLocalData'] = replaceLocalBackupData,
-): Promise<void> {
+): Promise<boolean> {
   const result = await DocumentPicker.getDocumentAsync({
     type: 'application/zip',
     copyToCacheDirectory: true,
   });
 
   if (result.canceled || !result.assets[0]?.uri) {
-    return;
+    return false;
   }
 
   await importBackup({
     archiveBytes: await new File(result.assets[0].uri).bytes(),
     replaceLocalData,
   });
+
+  return true;
 }

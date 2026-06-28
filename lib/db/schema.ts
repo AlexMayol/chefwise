@@ -1,4 +1,4 @@
-export const LATEST_SCHEMA_VERSION = 7;
+export const LATEST_SCHEMA_VERSION = 8;
 
 export const REQUIRED_TABLES = [
   'markets',
@@ -42,22 +42,21 @@ CREATE TABLE IF NOT EXISTS categories (
   updatedAt TEXT NOT NULL
 );
 
--- A product is now generic (Tomato). Its market/brand/size live on product_offers.
+-- A product is now generic (Tomato). Its market/brand/size — and how it looks, rates,
+-- and is described — all live per-offer (they vary by where you buy it).
 CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
   categoryId TEXT,
   defaultUnit TEXT NOT NULL,
-  rating INTEGER,
-  notes TEXT,
   isFavorite INTEGER NOT NULL DEFAULT 0,
-  imagePath TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
   FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE SET NULL
 );
 
--- A specific offer for a product in a market: brand (optional) + size (quantity/unit).
+-- A specific offer for a product in a market: brand (optional) + size (quantity/unit),
+-- plus the rating, photo, and description that describe it at that market.
 CREATE TABLE IF NOT EXISTS product_offers (
   id TEXT PRIMARY KEY NOT NULL,
   productId TEXT NOT NULL,
@@ -65,6 +64,9 @@ CREATE TABLE IF NOT EXISTS product_offers (
   brand TEXT,
   quantity REAL NOT NULL,
   unit TEXT NOT NULL,
+  rating INTEGER,
+  imagePath TEXT,
+  description TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
   FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE,

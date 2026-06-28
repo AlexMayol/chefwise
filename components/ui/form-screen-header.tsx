@@ -1,9 +1,9 @@
 import { Check, X } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
+
 import { useTranslation } from '@/lib/i18n';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 
 import { IconButton } from './icon-button';
 
@@ -21,7 +21,7 @@ type FormScreenHeaderProps = {
 // centered title (+ optional subtitle), and a green check (save) on the right.
 export function FormScreenHeader({ title, subtitle, onCancel, onSave }: FormScreenHeaderProps) {
   const { t } = useTranslation();
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   return (
     <View className="flex-row items-center justify-between">

@@ -28,16 +28,14 @@ function product(id: string, name: string, categoryId: string | null) {
     name,
     categoryId,
     defaultUnit: 'unit' as const,
-    rating: null,
-    notes: null,
     isFavorite: false,
-    imagePath: null,
     createdAt: '',
     updatedAt: '',
     offerCount: 0,
     marketCount: 0,
     bestNormalizedPrice: null,
     bestNormalizedUnit: null,
+    bestImagePath: null,
   };
 }
 

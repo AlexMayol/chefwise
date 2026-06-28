@@ -10,7 +10,6 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { LoadingState } from '@/components/ui/loading-state';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SearchBar } from '@/components/ui/search-bar';
-import { useColorScheme } from '@/components/useColorScheme';
 import { marketStats } from '@/lib/domain/market-stats';
 import { timeAgo } from '@/lib/formatting/relative-time';
 import { useMarkets } from '@/lib/hooks/use-markets';
@@ -19,11 +18,9 @@ import { useProducts } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
-import { getDesignTokens } from '@/lib/theme/tokens';
 
 export default function MarketsScreen() {
   const { t } = useTranslation();
-  const tokens = getDesignTokens(useColorScheme());
   const [query, setQuery] = useState('');
 
   const { items: markets, loading, reload } = useMarkets();
@@ -37,7 +34,7 @@ export default function MarketsScreen() {
   );
 
   const productInfo = useMemo(
-    () => new Map(products.map((product) => [product.id, { bestNormalizedPrice: product.bestNormalizedPrice, rating: product.rating }])),
+    () => new Map(products.map((product) => [product.id, { bestNormalizedPrice: product.bestNormalizedPrice }])),
     [products],
   );
   const offersByMarket = useMemo(() => {
@@ -95,7 +92,7 @@ export default function MarketsScreen() {
 
       <BottomActionBar>
         <Link href="/markets/new" asChild>
-          <Button label={t('markets.new')} icon={<Plus size={18} color={tokens.primaryForeground} />} />
+          <Button label={t('markets.new')} icon={<Plus size={18} />} />
         </Link>
       </BottomActionBar>
     </View>

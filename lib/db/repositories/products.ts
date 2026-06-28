@@ -8,10 +8,7 @@ export type Product = {
   name: string;
   categoryId: string | null;
   defaultUnit: Unit;
-  rating: number | null;
-  notes: string | null;
   isFavorite: boolean;
-  imagePath: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -20,13 +17,14 @@ export type ProductRow = Omit<Product, 'isFavorite'> & {
   isFavorite: number;
 };
 
-// Enriched list shape: a generic product plus a summary of its offers
-// (how many, across how many markets, and the cheapest current normalized price).
+// Enriched list shape: a generic product plus a summary of its offers (how many, across how
+// many markets, the cheapest current normalized price, and the cheapest offer's photo).
 export type ProductListItem = Product & {
   offerCount: number;
   marketCount: number;
   bestNormalizedPrice: number | null;
   bestNormalizedUnit: NormalizedUnit | null;
+  bestImagePath: string | null;
 };
 
 type ProductListRow = ProductRow & Omit<ProductListItem, keyof Product>;
@@ -35,13 +33,10 @@ export type ProductInput = {
   name: string;
   categoryId?: string | null;
   defaultUnit: Unit;
-  rating?: number | null;
-  notes?: string | null;
   isFavorite?: boolean;
-  imagePath?: string | null;
 };
 
-export type ProductSort = 'name' | 'highest_rated' | 'lowest_rated' | 'favorites_first';
+export type ProductSort = 'name' | 'favorites_first';
 
 function mapProduct(row: ProductRow): Product {
   return { ...row, isFavorite: fromSqlBoolean(row.isFavorite) };
@@ -54,7 +49,7 @@ export function createProductRepository(db: AppDatabase) {
 
   return {
     ...base,
-    async list(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}): Promise<ProductListItem[]> {
+    async list(options: { favoritesOnly?: boolean; sort?: ProductSort } = {}): Promise<ProductListItem[]> {
       const clauses: string[] = [];
       const params: number[] = [];
 
@@ -62,30 +57,28 @@ export function createProductRepository(db: AppDatabase) {
         clauses.push('p.isFavorite = 1');
       }
 
-      if (options.minRating) {
-        clauses.push('p.rating >= ?');
-        params.push(options.minRating);
-      }
-
       const orderBy =
-        options.sort === 'highest_rated'
-          ? 'p.rating DESC, p.name COLLATE NOCASE ASC'
-          : options.sort === 'lowest_rated'
-            ? 'p.rating ASC, p.name COLLATE NOCASE ASC'
-            : options.sort === 'favorites_first'
-              ? 'p.isFavorite DESC, p.name COLLATE NOCASE ASC'
-              : 'p.name COLLATE NOCASE ASC';
+        options.sort === 'favorites_first'
+          ? 'p.isFavorite DESC, p.name COLLATE NOCASE ASC'
+          : 'p.name COLLATE NOCASE ASC';
 
       // Per product: count offers/markets and surface the cheapest current normalized price.
       // Each offer's "current" price is its latest product_offer_prices row (window-join).
-      // ponytail: SQLite's single-MIN rule makes bestNormalizedUnit take the value from the
+      // ponytail: SQLite's single-MIN rule makes bestNormalizedUnit take its value from the
       // MIN(normalizedPrice) row, so we get the cheapest offer's unit without a self-join.
+      // bestImagePath is independent of price: the top-rated offer that actually has a photo
+      // (NULL ratings sort last under DESC), via a correlated subselect.
       const rows = await db.getAllAsync<ProductListRow>(
         `SELECT p.*,
                 COALESCE(agg.offerCount, 0) AS offerCount,
                 COALESCE(agg.marketCount, 0) AS marketCount,
                 agg.bestNormalizedPrice AS bestNormalizedPrice,
-                agg.bestNormalizedUnit AS bestNormalizedUnit
+                agg.bestNormalizedUnit AS bestNormalizedUnit,
+                (SELECT img.imagePath
+                   FROM product_offers img
+                  WHERE img.productId = p.id AND img.imagePath IS NOT NULL
+                  ORDER BY img.rating DESC, img.updatedAt DESC, img.id DESC
+                  LIMIT 1) AS bestImagePath
          FROM products p
          LEFT JOIN (
            SELECT off.productId AS productId,
@@ -111,6 +104,7 @@ export function createProductRepository(db: AppDatabase) {
         marketCount: row.marketCount,
         bestNormalizedPrice: row.bestNormalizedPrice,
         bestNormalizedUnit: row.bestNormalizedUnit,
+        bestImagePath: row.bestImagePath,
       }));
     },
     async create(input: ProductInput): Promise<Product> {
@@ -120,10 +114,7 @@ export function createProductRepository(db: AppDatabase) {
         name: input.name,
         categoryId: input.categoryId ?? null,
         defaultUnit: input.defaultUnit,
-        rating: input.rating ?? null,
-        notes: input.notes ?? null,
         isFavorite: toSqlBoolean(input.isFavorite ?? false),
-        imagePath: input.imagePath ?? null,
         createdAt: timestamp,
         updatedAt: timestamp,
       };

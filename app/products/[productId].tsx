@@ -1,7 +1,7 @@
 import { Link, useLocalSearchParams, type Href } from 'expo-router';
 import { ChevronRight, MoreVertical, Plus, Star } from 'lucide-react-native';
 import { useMemo, useRef, useState } from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DeleteButton } from '@/components/domain/delete-button';
@@ -20,21 +20,22 @@ import { LoadingState } from '@/components/ui/loading-state';
 import { RatingStars } from '@/components/ui/rating-stars';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SegmentedTabs } from '@/components/ui/segmented-tabs';
-import { useColorScheme } from '@/components/useColorScheme';
+
 import type { ProductOfferListItem } from '@/lib/db/repositories/product-offers';
 import { formatCurrency } from '@/lib/formatting/currency';
 import { formatDate } from '@/lib/formatting/date';
 import { useCategories } from '@/lib/hooks/use-categories';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useProductOffers } from '@/lib/hooks/use-product-offers';
 import { useProductDetail } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
-import { getDesignTokens, type DesignTokens } from '@/lib/theme/tokens';
+import type { DesignTokens } from '@/lib/theme/tokens';
 import { productEmoji } from '@/lib/ui/category-emoji';
 import { cn } from '@/lib/utils';
-type DetailTab = 'overview' | 'prices' | 'history' | 'notes';
+type DetailTab = 'overview' | 'prices' | 'history';
 
 type OfferGroup = {
   marketId: string;
@@ -46,7 +47,7 @@ type OfferGroup = {
 export default function ProductDetailScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
   const { productId } = useLocalSearchParams<{ productId: string }>();
   const { item: product, update, remove } = useProductDetail(productId);
   const { items: offers, createWithPrice, reload } = useProductOffers(productId);
@@ -63,7 +64,6 @@ export default function ProductDetailScreen() {
   // Offers/prices change on the offer screen; refresh when this screen regains focus.
   useReloadOnFocus(reload);
 
-  const imageUri = resolveEntityImageUri(product?.imagePath ?? null) ?? undefined;
   const categoryName = product?.categoryId
     ? categories.find((category) => category.id === product.categoryId)?.name ?? null
     : null;
@@ -115,7 +115,6 @@ export default function ProductDetailScreen() {
     { key: 'overview', label: t('products.tabOverview') },
     { key: 'prices', label: t('products.tabPrices') },
     { key: 'history', label: t('products.tabHistory') },
-    { key: 'notes', label: t('products.tabNotes') },
   ];
 
   return (
@@ -134,18 +133,19 @@ export default function ProductDetailScreen() {
           </IconButton>
         </DetailHeader>
 
-        <View className="flex-row items-center gap-4">
-          <EntityAvatar imageUri={imageUri} emoji={emoji} size={72} circle />
-          <View className="flex-1 gap-1">
-            <Text className="text-2xl font-bold tracking-tight text-foreground">{product.name}</Text>
-            {categoryName ? <Text className="text-base text-muted-foreground">{categoryName}</Text> : null}
-            {product.rating != null ? <RatingStars value={product.rating} /> : null}
+        <View className="flex-row items-start gap-4">
+          <View className="relative size-[72px] shrink-0">
+            <EntityAvatar emoji={emoji} size={72} circle />
             {product.isFavorite ? (
-              <View className="mt-1 flex-row items-center gap-1 self-start rounded-full border border-primary px-2 py-0.5">
+              <View className="absolute -bottom-1 -right-1 flex-row items-center gap-1 rounded-full border border-primary bg-background px-2 py-0.5">
                 <Star size={12} color={tokens.primary} fill={tokens.primary} />
                 <Text className="text-xs font-semibold text-primary">{t('forms.favorite')}</Text>
               </View>
             ) : null}
+          </View>
+          <View className="flex-1 gap-1">
+            <Text className="text-2xl font-bold tracking-tight text-foreground">{product.name}</Text>
+            {categoryName ? <Text className="text-base text-muted-foreground">{categoryName}</Text> : null}
           </View>
         </View>
 
@@ -153,19 +153,14 @@ export default function ProductDetailScreen() {
 
         {tab === 'overview' ? (
           <View className="gap-4">
-            <View className="gap-1">
-              <Text className="text-base font-bold text-card-foreground">{t('products.about')}</Text>
-              <Text className="text-sm text-muted-foreground">{product.notes?.trim() || t('common.empty')}</Text>
-              {bestPrice != null ? (
-                <Text className="mt-1 text-sm text-muted-foreground">
-                  {t('common.fromPrice', { price: formatCurrency(bestPrice) })} · {t('offers.marketCount', { count: offerGroups.length })}
-                </Text>
-              ) : null}
-            </View>
+            {bestPrice != null ? (
+              <Text className="text-sm text-muted-foreground">
+                {t('common.fromPrice', { price: formatCurrency(bestPrice) })} · {t('offers.marketCount', { count: offerGroups.length })}
+              </Text>
+            ) : null}
             <Text className="text-base font-bold text-card-foreground">{t('products.priceByMarket')}</Text>
             <PriceByMarket
               groups={offerGroups}
-              productImageUri={imageUri}
               emoji={emoji}
               tokens={tokens}
               noPriceLabel={t('common.noPriceYet')}
@@ -177,7 +172,6 @@ export default function ProductDetailScreen() {
         {tab === 'prices' ? (
           <PriceByMarket
             groups={offerGroups}
-            productImageUri={imageUri}
             emoji={emoji}
             tokens={tokens}
             noPriceLabel={t('common.noPriceYet')}
@@ -203,10 +197,6 @@ export default function ProductDetailScreen() {
             <EmptyState title={t('offers.none')} />
           )
         ) : null}
-
-        {tab === 'notes' ? (
-          <Text className="text-sm text-card-foreground">{product.notes?.trim() || t('common.empty')}</Text>
-        ) : null}
       </ScreenScaffold>
 
       <BottomActionBar withSafeArea>
@@ -219,44 +209,51 @@ export default function ProductDetailScreen() {
       </BottomActionBar>
 
       <BottomSheet visible={addOpen} onClose={() => setAddOpen(false)} bottomInset={insets.bottom}>
-        <View className="gap-4">
+        <View className="flex-1 gap-4">
           <FormScreenHeader
             title={t('products.addPrice')}
             onCancel={() => setAddOpen(false)}
             onSave={() => addFormRef.current?.submit()}
           />
-          <OfferForm
-            ref={addFormRef}
-            defaultUnit={product.defaultUnit}
-            hideSubmit
-            onSubmit={async ({ marketId, brand, quantity, unit, price }) => {
-              await createWithPrice({ productId, marketId, brand: brand || null, quantity, unit }, price);
-              setAddOpen(false);
-            }}
-          />
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+            <OfferForm
+              ref={addFormRef}
+              defaultUnit={product.defaultUnit}
+              hideSubmit
+              onSubmit={async ({ marketId, brand, quantity, unit, rating, imagePath, description, price }) => {
+                await createWithPrice(
+                  { productId, marketId, brand: brand || null, quantity, unit, rating, imagePath, description },
+                  price as number,
+                );
+                setAddOpen(false);
+              }}
+            />
+          </ScrollView>
         </View>
       </BottomSheet>
 
       <BottomSheet visible={editOpen} onClose={() => setEditOpen(false)} bottomInset={insets.bottom}>
-        <View className="gap-4">
+        <View className="flex-1 gap-4">
           <FormScreenHeader
             title={t('products.edit')}
             onCancel={() => setEditOpen(false)}
             onSave={() => editFormRef.current?.submit()}
           />
-          <ProductForm
-            ref={editFormRef}
-            initialValues={product}
-            hideSubmit
-            onSubmit={async (values) => {
-              await update(values);
-              setEditOpen(false);
-            }}
-          />
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+            <ProductForm
+              ref={editFormRef}
+              initialValues={product}
+              hideSubmit
+              onSubmit={async (values) => {
+                await update(values);
+                setEditOpen(false);
+              }}
+            />
+          </ScrollView>
         </View>
       </BottomSheet>
 
-      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom}>
+      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom} resizable={false}>
         <View className="gap-3">
           <Pressable
             className="rounded-xl px-4 py-3 active:opacity-70"
@@ -275,14 +272,12 @@ export default function ProductDetailScreen() {
 
 function PriceByMarket({
   groups,
-  productImageUri,
   emoji,
   tokens,
   noPriceLabel,
   emptyLabel,
 }: {
   groups: OfferGroup[];
-  productImageUri?: string;
   emoji: string;
   tokens: DesignTokens;
   noPriceLabel: string;
@@ -309,11 +304,20 @@ function PriceByMarket({
                   'flex-row items-center gap-3 px-4 py-3 active:opacity-70',
                   index > 0 && 'border-t border-border',
                 )}>
-                <EntityAvatar imageUri={productImageUri} emoji={emoji} size={36} />
-                <Text className="flex-1 text-sm font-medium text-card-foreground" numberOfLines={1}>
-                  {offer.brand ? `${offer.brand} – ` : ''}
-                  {offer.quantity} {offer.unit}
-                </Text>
+                {/* Image, rating and description now live on the offer, so they render per row. */}
+                <EntityAvatar imageUri={resolveEntityImageUri(offer.imagePath) ?? undefined} emoji={emoji} size={44} />
+                <View className="flex-1 gap-0.5">
+                  <Text className="text-sm font-medium text-card-foreground" numberOfLines={1}>
+                    {offer.brand ? `${offer.brand} – ` : ''}
+                    {offer.quantity} {offer.unit}
+                  </Text>
+                  {offer.rating != null ? <RatingStars value={offer.rating} /> : null}
+                  {offer.description?.trim() ? (
+                    <Text className="text-xs text-muted-foreground" numberOfLines={2}>
+                      {offer.description.trim()}
+                    </Text>
+                  ) : null}
+                </View>
                 <View className="items-end">
                   <Text className="text-sm font-bold text-foreground">
                     {offer.price != null ? formatCurrency(offer.price) : noPriceLabel}

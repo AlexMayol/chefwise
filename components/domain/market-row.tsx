@@ -4,9 +4,9 @@ import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { EntityAvatar } from '@/components/ui/entity-avatar';
-import { useColorScheme } from '@/components/useColorScheme';
+
 import { elevation } from '@/lib/theme/elevation';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 
 export type MarketRowItem = {
   id: string;
@@ -31,7 +31,7 @@ function Meta({ icon, text }: { icon: ReactNode; text: string }) {
 }
 
 export function MarketRow({ item }: { item: MarketRowItem }) {
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   return (
     <Link href={item.href} asChild>

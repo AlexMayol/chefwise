@@ -64,7 +64,7 @@ export function AddProductsSheet({
   const changeCount = added.length + removed.length;
 
   return (
-    <BottomSheet visible={visible} onClose={close} bottomInset={bottomInset}>
+    <BottomSheet visible={visible} onClose={close} bottomInset={bottomInset} resizable={false}>
       <Text className="mb-3 text-lg font-bold text-card-foreground">{t('products.addExistingTitle')}</Text>
       {products.length > 0 ? (
         <>

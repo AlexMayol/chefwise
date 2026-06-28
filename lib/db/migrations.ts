@@ -97,6 +97,26 @@ export async function runMigrations(db: AppDatabase): Promise<void> {
     await db.execAsync(SCHEMA_SQL);
   }
 
+  if (currentVersion < 8) {
+    // ponytail: destructive rebuild — pre-release, no data to preserve. v8 moves rating,
+    // imagePath and description (the old products.notes) off products and onto product_offers,
+    // since they describe a product at a specific market. Same drop set as v7 so the rebuilt
+    // products table satisfies its dependents' foreign keys.
+    await db.execAsync(`
+      PRAGMA foreign_keys = OFF;
+      DROP TABLE IF EXISTS product_offer_prices;
+      DROP TABLE IF EXISTS product_offers;
+      DROP TABLE IF EXISTS pantry_transactions;
+      DROP TABLE IF EXISTS pantry_items;
+      DROP TABLE IF EXISTS shopping_list_items;
+      DROP TABLE IF EXISTS product_prices;
+      DROP TABLE IF EXISTS recipe_products;
+      DROP TABLE IF EXISTS products;
+      PRAGMA foreign_keys = ON;
+    `);
+    await db.execAsync(SCHEMA_SQL);
+  }
+
   if (currentVersion < LATEST_SCHEMA_VERSION) {
     await db.execAsync(`PRAGMA user_version = ${LATEST_SCHEMA_VERSION}`);
   }

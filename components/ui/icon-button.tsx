@@ -9,7 +9,7 @@ type IconButtonProps = PressableProps & {
 };
 
 const sizeVariants = { sm: 'size-8', md: 'size-10' } as const;
-const bgVariants = { muted: 'bg-muted', overlay: 'bg-background/80' } as const;
+const bgVariants = { muted: 'border border-border bg-card', overlay: 'bg-background/80' } as const;
 
 // Circular icon-only button. Pass an accessibilityLabel for icon-only actions.
 export function IconButton({ size = 'md', variant = 'muted', className, children, ...props }: IconButtonProps) {

@@ -16,33 +16,27 @@ import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SearchBar } from '@/components/ui/search-bar';
 import { Select } from '@/components/ui/select';
 import { SelectInput } from '@/components/ui/select-input';
-import { useColorScheme } from '@/components/useColorScheme';
 import type { ProductSort } from '@/lib/db/repositories/products';
 import { formatCurrency } from '@/lib/formatting/currency';
 import { useCategories } from '@/lib/hooks/use-categories';
 import { useProducts } from '@/lib/hooks/use-products';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
-import { getDesignTokens } from '@/lib/theme/tokens';
 import { categoryEmoji, productEmoji } from '@/lib/ui/category-emoji';
 
-type MinimumRatingFilter = 'none' | '1' | '2' | '3' | '4' | '5';
 const OTHER_KEY = '__other__';
 
 export default function ProductsScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const tokens = getDesignTokens(useColorScheme());
   const [query, setQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [minimumRating, setMinimumRating] = useState<MinimumRatingFilter>('none');
   const [sort, setSort] = useState<ProductSort>('name');
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const { items, loading, reload } = useProducts({
     favoritesOnly,
-    minRating: minimumRating === 'none' ? undefined : Number(minimumRating),
     sort,
   });
   const { items: categories } = useCategories();
@@ -58,7 +52,7 @@ export default function ProductsScreen() {
     return (id: string | null) => (id ? map.get(id) ?? null : null);
   }, [categories]);
 
-  const activeFilterCount = (favoritesOnly ? 1 : 0) + (minimumRating !== 'none' ? 1 : 0) + (sort !== 'name' ? 1 : 0);
+  const activeFilterCount = (favoritesOnly ? 1 : 0) + (sort !== 'name' ? 1 : 0);
 
   // Filter by search + chosen category, then group the rows by category.
   const sections = useMemo(() => {
@@ -72,10 +66,11 @@ export default function ProductsScreen() {
 
       if (!groups.has(key)) {
         const name = categoryName(product.categoryId);
+        const category = categories.find((c) => c.id === product.categoryId);
         groups.set(key, {
           key,
           name: name ?? t('products.otherCategory'),
-          emoji: categoryEmoji(name),
+          emoji: category?.description || categoryEmoji(name),
           rows: [],
         });
       }
@@ -85,9 +80,8 @@ export default function ProductsScreen() {
       groups.get(key)!.rows.push({
         id: product.id,
         name: product.name,
-        imageUri: resolveEntityImageUri(product.imagePath) ?? undefined,
+        imageUri: resolveEntityImageUri(product.bestImagePath) ?? undefined,
         emoji: productEmoji(product.categoryId, categories),
-        rating: product.rating,
         hasPrice,
         priceLabel: hasPrice ? t('common.fromPrice', { price: formatCurrency(best) }) : t('common.noPriceYet'),
         isFavorite: product.isFavorite,
@@ -105,7 +99,11 @@ export default function ProductsScreen() {
   const categoryOptions = useMemo(
     () => [
       { label: t('products.allCategories'), value: 'all' },
-      ...categories.map((category) => ({ label: category.name, value: category.id })),
+      ...categories.map((category) => ({
+        label: category.name,
+        value: category.id,
+        emoji: category.description || categoryEmoji(category.name),
+      })),
     ],
     [categories, t],
   );
@@ -148,11 +146,11 @@ export default function ProductsScreen() {
 
       <BottomActionBar>
         <Link href="/products/new" asChild>
-          <Button label={t('products.new')} icon={<Plus size={18} color={tokens.primaryForeground} />} />
+          <Button label={t('products.new')} icon={<Plus size={18} />} />
         </Link>
       </BottomActionBar>
 
-      <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom}>
+      <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom} resizable={false}>
         <View className="gap-4">
           <View className="flex-row items-center justify-between">
             <Text className="text-xl font-bold text-foreground">{t('common.filters')}</Text>
@@ -164,7 +162,6 @@ export default function ProductsScreen() {
                 disabled={activeFilterCount === 0}
                 onPress={() => {
                   setFavoritesOnly(false);
-                  setMinimumRating('none');
                   setSort('name');
                 }}
               />
@@ -176,28 +173,12 @@ export default function ProductsScreen() {
             variant={favoritesOnly ? 'secondary' : 'ghost'}
             onPress={() => setFavoritesOnly((current) => !current)}
           />
-          <FormField label={t('products.minimumRating')}>
-            <Select<MinimumRatingFilter>
-              value={minimumRating}
-              onChange={setMinimumRating}
-              options={[
-                { label: t('products.anyRating'), value: 'none' },
-                { label: '1', value: '1' },
-                { label: '2', value: '2' },
-                { label: '3', value: '3' },
-                { label: '4', value: '4' },
-                { label: '5', value: '5' },
-              ]}
-            />
-          </FormField>
           <FormField label={t('products.sortBy')}>
             <Select<ProductSort>
               value={sort}
               onChange={setSort}
               options={[
                 { label: t('products.sortName'), value: 'name' },
-                { label: t('products.sortHighestRated'), value: 'highest_rated' },
-                { label: t('products.sortLowestRated'), value: 'lowest_rated' },
                 { label: t('products.sortFavoritesFirst'), value: 'favorites_first' },
               ]}
             />

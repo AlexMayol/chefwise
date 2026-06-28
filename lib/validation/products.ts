@@ -7,17 +7,21 @@ export const categorySchema = z.object({
   description: z.string().optional().nullable(),
 });
 
+// A product is generic: rating, photo and description now live per-offer.
 export const productSchema = z.object({
   name: nameSchema,
   categoryId: z.string().nullable().optional(),
   defaultUnit: unitSchema,
-  rating: z
-    .preprocess((value) => (value === '' || value === undefined ? null : value), z.coerce.number().int().min(1, validationKeys.ratingRange).max(5, validationKeys.ratingRange).nullable())
-    .optional(),
-  notes: z.string().optional().nullable(),
   isFavorite: z.boolean().default(false),
-  imagePath: z.string().optional().nullable(),
 });
+
+// Reused by both the product rating field (gone) and the offer rating field: blank → null, else 1–5.
+const ratingSchema = z
+  .preprocess(
+    (value) => (value === '' || value === undefined ? null : value),
+    z.coerce.number().int().min(1, validationKeys.ratingRange).max(5, validationKeys.ratingRange).nullable(),
+  )
+  .optional();
 
 // Create-only superset: the product fields plus an optional first price
 // (market + price + per-unit). If a price is entered, a market is required.
@@ -35,12 +39,20 @@ export const productCreateSchema = productSchema
     }
   });
 
-// A specific offer (market + optional brand + size) plus its first observed price.
+// A specific offer (market + optional brand + size), plus the rating/photo/description
+// that describe it at that market. No price here, so it doubles as the edit-offer form.
 export const offerSchema = z.object({
   marketId: nameSchema,
   brand: z.string().trim().optional().nullable(),
   quantity: positiveNumberSchema,
   unit: unitSchema,
+  rating: ratingSchema,
+  imagePath: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+});
+
+// Create-only superset: the offer fields plus its first observed price.
+export const offerCreateSchema = offerSchema.extend({
   price: positiveNumberSchema,
 });
 
@@ -60,5 +72,6 @@ export const productPriceSchema = z.object({
 export type ProductFormValues = z.infer<typeof productSchema>;
 export type ProductCreateValues = z.infer<typeof productCreateSchema>;
 export type OfferFormValues = z.infer<typeof offerSchema>;
+export type OfferCreateValues = z.infer<typeof offerCreateSchema>;
 export type OfferPriceFormValues = z.infer<typeof offerPriceSchema>;
 export type ProductPriceFormValues = z.infer<typeof productPriceSchema>;

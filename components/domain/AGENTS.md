@@ -17,7 +17,7 @@
 
 - Tapping an entity card opens a detail screen (`app/<entity>/[id].tsx`), reached via the card's `href` — not the inline edit modal. The catalog grids set `href`; only the create flow uses the `CollectionScreen` modal.
 - Detail screens follow one shape: a back header (← + emoji + name), the related entities at the top (e.g. a market/category lists its products via `ProductGrid`), then an **Edit** button that opens the entity's form in a `BottomSheet`.
-- Wrap any form hosted in a `BottomSheet` in a `ScrollView` (`maxHeight` ~480, `keyboardShouldPersistTaps="handled"`) so tall forms (e.g. the category emoji grid) don't push the submit button off-screen.
+- `BottomSheet` is draggable-to-resize by default (fixed height + drag handle). For a form, use the fill layout so the body scrolls and the submit button never gets pushed off-screen: wrap in `<View className="flex-1 gap-4">` with the `FormScreenHeader` pinned on top and the form inside `<ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">`. For short, non-form sheets (action menus, select/creatable dropdowns, filter panels, delete-confirm) pass `resizable={false}` so the sheet hugs its content instead of opening at a fixed height; those cap their own scroll with `maxHeight` ~480 when needed.
 
 ## Feature Forms
 

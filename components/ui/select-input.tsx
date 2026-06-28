@@ -37,7 +37,7 @@ export function SelectInput<T extends string>({ value, options, onChange, placeh
         </View>
         <Text className="text-base text-muted-foreground">▾</Text>
       </Pressable>
-      <BottomSheet visible={open} onClose={() => setOpen(false)}>
+      <BottomSheet visible={open} onClose={() => setOpen(false)} resizable={false}>
         <ScrollView style={{ maxHeight: 360 }}>
           <View className="gap-1">
             {options.map((option) => {

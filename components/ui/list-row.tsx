@@ -1,9 +1,9 @@
 import { ChevronRight } from 'lucide-react-native';
 import { Pressable, Text, View, type PressableProps } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
+
 import { elevation } from '@/lib/theme/elevation';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { cn } from '@/lib/utils';
 
 type ListRowProps = PressableProps & {
@@ -15,7 +15,7 @@ type ListRowProps = PressableProps & {
 };
 
 export function ListRow({ title, subtitle, meta, chevron, className, style, ...props }: ListRowProps) {
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   return (
     <Pressable className={cn('rounded-2xl border border-border bg-card p-4 active:opacity-90', className)} style={[elevation.card, style as object]} {...props}>

@@ -1,7 +1,7 @@
 import { Text, TextInput, View, type TextInputProps } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
-import { getDesignTokens } from '@/lib/theme/tokens';
+
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { cn } from '@/lib/utils';
 
 type InputProps = TextInputProps & {
@@ -13,7 +13,7 @@ export function Input({ className, placeholderTextColor, onChangeText, multiline
   // ponytail: colors come from NativeWind classes so the field tracks its container's theme.
   // Modals render outside the variable-context provider, so a JS-token fill would mismatch the sheet.
   // placeholderTextColor is a prop (not a style) so it still reads from JS tokens — close enough either way.
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   const field = (
     <TextInput

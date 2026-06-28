@@ -2,10 +2,10 @@ import { Link, type Href } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
+
 import { EntityAvatar } from '@/components/ui/entity-avatar';
 import { elevation } from '@/lib/theme/elevation';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 
 export type CategoryRowItem = {
   id: string;
@@ -18,7 +18,7 @@ export type CategoryRowItem = {
 
 // A category line: emoji tile, name + "N products", optional "Most tracked" badge, chevron.
 export function CategoryRow({ item, badgeLabel }: { item: CategoryRowItem; badgeLabel: string }) {
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
 
   return (
     <Link href={item.href} asChild>

@@ -47,7 +47,7 @@ export function CreatableSelect<T extends string>({
         <SelectInput value={value} options={options} onChange={onChange} placeholder={emptyLabel} />
       </View>
       <Button variant="ghost" label="+" accessibilityLabel={addLabel} className="px-4" onPress={() => setOpen(true)} />
-      <BottomSheet visible={open} onClose={() => setOpen(false)}>
+      <BottomSheet visible={open} onClose={() => setOpen(false)} resizable={false}>
         <View className="gap-4">
           <FormScreenHeader title={addLabel} onCancel={() => setOpen(false)} onSave={() => formRef.current?.submit()} />
           <ScrollView style={{ maxHeight: 480 }} keyboardShouldPersistTaps="handled">

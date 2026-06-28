@@ -1,5 +1,8 @@
-import type { ReactNode } from 'react';
-import { Modal, Pressable, View } from 'react-native';
+import { type ReactNode, useId, useMemo, useRef } from 'react';
+import { Modal, PanResponder, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { elevation } from '@/lib/theme/elevation';
 
@@ -7,28 +10,116 @@ type BottomSheetProps = {
   visible: boolean;
   onClose(): void;
   bottomInset?: number;
+  // Sheets are draggable-to-resize by default (fixed height + drag handle), which
+  // suits tall forms. Pass `resizable={false}` for short menus/selects/filters
+  // that should just hug their content.
+  resizable?: boolean;
   children: ReactNode;
 };
 
+const SCRIM_OPACITY = 0.4;
+const SCRIM_FADE_END = 0.24;
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+function BottomSheetScrim() {
+  const gradientId = useId().replace(/:/g, '');
+
+  return (
+    <View testID="bottom-sheet-scrim" pointerEvents="none" style={StyleSheet.absoluteFill}>
+      <Svg width="100%" height="100%" preserveAspectRatio="none">
+        <Defs>
+          <LinearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor="#000000" stopOpacity={0} />
+            <Stop offset={SCRIM_FADE_END} stopColor="#000000" stopOpacity={SCRIM_OPACITY} />
+            <Stop offset="1" stopColor="#000000" stopOpacity={SCRIM_OPACITY} />
+          </LinearGradient>
+        </Defs>
+        <Rect width="100%" height="100%" fill={`url(#${gradientId})`} />
+      </Svg>
+    </View>
+  );
+}
+
 // Native Modal `animationType="slide"` gives the slide-up animation for free; a
 // bottom-anchored card over a scrim makes it read as a bottom sheet.
-export function BottomSheet({ visible, onClose, bottomInset = 0, children }: BottomSheetProps) {
+export function BottomSheet({ visible, onClose, bottomInset = 0, resizable = true, children }: BottomSheetProps) {
+  if (!resizable) {
+    return (
+      <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+        <Pressable className="flex-1 justify-end" onPress={onClose}>
+          <BottomSheetScrim />
+          <Pressable
+            className="rounded-t-3xl border border-border bg-card p-5"
+            style={[elevation.card, { paddingBottom: bottomInset + 24 }]}
+            onPress={(event) => event.stopPropagation()}
+          >
+            <View className="mb-4 h-1.5 w-12 self-center rounded-full bg-border" />
+            {children}
+          </Pressable>
+        </Pressable>
+      </Modal>
+    );
+  }
+
+  return <ResizableSheet {...{ visible, onClose, bottomInset, children }} />;
+}
+
+function ResizableSheet({ visible, onClose, bottomInset = 0, children }: Omit<BottomSheetProps, 'resizable'>) {
+  const insets = useSafeAreaInsets();
+  const { height: screenHeight } = useWindowDimensions();
+
+  const maxHeight = screenHeight - insets.top - 24;
+  const minHeight = Math.min(260, maxHeight);
+  const defaultHeight = clamp(screenHeight * 0.6, minHeight, maxHeight);
+
+  // reanimated shared value → the drag updates layout on the UI thread (no React
+  // re-render, no per-frame bridge churn), which keeps it smooth on low-end devices.
+  // ponytail: portrait phone app; height isn't recomputed on rotation.
+  const height = useSharedValue(defaultHeight);
+  const gestureStart = useRef(defaultHeight);
+  const bounds = useRef({ min: minHeight, max: maxHeight });
+  bounds.current = { min: minHeight, max: maxHeight };
+
+  const pan = useMemo(
+    () =>
+      PanResponder.create({
+        // Claim the touch on start so the parent card Pressable doesn't grab it,
+        // and hold it through the drag so nothing steals the responder mid-gesture.
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderTerminationRequest: () => false,
+        onPanResponderGrant: () => {
+          gestureStart.current = height.value;
+        },
+        // Drag up (negative dy) grows the sheet; clamp to [min, max].
+        onPanResponderMove: (_, gesture) => {
+          height.value = clamp(gestureStart.current - gesture.dy, bounds.current.min, bounds.current.max);
+        },
+      }),
+    [height],
+  );
+
+  const animatedStyle = useAnimatedStyle(() => ({ height: height.value }));
+
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable
-        className="flex-1 justify-end"
-        // ponytail: neutral scrim; no semantic token exists for modal backdrops
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
-        onPress={onClose}
-      >
-        <Pressable
-          className="rounded-t-3xl border border-border bg-card p-5"
-          style={[elevation.card, { paddingBottom: bottomInset + 24 }]}
-          onPress={(event) => event.stopPropagation()}
-        >
-          <View className="mb-4 h-1.5 w-12 self-center rounded-full bg-border" />
-          {children}
-        </Pressable>
+      <Pressable className="flex-1 justify-end" onPress={onClose}>
+        <BottomSheetScrim />
+        <Animated.View style={[{ width: '100%' }, animatedStyle]}>
+          <Pressable
+            className="flex-1 rounded-t-3xl border border-border bg-card"
+            style={elevation.card}
+            onPress={(event) => event.stopPropagation()}
+          >
+            <View {...pan.panHandlers} className="items-center py-3">
+              <View className="h-1.5 w-12 rounded-full bg-border" />
+            </View>
+            <View className="flex-1 px-5" style={{ paddingBottom: bottomInset + 24 }}>
+              {children}
+            </View>
+          </Pressable>
+        </Animated.View>
       </Pressable>
     </Modal>
   );

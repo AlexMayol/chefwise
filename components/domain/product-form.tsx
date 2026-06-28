@@ -10,21 +10,16 @@ import { Collapsible } from '@/components/ui/collapsible';
 import { ControlledInput } from '@/components/ui/controlled-input';
 import { FormField } from '@/components/ui/form-field';
 import { type FormHandle } from '@/components/ui/form-screen-header';
-import { Input } from '@/components/ui/input';
-import { useColorScheme } from '@/components/useColorScheme';
+
 import type { ProductInput } from '@/lib/db/repositories/products';
 import type { Unit } from '@/lib/domain/units';
 import { useTranslation } from '@/lib/i18n';
-import { getDesignTokens } from '@/lib/theme/tokens';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { productCreateSchema, type ProductFormValues } from '@/lib/validation/products';
 
 import { CategorySelect } from './category-select';
-import { EntityImageField } from './entity-image-field';
 import { MarketSelect } from './market-select';
-import { RatingInput } from './rating-input';
 import { UnitInput } from './unit-input';
-
-const NOTES_MAX = 200;
 
 export type ProductFormHandle = FormHandle;
 export type InitialPrice = { marketId: string; priceUnit: Unit; price: number };
@@ -47,9 +42,8 @@ export const ProductForm = forwardRef<ProductFormHandle, ProductFormProps>(funct
   ref,
 ) {
   const { t } = useTranslation();
-  const tokens = getDesignTokens(useColorScheme());
+  const tokens = useDesignTokens();
   const [showMore, setShowMore] = useState(false);
-  const draftImageId = initialValues?.name || 'draft-product';
   // One schema for both flows: the price fields are all optional, so an edit form
   // (withInitialPrice off, price section hidden) parses cleanly with them left blank.
   const form = useForm({
@@ -58,10 +52,7 @@ export const ProductForm = forwardRef<ProductFormHandle, ProductFormProps>(funct
       name: '',
       categoryId: null,
       defaultUnit: 'unit',
-      rating: null,
-      notes: '',
       isFavorite: false,
-      imagePath: null,
       marketId: null,
       price: undefined,
       ...initialValues,
@@ -142,48 +133,6 @@ export const ProductForm = forwardRef<ProductFormHandle, ProductFormProps>(funct
                 render={({ field }) => <CategorySelect value={field.value} onChange={field.onChange} />}
               />
             </FormField>
-            <Controller
-              control={form.control}
-              name="imagePath"
-              render={({ field }) => (
-                <FormField label={t('forms.image')}>
-                  <EntityImageField entityType="product" entityId={draftImageId} value={field.value} onChange={field.onChange} />
-                </FormField>
-              )}
-            />
-            <FormField label={t('forms.rating')}>
-              <Controller
-                control={form.control}
-                name="rating"
-                render={({ field }) => {
-                  const value = typeof field.value === 'number' ? field.value : null;
-                  return (
-                    <View className="flex-row items-center gap-3">
-                      <RatingInput value={value} onChange={field.onChange} />
-                      {value ? <Text className="text-sm text-muted-foreground">{t('forms.ratingOutOf', { value })}</Text> : null}
-                    </View>
-                  );
-                }}
-              />
-            </FormField>
-            <Controller
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormField label={t('forms.notes')}>
-                  <Input
-                    value={field.value ?? ''}
-                    multiline
-                    maxLength={NOTES_MAX}
-                    onChangeText={field.onChange}
-                    onBlur={field.onBlur}
-                  />
-                  <Text className="self-end text-xs text-muted-foreground">
-                    {field.value?.length ?? 0}/{NOTES_MAX}
-                  </Text>
-                </FormField>
-              )}
-            />
             <Controller
               control={form.control}
               name="isFavorite"
