@@ -5,6 +5,9 @@ import { cn } from '@/lib/utils';
 export type SelectOption<T extends string = string> = {
   label: string;
   value: T;
+  // Optional leading avatar for dropdown rows (e.g. a market logo); falls back to `emoji`.
+  imageUri?: string;
+  emoji?: string;
 };
 
 type SelectProps<T extends string> = {

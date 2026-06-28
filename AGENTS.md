@@ -7,6 +7,7 @@
 - Store all user data locally in SQLite and the device document directory.
 - Store image paths in SQLite as relative paths only, for example `images/products/product-id.jpg`.
 - All user-facing app text must go through i18next English and Spanish resources. Never translate user content such as product, market, category, or recipe names.
+- When a translation key is no longer referenced anywhere, always delete it from both the English and Spanish resources. Never leave orphan i18n keys behind.
 - Use semantic design tokens and NativeWind classes for color. Do not hardcode black/white text or one-off colors in screens.
 
 ## Architecture

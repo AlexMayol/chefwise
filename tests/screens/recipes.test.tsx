@@ -22,6 +22,18 @@ jest.mock('@/lib/hooks/use-recipes', () => ({
   useRecipeDetail: jest.fn(),
 }));
 
+jest.mock('@/lib/hooks/use-product-offers', () => ({
+  useProductOffers: jest.fn(() => ({
+    items: [],
+    loading: false,
+    reload: jest.fn(),
+    create: jest.fn(),
+    createWithPrice: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  })),
+}));
+
 const useMarketsMock = useMarkets as jest.MockedFunction<typeof useMarkets>;
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
 const useRecipeDetailMock = useRecipeDetail as jest.MockedFunction<typeof useRecipeDetail>;
@@ -34,7 +46,6 @@ describe('recipe screens', () => {
           id: 'flour',
           name: 'Bread flour',
           categoryId: null,
-          marketId: 'central',
           defaultUnit: 'kg',
           rating: null,
           notes: null,
@@ -42,10 +53,10 @@ describe('recipe screens', () => {
           imagePath: null,
           createdAt: '',
           updatedAt: '',
-          marketName: null,
-          price: null,
-          normalizedPrice: null,
-          normalizedUnit: null,
+          offerCount: 0,
+          marketCount: 0,
+          bestNormalizedPrice: null,
+          bestNormalizedUnit: null,
         },
       ],
       loading: false,
@@ -80,6 +91,7 @@ describe('recipe screens', () => {
           id: 'ingredient-1',
           recipeId: 'recipe-1',
           productId: 'flour',
+          offerId: null,
           quantity: 500,
           unit: 'g',
           createdAt: '',
@@ -96,7 +108,7 @@ describe('recipe screens', () => {
         totalCost: 1,
         costPerServing: 0.5,
         missingProductIds: [],
-        breakdown: [{ productId: 'flour', priceId: 'price-1', cost: 1 }],
+        breakdown: [{ productId: 'flour', offerId: 'offer-1', priceId: 'price-1', cost: 1 }],
       })),
     });
   });

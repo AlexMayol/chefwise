@@ -76,6 +76,27 @@ export async function runMigrations(db: AppDatabase): Promise<void> {
     await db.execAsync(SCHEMA_SQL);
   }
 
+  if (currentVersion < 7) {
+    // ponytail: destructive rebuild — pre-release, no data to preserve. v7 moves to the
+    // multi-brand model: products lose marketId, and price history moves to offers via the
+    // new product_offers + product_offer_prices tables (recipe_products gains offerId).
+    // product_prices and the shopping/pantry tables are kept; we drop + recreate them so
+    // the rebuilt products table satisfies their foreign keys.
+    await db.execAsync(`
+      PRAGMA foreign_keys = OFF;
+      DROP TABLE IF EXISTS product_offer_prices;
+      DROP TABLE IF EXISTS product_offers;
+      DROP TABLE IF EXISTS pantry_transactions;
+      DROP TABLE IF EXISTS pantry_items;
+      DROP TABLE IF EXISTS shopping_list_items;
+      DROP TABLE IF EXISTS product_prices;
+      DROP TABLE IF EXISTS recipe_products;
+      DROP TABLE IF EXISTS products;
+      PRAGMA foreign_keys = ON;
+    `);
+    await db.execAsync(SCHEMA_SQL);
+  }
+
   if (currentVersion < LATEST_SCHEMA_VERSION) {
     await db.execAsync(`PRAGMA user_version = ${LATEST_SCHEMA_VERSION}`);
   }

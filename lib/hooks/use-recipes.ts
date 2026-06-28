@@ -49,16 +49,29 @@ export function useRecipeDetail(recipeId?: string) {
       return null;
     }
 
-    const prices = (
-      await Promise.all(ingredients.map((ingredient) => repositories.productPrices.listForProduct(ingredient.productId)))
-    ).flat();
+    // One candidate per offer = that offer's latest price. The domain layer picks the
+    // ingredient's chosen offer, or the cheapest, from these.
+    const offerLists = await Promise.all(
+      ingredients.map((ingredient) => repositories.productOffers.listForProduct(ingredient.productId)),
+    );
+    const prices = offerLists
+      .flat()
+      .filter((offer) => offer.normalizedPrice != null && offer.normalizedUnit != null && offer.observedAt != null)
+      .map((offer) => ({
+        id: offer.id,
+        offerId: offer.id,
+        productId: offer.productId,
+        normalizedPrice: offer.normalizedPrice!,
+        normalizedUnit: offer.normalizedUnit!,
+        observedAt: offer.observedAt!,
+      }));
 
     return calculateRecipeCost({
       servings: recipe.servings,
       ingredients,
       prices,
     });
-  }, [ingredients, recipe, repositories.productPrices]);
+  }, [ingredients, recipe, repositories.productOffers]);
 
   const remove = useCallback(async () => {
     if (!recipeId) {

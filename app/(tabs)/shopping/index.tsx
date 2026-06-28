@@ -24,8 +24,10 @@ export default function ShoppingScreen() {
         meta: t(`shopping.${list.status}`),
         href: `/shopping/${list.id}` as Href,
       }))}
-      renderForm={(onSaved) => (
+      renderForm={(onSaved, _item, formRef) => (
         <ShoppingListForm
+          ref={formRef}
+          hideSubmit
           onSubmit={async (values) => {
             await create(values);
             onSaved();

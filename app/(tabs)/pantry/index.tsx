@@ -23,8 +23,10 @@ export default function PantryScreen() {
         title: item.productId,
         subtitle: `${item.quantity} ${item.unit}`,
       }))}
-      renderForm={(onSaved) => (
+      renderForm={(onSaved, _item, formRef) => (
         <PantryAdjustmentForm
+          ref={formRef}
+          hideSubmit
           onSubmit={async (values) => {
             await adjust(values);
             onSaved();

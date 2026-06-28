@@ -3,16 +3,17 @@ import { convertQuantity, isCompatibleUnit, type Unit } from './units';
 export type RecipeCostIngredient = {
   id?: string;
   productId: string;
+  // Chosen offer to cost against; null/undefined = use the cheapest current offer.
+  offerId?: string | null;
   quantity: number;
   unit: Unit;
 };
 
+// One candidate = the latest price of a single offer (built upstream from product_offers).
 export type RecipeCostPrice = {
   id: string;
+  offerId: string;
   productId: string;
-  price: number;
-  quantity: number;
-  unit: Unit;
   normalizedPrice: number;
   normalizedUnit: Unit;
   observedAt: string;
@@ -20,6 +21,7 @@ export type RecipeCostPrice = {
 
 export type RecipeCostBreakdownItem = {
   productId: string;
+  offerId: string;
   cost: number;
   priceId: string;
 };
@@ -32,19 +34,25 @@ export type RecipeCostResult = {
   missingProductIds: string[];
 };
 
-function latestByProduct(prices: RecipeCostPrice[]): RecipeCostPrice[] {
-  const latest = new Map<string, RecipeCostPrice>();
+// Pick the price to cost an ingredient with: the chosen offer when it has a usable price,
+// otherwise the cheapest unit-compatible offer for that product.
+function pickPrice(ingredient: RecipeCostIngredient, candidates: RecipeCostPrice[]): RecipeCostPrice | undefined {
+  const compatible = candidates.filter(
+    (candidate) =>
+      candidate.productId === ingredient.productId && isCompatibleUnit(ingredient.unit, candidate.normalizedUnit),
+  );
 
-  for (const price of [...prices].sort((left, right) => {
-    const dateComparison = right.observedAt.localeCompare(left.observedAt);
-    return dateComparison === 0 ? right.id.localeCompare(left.id) : dateComparison;
-  })) {
-    if (!latest.has(price.productId)) {
-      latest.set(price.productId, price);
+  if (ingredient.offerId) {
+    const chosen = compatible.find((candidate) => candidate.offerId === ingredient.offerId);
+    if (chosen) {
+      return chosen;
     }
   }
 
-  return [...latest.values()];
+  return compatible.reduce<RecipeCostPrice | undefined>(
+    (best, candidate) => (!best || candidate.normalizedPrice < best.normalizedPrice ? candidate : best),
+    undefined,
+  );
 }
 
 export function calculateRecipeCost({
@@ -56,15 +64,11 @@ export function calculateRecipeCost({
   ingredients: RecipeCostIngredient[];
   prices: RecipeCostPrice[];
 }): RecipeCostResult {
-  const latestPrices = latestByProduct(prices);
   const breakdown: RecipeCostBreakdownItem[] = [];
   const missingProductIds: string[] = [];
 
   for (const ingredient of ingredients) {
-    const price = latestPrices.find(
-      (candidate) =>
-        candidate.productId === ingredient.productId && isCompatibleUnit(ingredient.unit, candidate.normalizedUnit),
-    );
+    const price = pickPrice(ingredient, prices);
 
     if (!price) {
       missingProductIds.push(ingredient.productId);
@@ -79,6 +83,7 @@ export function calculateRecipeCost({
 
     breakdown.push({
       productId: ingredient.productId,
+      offerId: price.offerId,
       priceId: price.id,
       cost: quantityInPriceUnit * price.normalizedPrice,
     });

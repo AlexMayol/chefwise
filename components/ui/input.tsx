@@ -18,8 +18,9 @@ export function Input({ className, placeholderTextColor, onChangeText, multiline
   const field = (
     <TextInput
       className={cn(
-        'rounded-2xl border border-input bg-muted px-4 py-3 text-base text-foreground',
-        affix && 'pr-12',
+        'rounded-xl border border-input bg-input px-4 py-3 text-base text-foreground',
+        // Reserve room for the trailing affix; a longer one (e.g. "€ / kg") needs more.
+        affix && (affix.length > 1 ? 'pr-20' : 'pr-12'),
         multiline && 'min-h-24',
         className,
       )}

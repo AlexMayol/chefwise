@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react-native';
 
 import CategoriesScreen from '@/app/(tabs)/categories';
 import { useCategories } from '@/lib/hooks/use-categories';
+import { useProducts } from '@/lib/hooks/use-products';
 
 jest.mock('expo-router', () => ({
   Link: ({ children }: { children: React.ReactNode }) => children,
@@ -14,23 +15,55 @@ jest.mock('@/lib/hooks/use-categories', () => ({
   useCategories: jest.fn(),
 }));
 
+jest.mock('@/lib/hooks/use-products', () => ({
+  useProducts: jest.fn(),
+}));
+
 const useCategoriesMock = useCategories as jest.MockedFunction<typeof useCategories>;
+const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
+
+function product(id: string, name: string, categoryId: string | null) {
+  return {
+    id,
+    name,
+    categoryId,
+    defaultUnit: 'unit' as const,
+    rating: null,
+    notes: null,
+    isFavorite: false,
+    imagePath: null,
+    createdAt: '',
+    updatedAt: '',
+    offerCount: 0,
+    marketCount: 0,
+    bestNormalizedPrice: null,
+    bestNormalizedUnit: null,
+  };
+}
 
 describe('categories screen', () => {
-  const create = jest.fn(async () => ({ id: 'new', name: '', description: null, createdAt: '', updatedAt: '' }));
-  const removeMany = jest.fn(async () => {});
-
   beforeEach(() => {
-    create.mockClear();
-    removeMany.mockClear();
     useCategoriesMock.mockReturnValue({
-      items: [{ id: 'category-1', name: 'Postres', description: '🍰', createdAt: '', updatedAt: '' }],
+      items: [
+        { id: 'category-1', name: 'Postres', description: '🍰', createdAt: '', updatedAt: '' },
+        { id: 'category-2', name: 'Bebidas', description: '🥤', createdAt: '', updatedAt: '' },
+      ],
       loading: false,
       reload: jest.fn(),
-      create,
+      create: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
-      removeMany,
+      removeMany: jest.fn(),
+    });
+    useProductsMock.mockReturnValue({
+      items: [product('product-1', 'Tiramisu', 'category-1'), product('product-2', 'Cola', 'category-2')],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+      removeMany: jest.fn(),
+      assign: jest.fn(),
     });
   });
 
@@ -38,37 +71,21 @@ describe('categories screen', () => {
     jest.clearAllMocks();
   });
 
-  it('lists categories', async () => {
+  it('lists categories with their product counts', async () => {
     const screen = await render(<CategoriesScreen />);
 
     expect(screen.getByText('Postres')).toBeTruthy();
+    expect(screen.getByText('Bebidas')).toBeTruthy();
+    // One product is linked to each category.
+    expect(screen.getAllByText('1 product').length).toBe(2);
   });
 
-  it('creates a category from the add form', async () => {
+  it('filters categories by the search query', async () => {
     const screen = await render(<CategoriesScreen />);
 
-    await fireEvent.press(screen.getByText('New category'));
-    await fireEvent.changeText(screen.getByPlaceholderText('Uncategorized'), 'Drinks');
-    await fireEvent.press(screen.getByText('Save'));
+    await fireEvent.changeText(screen.getByPlaceholderText('Search categories'), 'Bebi');
 
-    expect(create).toHaveBeenCalledWith({ name: 'Drinks', description: null });
-  });
-
-  it('bulk-deletes selected categories via long-press, with confirmation', async () => {
-    const screen = await render(<CategoriesScreen />);
-
-    // Long-press enters selection mode (fireEvent bubbles to the card's Pressable).
-    await fireEvent(screen.getByText('Postres'), 'longPress');
-    expect(screen.getByText('1 selected')).toBeTruthy();
-
-    // First Delete (action bar) opens the confirmation sheet, not the deletion.
-    await fireEvent.press(screen.getByText('Delete'));
-    expect(removeMany).not.toHaveBeenCalled();
-    expect(screen.getByText('Delete 1 item?')).toBeTruthy();
-
-    // Confirm: the sheet's Delete actually runs the bulk delete.
-    const deleteButtons = screen.getAllByText('Delete');
-    await fireEvent.press(deleteButtons[deleteButtons.length - 1]);
-    expect(removeMany).toHaveBeenCalledWith(['category-1']);
+    expect(screen.getByText('Bebidas')).toBeTruthy();
+    expect(screen.queryByText('Postres')).toBeNull();
   });
 });

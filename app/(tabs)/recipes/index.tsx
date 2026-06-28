@@ -25,8 +25,10 @@ export default function RecipesScreen() {
         meta: `${recipe.servings}`,
         href: `/recipes/${recipe.id}` as Href,
       }))}
-      renderForm={(onSaved) => (
+      renderForm={(onSaved, _item, formRef) => (
         <RecipeForm
+          ref={formRef}
+          hideSubmit
           onSubmit={async (values) => {
             await create(values);
             onSaved();

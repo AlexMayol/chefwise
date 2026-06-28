@@ -28,12 +28,14 @@ describe('i18n resources', () => {
       'forms',
       'markets',
       'navigation',
+      'offers',
       'pantry',
       'products',
       'recipes',
       'selection',
       'settings',
       'shopping',
+      'time',
       'validation',
     ]);
   });

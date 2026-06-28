@@ -15,6 +15,18 @@ jest.mock('@/lib/hooks/use-products', () => ({
   useProducts: jest.fn(),
 }));
 
+jest.mock('@/lib/hooks/use-product-offers', () => ({
+  useProductOffers: jest.fn(() => ({
+    items: [],
+    loading: false,
+    reload: jest.fn(),
+    create: jest.fn(),
+    createWithPrice: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  })),
+}));
+
 const useMarketsMock = useMarkets as jest.MockedFunction<typeof useMarkets>;
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
 
@@ -23,7 +35,6 @@ const products: ProductListItem[] = [
     id: 'rice',
     name: 'Favorite rice',
     categoryId: null,
-    marketId: 'central',
     defaultUnit: 'kg',
     rating: null,
     notes: null,
@@ -31,16 +42,15 @@ const products: ProductListItem[] = [
     imagePath: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
-    marketName: null,
-    price: null,
-    normalizedPrice: null,
-    normalizedUnit: null,
+    offerCount: 0,
+    marketCount: 0,
+    bestNormalizedPrice: null,
+    bestNormalizedUnit: null,
   },
   {
     id: 'oats',
     name: 'Plain oats',
     categoryId: null,
-    marketId: 'central',
     defaultUnit: 'kg',
     rating: null,
     notes: null,
@@ -48,10 +58,10 @@ const products: ProductListItem[] = [
     imagePath: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
-    marketName: null,
-    price: null,
-    normalizedPrice: null,
-    normalizedUnit: null,
+    offerCount: 0,
+    marketCount: 0,
+    bestNormalizedPrice: null,
+    bestNormalizedUnit: null,
   },
 ];
 

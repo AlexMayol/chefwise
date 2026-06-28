@@ -1,0 +1,655 @@
+{
+  "version": "2.13",
+  "children": [
+    {
+      "type": "frame",
+      "id": "set00",
+      "x": 0,
+      "y": 0,
+      "name": "Chefwise Settings Mobile Screen",
+      "clip": true,
+      "width": 390,
+      "height": 900,
+      "fill": "#FAFAF7",
+      "layout": "vertical",
+      "gap": 22,
+      "padding": [
+        0,
+        0,
+        14,
+        0
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "set01",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            18,
+            20
+          ],
+          "alignItems": "center",
+          "justifyContent": "space_between",
+          "children": [
+            {
+              "type": "text",
+              "id": "set02",
+              "name": "Status Time",
+              "fill": "#1F251C",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "set03",
+              "name": "Status Indicators",
+              "fill": "#1F251C",
+              "content": "5G  100%",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "set04",
+          "name": "Content Wrapper",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 18,
+          "padding": [
+            0,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "set05",
+              "name": "Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "set06",
+                  "name": "Header Row",
+                  "width": "fill_container",
+                  "alignItems": "center",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "set07",
+                      "name": "Header Icon",
+                      "width": 44,
+                      "height": 44,
+                      "cornerRadius": 16,
+                      "fill": "#DCE8C6",
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "set08",
+                          "name": "Header Icon Label",
+                          "fill": "#516B32",
+                          "content": "CW",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "set09",
+                      "name": "Settings Title",
+                      "fill": "#1F251C",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 32,
+                      "fontWeight": "800",
+                      "letterSpacing": -1
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "set10",
+                  "name": "Settings Subtitle",
+                  "fill": "#697260",
+                  "content": "Control display, language, and local backups.",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "lineHeight": 1.35
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "set11",
+              "name": "Settings Card",
+              "width": "fill_container",
+              "cornerRadius": 24,
+              "fill": "#FFFFFF",
+              "stroke": {
+                "thickness": 1,
+                "fill": "#E4E0D7"
+              },
+              "layout": "vertical",
+              "gap": 22,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "set12",
+                  "name": "Appearance Section",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "set13",
+                      "name": "Appearance Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "set14",
+                          "name": "Appearance Title",
+                          "fill": "#1F251C",
+                          "content": "Appearance",
+                          "fontFamily": "Inter",
+                          "fontSize": 18,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "type": "text",
+                          "id": "set15",
+                          "name": "Appearance Description",
+                          "fill": "#697260",
+                          "content": "Choose how Chefwise looks on this device.",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "lineHeight": 1.35
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "set16",
+                      "name": "Theme Control",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "set17",
+                          "name": "Theme Label",
+                          "fill": "#2F372B",
+                          "content": "Theme",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "set18",
+                          "name": "Theme Pills",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "set19",
+                              "name": "Theme System Selected",
+                              "width": "fill_container",
+                              "cornerRadius": 999,
+                              "fill": "#6F8B4C",
+                              "padding": [
+                                9,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "set20",
+                                  "name": "Theme System Text",
+                                  "fill": "#FFFFFF",
+                                  "content": "System",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "set21",
+                              "name": "Theme Light",
+                              "width": "fill_container",
+                              "cornerRadius": 999,
+                              "fill": "#EFF1EA",
+                              "stroke": {
+                                "thickness": 1,
+                                "fill": "#E0E5D7"
+                              },
+                              "padding": [
+                                9,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "set22",
+                                  "name": "Theme Light Text",
+                                  "fill": "#2F372B",
+                                  "content": "Light",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "set23",
+                              "name": "Theme Dark",
+                              "width": "fill_container",
+                              "cornerRadius": 999,
+                              "fill": "#EFF1EA",
+                              "stroke": {
+                                "thickness": 1,
+                                "fill": "#E0E5D7"
+                              },
+                              "padding": [
+                                9,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "set24",
+                                  "name": "Theme Dark Text",
+                                  "fill": "#2F372B",
+                                  "content": "Dark",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "set25",
+                  "name": "Language Section",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "set26",
+                      "name": "Language Title",
+                      "fill": "#1F251C",
+                      "content": "Language",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "set27",
+                      "name": "Language Description",
+                      "fill": "#697260",
+                      "content": "Pick the app language for labels and controls.",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "lineHeight": 1.35
+                    },
+                    {
+                      "type": "frame",
+                      "id": "set28",
+                      "name": "Language Pills",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "set29",
+                          "name": "English Selected",
+                          "width": "fill_container",
+                          "cornerRadius": 999,
+                          "fill": "#6F8B4C",
+                          "padding": [
+                            9,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "set30",
+                              "name": "English Text",
+                              "fill": "#FFFFFF",
+                              "content": "English",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "set31",
+                          "name": "Spanish",
+                          "width": "fill_container",
+                          "cornerRadius": 999,
+                          "fill": "#EFF1EA",
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "#E0E5D7"
+                          },
+                          "padding": [
+                            9,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "set32",
+                              "name": "Spanish Text",
+                              "fill": "#2F372B",
+                              "content": "Spanish",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "set33",
+                  "name": "Local Data Section",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "set34",
+                      "name": "Local Data Title",
+                      "fill": "#1F251C",
+                      "content": "Local data",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "set35",
+                      "name": "Local Data Description",
+                      "fill": "#697260",
+                      "content": "Export a backup or import one to replace this device data.",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "lineHeight": 1.35
+                    },
+                    {
+                      "type": "frame",
+                      "id": "set36",
+                      "name": "Local Data Actions",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "set37",
+                          "name": "Export Local Data Button",
+                          "width": "fill_container",
+                          "cornerRadius": 16,
+                          "fill": "#6F8B4C",
+                          "padding": [
+                            14,
+                            18
+                          ],
+                          "alignItems": "center",
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "set38",
+                              "name": "Export Local Data Text",
+                              "fill": "#FFFFFF",
+                              "content": "Export local data",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "set39",
+                          "name": "Import Local Data Button",
+                          "width": "fill_container",
+                          "cornerRadius": 16,
+                          "fill": "#EDF0E7",
+                          "padding": [
+                            14,
+                            18
+                          ],
+                          "alignItems": "center",
+                          "justifyContent": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "set40",
+                              "name": "Import Local Data Text",
+                              "fill": "#2F372B",
+                              "content": "Import local data",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "set41",
+                  "name": "Version Row",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "top": 1
+                    },
+                    "fill": "#E4E0D7"
+                  },
+                  "padding": [
+                    12,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "set42",
+                      "name": "Version Text",
+                      "fill": "#697260",
+                      "content": "Version: 1.0.0",
+                      "fontFamily": "Inter",
+                      "fontSize": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "set43",
+          "name": "Floating Tab Bar",
+          "width": 358,
+          "height": 64,
+          "cornerRadius": 999,
+          "fill": "#FFFFFFCC",
+          "stroke": {
+            "thickness": 1,
+            "fill": "#E4E0D7"
+          },
+          "padding": 6,
+          "gap": 4,
+          "children": [
+            {
+              "type": "frame",
+              "id": "set44",
+              "name": "Tab Products",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 999,
+              "layout": "vertical",
+              "gap": 3,
+              "alignItems": "center",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "set45",
+                  "name": "Tab Products Icon",
+                  "fill": "#97A089",
+                  "content": "P",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "set46",
+                  "name": "Tab Products Label",
+                  "fill": "#97A089",
+                  "content": "Products",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "set47",
+              "name": "Tab Markets",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 999,
+              "layout": "vertical",
+              "gap": 3,
+              "alignItems": "center",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "set48",
+                  "name": "Tab Markets Icon",
+                  "fill": "#97A089",
+                  "content": "M",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "set49",
+                  "name": "Tab Markets Label",
+                  "fill": "#97A089",
+                  "content": "Markets",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "set50",
+              "name": "Tab Settings Active",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 999,
+              "fill": "#E9F2DA",
+              "layout": "vertical",
+              "gap": 3,
+              "alignItems": "center",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "set51",
+                  "name": "Tab Settings Icon",
+                  "fill": "#516B32",
+                  "content": "S",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "set52",
+                  "name": "Tab Settings Label",
+                  "fill": "#516B32",
+                  "content": "Settings",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "800"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -3,45 +3,49 @@ import { calculateRecipeCost } from '@/lib/domain/recipes';
 const observedAt = '2026-06-24T00:00:00.000Z';
 
 describe('recipe cost engine', () => {
-  it('calculates ingredient cost and cost per serving from the latest product price', () => {
+  it('calculates ingredient cost and cost per serving from an offer price', () => {
     const result = calculateRecipeCost({
       servings: 2,
       ingredients: [{ id: 'ri-1', productId: 'flour', quantity: 500, unit: 'g' }],
-      prices: [
-        {
-          id: 'p-1',
-          productId: 'flour',
-          price: 2,
-          quantity: 1,
-          unit: 'kg',
-          normalizedPrice: 2,
-          normalizedUnit: 'kg',
-          observedAt,
-        },
-      ],
+      prices: [{ id: 'p-1', offerId: 'o-1', productId: 'flour', normalizedPrice: 2, normalizedUnit: 'kg', observedAt }],
     });
 
     expect(result.complete).toBe(true);
     expect(result.totalCost).toBe(1);
     expect(result.costPerServing).toBe(0.5);
+    expect(result.breakdown[0]?.offerId).toBe('o-1');
   });
 
-  it('uses the most recently observed price per product', () => {
+  it('uses the cheapest current offer when no offer is chosen', () => {
     const result = calculateRecipeCost({
       servings: 1,
       ingredients: [{ id: 'ri-1', productId: 'milk', quantity: 500, unit: 'ml' }],
       prices: [
-        { id: 'old', productId: 'milk', price: 3, quantity: 1, unit: 'l', normalizedPrice: 3, normalizedUnit: 'l', observedAt: '2026-01-01T00:00:00.000Z' },
-        { id: 'new', productId: 'milk', price: 2, quantity: 1, unit: 'l', normalizedPrice: 2, normalizedUnit: 'l', observedAt },
+        { id: 'pricey', offerId: 'o-pricey', productId: 'milk', normalizedPrice: 3, normalizedUnit: 'l', observedAt },
+        { id: 'cheap', offerId: 'o-cheap', productId: 'milk', normalizedPrice: 2, normalizedUnit: 'l', observedAt },
       ],
     });
 
     expect(result.complete).toBe(true);
     expect(result.totalCost).toBe(1);
-    expect(result.breakdown[0]?.priceId).toBe('new');
+    expect(result.breakdown[0]?.offerId).toBe('o-cheap');
   });
 
-  it('marks cost incomplete when an ingredient has no usable price', () => {
+  it('uses the chosen offer over the cheapest one', () => {
+    const result = calculateRecipeCost({
+      servings: 1,
+      ingredients: [{ id: 'ri-1', productId: 'milk', offerId: 'o-pricey', quantity: 500, unit: 'ml' }],
+      prices: [
+        { id: 'pricey', offerId: 'o-pricey', productId: 'milk', normalizedPrice: 3, normalizedUnit: 'l', observedAt },
+        { id: 'cheap', offerId: 'o-cheap', productId: 'milk', normalizedPrice: 2, normalizedUnit: 'l', observedAt },
+      ],
+    });
+
+    expect(result.totalCost).toBe(1.5);
+    expect(result.breakdown[0]?.offerId).toBe('o-pricey');
+  });
+
+  it('marks cost incomplete when an ingredient has no usable offer price', () => {
     const result = calculateRecipeCost({
       servings: 4,
       ingredients: [{ id: 'ri-1', productId: 'eggs', quantity: 2, unit: 'unit' }],
@@ -59,18 +63,7 @@ describe('recipe cost engine', () => {
         { id: 'ri-1', productId: 'flour', quantity: 500, unit: 'g' },
         { id: 'ri-2', productId: 'eggs', quantity: 2, unit: 'unit' },
       ],
-      prices: [
-        {
-          id: 'p-1',
-          productId: 'flour',
-          price: 2,
-          quantity: 1,
-          unit: 'kg',
-          normalizedPrice: 2,
-          normalizedUnit: 'kg',
-          observedAt,
-        },
-      ],
+      prices: [{ id: 'p-1', offerId: 'o-1', productId: 'flour', normalizedPrice: 2, normalizedUnit: 'kg', observedAt }],
     });
 
     expect(result.complete).toBe(false);

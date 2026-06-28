@@ -24,6 +24,8 @@ export type RecipeProduct = {
   id: string;
   recipeId: string;
   productId: string;
+  // Chosen offer to cost this ingredient against; null = use the cheapest current offer.
+  offerId: string | null;
   quantity: number;
   unit: Unit;
   createdAt: string;
@@ -33,6 +35,7 @@ export type RecipeProduct = {
 export type RecipeProductInput = {
   recipeId: string;
   productId: string;
+  offerId?: string | null;
   quantity: number;
   unit: Unit;
 };
@@ -53,6 +56,7 @@ export function createRecipeRepository(db: AppDatabase) {
         id: createId('recipe-product'),
         recipeId: input.recipeId,
         productId: input.productId,
+        offerId: input.offerId ?? null,
         quantity: input.quantity,
         unit: input.unit,
         createdAt: timestamp,

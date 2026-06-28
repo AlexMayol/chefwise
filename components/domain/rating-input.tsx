@@ -10,7 +10,7 @@ export function RatingInput({ value, onChange }: RatingInputProps) {
     <View className="flex-row gap-2">
       {[1, 2, 3, 4, 5].map((rating) => (
         <Pressable key={rating} className="rounded-full p-1" onPress={() => onChange(rating)}>
-          <Text className={rating <= (value ?? 0) ? 'text-xl text-primary' : 'text-xl text-muted-foreground'}>★</Text>
+          <Text className={rating <= (value ?? 0) ? 'text-xl text-rating' : 'text-xl text-muted-foreground'}>★</Text>
         </Pressable>
       ))}
     </View>

@@ -1,12 +1,12 @@
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { FormScreenHeader, type FormHandle } from '@/components/ui/form-screen-header';
 import { EmptyState } from '@/components/ui/empty-state';
 import { GridCard, type CollectionItem } from '@/components/ui/grid-card';
 import { LoadingState } from '@/components/ui/loading-state';
@@ -24,7 +24,7 @@ type CollectionScreenProps = {
   loading?: boolean;
   addLabel: string;
   modalTitle: string | ((item?: CollectionItem) => string);
-  renderForm(onSaved: () => void, item?: CollectionItem): ReactNode;
+  renderForm(onSaved: () => void, item: CollectionItem | undefined, formRef: RefObject<FormHandle | null>): ReactNode;
   controls?: ReactNode;
   onResetFilters?: () => void;
   activeFilterCount?: number;
@@ -52,6 +52,7 @@ export function CollectionScreen({
 }: CollectionScreenProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const formRef = useRef<FormHandle>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<CollectionItem | undefined>();
@@ -130,11 +131,8 @@ export function CollectionScreen({
 
     return (
       <ScreenScaffold paddingBottom={32}>
-        <View className="flex-row items-center justify-between gap-3">
-          <Text className="flex-1 text-3xl font-bold tracking-tight text-foreground">{resolvedModalTitle}</Text>
-          <Button label={t('actions.cancel')} variant="ghost" size="sm" onPress={closeModal} />
-        </View>
-        <Card className="gap-4">{renderForm(closeModal, selectedItem)}</Card>
+        <FormScreenHeader title={resolvedModalTitle} onCancel={closeModal} onSave={() => formRef.current?.submit()} />
+        {renderForm(closeModal, selectedItem, formRef)}
       </ScreenScaffold>
     );
   }

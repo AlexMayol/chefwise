@@ -7,7 +7,6 @@ export type Product = {
   id: string;
   name: string;
   categoryId: string | null;
-  marketId: string;
   defaultUnit: Unit;
   rating: number | null;
   notes: string | null;
@@ -21,13 +20,13 @@ export type ProductRow = Omit<Product, 'isFavorite'> & {
   isFavorite: number;
 };
 
-// Enriched list shape: bare product plus the data the list card surfaces
-// (market name + latest normalized price), joined in the list() query.
+// Enriched list shape: a generic product plus a summary of its offers
+// (how many, across how many markets, and the cheapest current normalized price).
 export type ProductListItem = Product & {
-  marketName: string | null;
-  price: number | null;
-  normalizedPrice: number | null;
-  normalizedUnit: NormalizedUnit | null;
+  offerCount: number;
+  marketCount: number;
+  bestNormalizedPrice: number | null;
+  bestNormalizedUnit: NormalizedUnit | null;
 };
 
 type ProductListRow = ProductRow & Omit<ProductListItem, keyof Product>;
@@ -35,7 +34,6 @@ type ProductListRow = ProductRow & Omit<ProductListItem, keyof Product>;
 export type ProductInput = {
   name: string;
   categoryId?: string | null;
-  marketId: string;
   defaultUnit: Unit;
   rating?: number | null;
   notes?: string | null;
@@ -51,7 +49,7 @@ function mapProduct(row: ProductRow): Product {
 
 export function createProductRepository(db: AppDatabase) {
   // getById + delete come from the base (with the boolean row mapper); list/create/update
-  // stay custom for the price join and isFavorite int<->bool conversion.
+  // stay custom for the offer-summary join and isFavorite int<->bool conversion.
   const base = createCrudRepository<Product, ProductInput, ProductRow>(db, 'products', 'product', mapProduct);
 
   return {
@@ -78,26 +76,41 @@ export function createProductRepository(db: AppDatabase) {
               ? 'p.isFavorite DESC, p.name COLLATE NOCASE ASC'
               : 'p.name COLLATE NOCASE ASC';
 
+      // Per product: count offers/markets and surface the cheapest current normalized price.
+      // Each offer's "current" price is its latest product_offer_prices row (window-join).
+      // ponytail: SQLite's single-MIN rule makes bestNormalizedUnit take the value from the
+      // MIN(normalizedPrice) row, so we get the cheapest offer's unit without a self-join.
       const rows = await db.getAllAsync<ProductListRow>(
-        `SELECT p.*, m.name AS marketName,
-                lp.price AS price, lp.normalizedPrice AS normalizedPrice, lp.normalizedUnit AS normalizedUnit
+        `SELECT p.*,
+                COALESCE(agg.offerCount, 0) AS offerCount,
+                COALESCE(agg.marketCount, 0) AS marketCount,
+                agg.bestNormalizedPrice AS bestNormalizedPrice,
+                agg.bestNormalizedUnit AS bestNormalizedUnit
          FROM products p
-         LEFT JOIN markets m ON m.id = p.marketId
          LEFT JOIN (
-           SELECT productId, price, normalizedPrice, normalizedUnit,
-                  ROW_NUMBER() OVER (PARTITION BY productId ORDER BY observedAt DESC, id DESC) AS rn
-           FROM product_prices
-         ) lp ON lp.productId = p.id AND lp.rn = 1
+           SELECT off.productId AS productId,
+                  COUNT(*) AS offerCount,
+                  COUNT(DISTINCT off.marketId) AS marketCount,
+                  MIN(lp.normalizedPrice) AS bestNormalizedPrice,
+                  lp.normalizedUnit AS bestNormalizedUnit
+           FROM product_offers off
+           LEFT JOIN (
+             SELECT offerId, normalizedPrice, normalizedUnit,
+                    ROW_NUMBER() OVER (PARTITION BY offerId ORDER BY observedAt DESC, id DESC) AS rn
+             FROM product_offer_prices
+           ) lp ON lp.offerId = off.id AND lp.rn = 1
+           GROUP BY off.productId
+         ) agg ON agg.productId = p.id
          ${clauses.length ? `WHERE ${clauses.join(' AND ')}` : ''}
          ORDER BY ${orderBy}`,
         params,
       );
       return rows.map((row) => ({
         ...mapProduct(row),
-        marketName: row.marketName,
-        price: row.price,
-        normalizedPrice: row.normalizedPrice,
-        normalizedUnit: row.normalizedUnit,
+        offerCount: row.offerCount,
+        marketCount: row.marketCount,
+        bestNormalizedPrice: row.bestNormalizedPrice,
+        bestNormalizedUnit: row.bestNormalizedUnit,
       }));
     },
     async create(input: ProductInput): Promise<Product> {
@@ -106,7 +119,6 @@ export function createProductRepository(db: AppDatabase) {
         id: createId('product'),
         name: input.name,
         categoryId: input.categoryId ?? null,
-        marketId: input.marketId,
         defaultUnit: input.defaultUnit,
         rating: input.rating ?? null,
         notes: input.notes ?? null,

@@ -27,8 +27,10 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
         })),
       ]}
       addLabel={t('categories.new')}
-      renderCreateForm={(onCreated) => (
+      renderCreateForm={(onCreated, formRef) => (
         <CategoryForm
+          ref={formRef}
+          hideSubmit
           onSubmit={async (values) => {
             const category = await create(values);
             onCreated(category.id);

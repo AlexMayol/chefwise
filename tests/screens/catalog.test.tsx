@@ -3,7 +3,7 @@ import { fireEvent, render } from '@testing-library/react-native';
 import ProductDetailScreen from '@/app/products/[productId]';
 import ProductsScreen from '@/app/(tabs)/products';
 import { useMarkets } from '@/lib/hooks/use-markets';
-import { useProductPrices } from '@/lib/hooks/use-product-prices';
+import { useProductOffers } from '@/lib/hooks/use-product-offers';
 import { useProductDetail, useProducts } from '@/lib/hooks/use-products';
 
 jest.mock('expo-router', () => ({
@@ -20,21 +20,33 @@ jest.mock('@/lib/hooks/use-products', () => ({
   useProductDetail: jest.fn(),
 }));
 
-jest.mock('@/lib/hooks/use-product-prices', () => ({
-  useProductPrices: jest.fn(),
+jest.mock('@/lib/hooks/use-product-offers', () => ({
+  useProductOffers: jest.fn(),
 }));
 
 jest.mock('@/lib/hooks/use-markets', () => ({
   useMarkets: jest.fn(),
 }));
 
+jest.mock('@/lib/hooks/use-categories', () => ({
+  useCategories: jest.fn(() => ({
+    items: [],
+    loading: false,
+    reload: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+    removeMany: jest.fn(),
+  })),
+}));
+
 jest.mock('@/components/domain/product-form', () => ({
-  ProductForm: ({ initialValues }: { initialValues?: { name?: string } }) => null,
+  ProductForm: () => null,
 }));
 
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
 const useProductDetailMock = useProductDetail as jest.MockedFunction<typeof useProductDetail>;
-const useProductPricesMock = useProductPrices as jest.MockedFunction<typeof useProductPrices>;
+const useProductOffersMock = useProductOffers as jest.MockedFunction<typeof useProductOffers>;
 const useMarketsMock = useMarkets as jest.MockedFunction<typeof useMarkets>;
 
 describe('catalog screens', () => {
@@ -56,12 +68,14 @@ describe('catalog screens', () => {
       update: jest.fn(),
       remove: jest.fn(),
     });
-    useProductPricesMock.mockReturnValue({
+    useProductOffersMock.mockReturnValue({
       items: [],
-      latest: null,
       loading: false,
       reload: jest.fn(),
       create: jest.fn(),
+      createWithPrice: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
     });
     useMarketsMock.mockReturnValue({
       items: [],
@@ -81,7 +95,7 @@ describe('catalog screens', () => {
   it('lets users filter favorites and sort products', async () => {
     const screen = await render(<ProductsScreen />);
 
-    await fireEvent.press(screen.getByText('Filters'));
+    await fireEvent.press(screen.getByLabelText('Filters'));
     await fireEvent.press(screen.getByText('Favorites only'));
     expect(useProductsMock).toHaveBeenLastCalledWith(expect.objectContaining({ favoritesOnly: true }));
 
@@ -89,13 +103,12 @@ describe('catalog screens', () => {
     expect(useProductsMock).toHaveBeenLastCalledWith(expect.objectContaining({ sort: 'highest_rated' }));
   });
 
-  it('shows product detail context and markets with prices', async () => {
+  it('shows product detail with its offers and prices', async () => {
     useProductDetailMock.mockReturnValue({
       item: {
         id: 'product-1',
         name: 'Bread flour',
         categoryId: null,
-        marketId: 'market-1',
         defaultUnit: 'kg',
         rating: 5,
         notes: 'High protein',
@@ -109,43 +122,30 @@ describe('catalog screens', () => {
       update: jest.fn(),
       remove: jest.fn(),
     });
-    useProductPricesMock.mockReturnValue({
+    useProductOffersMock.mockReturnValue({
       items: [
         {
-          id: 'price-1',
+          id: 'offer-1',
           productId: 'product-1',
-          price: 4,
+          marketId: 'market-1',
+          brand: null,
           quantity: 1,
           unit: 'kg',
+          createdAt: '',
+          updatedAt: '',
+          marketName: 'Central Market',
+          price: 4,
           normalizedPrice: 4,
           normalizedUnit: 'kg',
           observedAt: '2026-01-02T00:00:00.000Z',
-          createdAt: '2026-01-02T00:00:00.000Z',
         },
       ],
-      latest: {
-        id: 'price-1',
-        productId: 'product-1',
-        price: 4,
-        quantity: 1,
-        unit: 'kg',
-        normalizedPrice: 4,
-        normalizedUnit: 'kg',
-        observedAt: '2026-01-02T00:00:00.000Z',
-        createdAt: '2026-01-02T00:00:00.000Z',
-      },
       loading: false,
       reload: jest.fn(),
       create: jest.fn(),
-    });
-    useMarketsMock.mockReturnValue({
-      items: [{ id: 'market-1', name: 'Central Market', address: 'Main St', imagePath: null, createdAt: '', updatedAt: '' }],
-      loading: false,
-      reload: jest.fn(),
-      create: jest.fn(),
+      createWithPrice: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
-      removeMany: jest.fn(),
     });
 
     const screen = await render(<ProductDetailScreen />);

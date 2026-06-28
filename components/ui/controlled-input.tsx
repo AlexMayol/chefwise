@@ -40,6 +40,7 @@ export function ControlledInput<T extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormField className={className} label={label} error={fieldState.error?.message ? t(fieldState.error.message) : undefined}>
           <Input
+            accessibilityLabel={label}
             value={field.value == null ? '' : String(field.value)}
             placeholder={placeholder}
             keyboardType={keyboardType}

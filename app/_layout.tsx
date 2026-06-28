@@ -11,6 +11,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { AppDatabaseProvider } from '@/lib/db/provider';
+import { useThemePreference } from '@/lib/hooks/use-theme-preference';
 import '@/lib/i18n';
 import { getDesignTokenVariables } from '@/lib/theme/tokens';
 
@@ -52,7 +53,9 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const themeName = colorScheme === 'dark' ? 'dark' : 'light';
+  const { preference } = useThemePreference();
+  const resolved = preference === 'system' ? colorScheme : preference;
+  const themeName = resolved === 'dark' ? 'dark' : 'light';
 
   return (
     <SafeAreaProvider>
@@ -61,14 +64,14 @@ function RootLayoutNav() {
         <AppDatabaseProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="categories/new" options={{ headerShown: false }} />
             <Stack.Screen name="categories/[categoryId]" options={{ headerShown: false }} />
             <Stack.Screen name="products/new" options={{ headerShown: false }} />
             <Stack.Screen name="products/[productId]" options={{ headerShown: false }} />
+            <Stack.Screen name="offers/[offerId]" options={{ headerShown: false }} />
             <Stack.Screen name="markets/new" options={{ headerShown: false }} />
             <Stack.Screen name="markets/[marketId]" options={{ headerShown: false }} />
-            <Stack.Screen name="recipes/new" options={{ headerShown: false }} />
             <Stack.Screen name="recipes/[recipeId]" options={{ headerShown: false }} />
-            <Stack.Screen name="shopping/new" options={{ headerShown: false }} />
             <Stack.Screen name="shopping/[shoppingListId]" options={{ headerShown: false }} />
           </Stack>
           <PortalHost />

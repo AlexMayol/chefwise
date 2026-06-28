@@ -1,12 +1,35 @@
 import type { AppDatabase } from '../client';
 import { getDeviceDefaultLocale } from '@/lib/i18n';
+import { normalizePrice } from '@/lib/domain/pricing';
+import type { Unit } from '@/lib/domain/units';
 import { createId, nowIso } from '../repositories/base';
 import { DEFAULT_CATEGORIES } from './categories-data';
 import { DEFAULT_MARKETS } from './markets-data';
 import { DEFAULT_PRODUCTS } from './products-data';
 
-// Sample markets + products for development. Gated behind __DEV__ in seeds/index.ts so it
-// never runs in release builds.
+// A sensible seed offer size: 500 g/ml for those units, otherwise a single kg/l/unit.
+function offerQuantity(unit: Unit): number {
+  return unit === 'g' || unit === 'ml' ? 500 : 1;
+}
+
+async function seedOffer(
+  db: AppDatabase,
+  offer: { productId: string; marketId: string; brand: string | null; quantity: number; unit: Unit; price: number; timestamp: string },
+): Promise<void> {
+  const offerId = createId('offer');
+  await db.runAsync(
+    'INSERT INTO product_offers (id, productId, marketId, brand, quantity, unit, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [offerId, offer.productId, offer.marketId, offer.brand, offer.quantity, offer.unit, offer.timestamp, offer.timestamp],
+  );
+  const normalized = normalizePrice({ price: offer.price, quantity: offer.quantity, unit: offer.unit });
+  await db.runAsync(
+    'INSERT INTO product_offer_prices (id, offerId, price, normalizedPrice, normalizedUnit, observedAt, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [createId('offer-price'), offerId, offer.price, normalized.normalizedPrice, normalized.normalizedUnit, offer.timestamp, offer.timestamp],
+  );
+}
+
+// Sample markets + products (with offers) for development. Gated behind __DEV__ in
+// seeds/index.ts so it never runs in release builds.
 export async function seedDevData(db: AppDatabase): Promise<void> {
   const timestamp = nowIso();
   const locale = getDeviceDefaultLocale();
@@ -25,15 +48,17 @@ export async function seedDevData(db: AppDatabase): Promise<void> {
   const categoryIdByName = new Map(categoryRows.map((r) => [r.name, r.id]));
   const categoryNames = DEFAULT_CATEGORIES[locale];
 
-  for (const product of DEFAULT_PRODUCTS[locale]) {
+  const products = DEFAULT_PRODUCTS[locale];
+  for (let index = 0; index < products.length; index += 1) {
+    const product = products[index];
     const categoryName = categoryNames[product.categoryIndex]?.name;
+    const productId = createId('product');
     await db.runAsync(
-      'INSERT INTO products (id, name, categoryId, marketId, defaultUnit, rating, notes, isFavorite, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO products (id, name, categoryId, defaultUnit, rating, notes, isFavorite, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
-        createId('product'),
+        productId,
         product.name,
         (categoryName && categoryIdByName.get(categoryName)) ?? null,
-        marketIds[product.marketIndex],
         product.defaultUnit,
         product.rating,
         product.notes,
@@ -42,5 +67,31 @@ export async function seedDevData(db: AppDatabase): Promise<void> {
         timestamp,
       ],
     );
+
+    const quantity = offerQuantity(product.defaultUnit);
+    const price = 1 + (index % 9) * 0.5;
+    await seedOffer(db, {
+      productId,
+      marketId: marketIds[product.marketIndex],
+      brand: null,
+      quantity,
+      unit: product.defaultUnit,
+      price,
+      timestamp,
+    });
+
+    // Demo multi-market comparison: give the first two products a second, pricier offer
+    // (a named brand) in a different market.
+    if (index < 2) {
+      await seedOffer(db, {
+        productId,
+        marketId: marketIds[(product.marketIndex + 1) % marketIds.length],
+        brand: 'Brand B',
+        quantity,
+        unit: product.defaultUnit,
+        price: price + 0.4,
+        timestamp,
+      });
+    }
   }
 }

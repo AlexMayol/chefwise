@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Pressable, Text, type PressableProps } from 'react-native';
 
 import { elevation } from '@/lib/theme/elevation';
@@ -10,6 +11,8 @@ type ButtonProps = PressableProps & {
   label: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
+  // Optional leading adornment (e.g. a "+" icon) rendered before the label.
+  icon?: ReactNode;
 };
 
 const containerVariants: Record<ButtonVariant, string> = {
@@ -36,14 +39,14 @@ const textSizeVariants: Record<ButtonSize, string> = {
   sm: 'text-sm',
 };
 
-export function Button({ label, variant = 'primary', size = 'default', className, disabled, style, ...props }: ButtonProps) {
+export function Button({ label, variant = 'primary', size = 'default', icon, className, disabled, style, ...props }: ButtonProps) {
   // Filled actions get a tinted lift; outline/ghost stay flat.
   const lifted = (variant === 'primary' || variant === 'destructive') && !disabled;
 
   return (
     <Pressable
       className={cn(
-        'items-center justify-center rounded-2xl active:opacity-90',
+        'flex-row items-center justify-center gap-2 rounded-xl active:opacity-90',
         sizeVariants[size],
         containerVariants[variant],
         disabled && 'opacity-50',
@@ -53,6 +56,7 @@ export function Button({ label, variant = 'primary', size = 'default', className
       disabled={disabled}
       {...props}
     >
+      {icon}
       <Text className={cn('text-center font-semibold tracking-tight', textSizeVariants[size], textVariants[variant])}>{label}</Text>
     </Pressable>
   );

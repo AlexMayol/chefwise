@@ -1,11 +1,10 @@
+import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { useAppDatabase } from '@/lib/db/provider';
 import { exportBackupToCache, pickAndValidateBackup } from '@/lib/domain/backup-storage';
 import { useTranslation } from '@/lib/i18n';
-import { useState } from 'react';
 
 export function BackupActions() {
   const { t } = useTranslation();
@@ -19,7 +18,7 @@ export function BackupActions() {
       // so a build without expo-sharing linked degrades instead of crashing the screen.
       const Sharing = await import('expo-sharing');
       if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri, { mimeType: 'application/zip', dialogTitle: t('actions.export') });
+        await Sharing.shareAsync(uri, { mimeType: 'application/zip', dialogTitle: t('backup.exportLocalData') });
       }
       setMessage(t('backup.exportSuccess'));
     } catch {
@@ -28,7 +27,7 @@ export function BackupActions() {
   }
 
   function handleImport() {
-    Alert.alert(t('actions.import'), t('backup.confirmImport'), [
+    Alert.alert(t('backup.importLocalData'), t('backup.confirmImport'), [
       { text: t('actions.cancel'), style: 'cancel' },
       {
         text: t('actions.confirm'),
@@ -42,11 +41,10 @@ export function BackupActions() {
   }
 
   return (
-    <Card className="gap-3">
-      <Button label={t('actions.export')} onPress={() => void handleExport()} />
-      <Button label={t('actions.import')} variant="secondary" onPress={handleImport} />
+    <View className="gap-3">
+      <Button label={t('backup.exportLocalData')} onPress={() => void handleExport()} />
+      <Button label={t('backup.importLocalData')} variant="secondary" onPress={handleImport} />
       {message ? <Text className="text-sm text-muted-foreground">{message}</Text> : null}
-      <View />
-    </Card>
+    </View>
   );
 }

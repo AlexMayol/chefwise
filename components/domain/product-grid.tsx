@@ -4,49 +4,47 @@ import { View } from 'react-native';
 import { GridCard, type CollectionItem } from '@/components/ui/grid-card';
 import type { ProductListItem } from '@/lib/db/repositories/products';
 import { formatCurrency } from '@/lib/formatting/currency';
+import { useCategories } from '@/lib/hooks/use-categories';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
+import { productEmoji } from '@/lib/ui/category-emoji';
 import { chunkGridRows } from '@/lib/ui/grid';
 
 // Maps a product to the same card shape the catalog grid uses, so products render
 // identically wherever they appear. `missingPriceLabel` keeps this free of the i18n t type.
-export function productToCollectionItem(
-  product: ProductListItem,
-  missingPriceLabel: string,
-  showMarket = true,
-): CollectionItem {
+export function productToCollectionItem(product: ProductListItem, missingPriceLabel: string, emoji: string): CollectionItem {
   return {
     id: product.id,
     title: `${product.isFavorite ? '★ ' : ''}${product.name}`,
-    subtitle: showMarket ? (product.marketName ?? undefined) : undefined,
     meta:
-      product.normalizedPrice != null
-        ? `${formatCurrency(product.normalizedPrice)}/${product.normalizedUnit}`
+      product.bestNormalizedPrice != null
+        ? `${formatCurrency(product.bestNormalizedPrice)}/${product.bestNormalizedUnit}`
         : missingPriceLabel,
     imageUri: resolveEntityImageUri(product.imagePath) ?? undefined,
-    emoji: '🥕',
+    emoji,
     href: `/products/${product.id}` as Href,
   };
 }
 
-// Renders products as the catalog grid card (image/emoji, favorite, market, unit price).
+// Renders products as the catalog grid card (image/emoji, favorite, cheapest unit price).
 export function ProductGrid({
   products,
   columns = 2,
-  showMarket = true,
   selectedIds,
   onToggleSelect,
 }: {
   products: ProductListItem[];
   columns?: number;
-  showMarket?: boolean;
   // When onToggleSelect is provided the grid renders as selectable checkboxes.
   selectedIds?: Set<string>;
   onToggleSelect?: (id: string) => void;
 }) {
   const { t } = useTranslation();
+  const { items: categories } = useCategories();
   const rows = chunkGridRows(
-    products.map((product) => productToCollectionItem(product, t('common.missingPrice'), showMarket)),
+    products.map((product) =>
+      productToCollectionItem(product, t('common.missingPrice'), productEmoji(product.categoryId, categories)),
+    ),
     columns,
   );
 

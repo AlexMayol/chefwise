@@ -85,16 +85,18 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
-        tabBarShowLabel: false,
+        tabBarInactiveTintColor: Colors[colorScheme].tabIconDefault,
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
+        },
         tabBarStyle: {
           zIndex: 0,
           elevation: 0,
-          height: 56 + insets.bottom,
+          height: 64 + insets.bottom,
           paddingTop: 8,
           paddingBottom: insets.bottom,
-        },
-        tabBarIconStyle: {
-          flex: 1,
         },
         headerShown: false,
       }}>

@@ -4,6 +4,8 @@ import { nameSchema, positiveNumberSchema, unitSchema } from './common';
 
 export const recipeProductSchema = z.object({
   productId: nameSchema,
+  // Chosen offer to cost against; omit/null = cheapest current offer.
+  offerId: z.string().optional().nullable(),
   quantity: positiveNumberSchema,
   unit: unitSchema,
 });

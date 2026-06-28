@@ -26,12 +26,13 @@ export function GridCard({
   // When defined, the card becomes a selectable checkbox (navigation is ignored).
   selected?: boolean;
 }) {
+  // In selectable mode always reserve a 2px border (color-only toggle) so selecting
+  // a card never changes its box size and reshuffles the grid.
+  const selectable = selected !== undefined;
+  const border = selectable ? (selected ? 'border-2 border-primary' : 'border-2 border-transparent') : '';
   const content = (
-    <Card
-      className={`flex-1 justify-between p-3 ${item.imageUri || item.emoji ? 'min-h-28' : ''} ${
-        selected ? 'border-2 border-primary' : ''
-      }`}>
-      {selected !== undefined ? (
+    <Card className={`flex-1 justify-between p-3 ${item.imageUri || item.emoji ? 'min-h-28' : ''} ${border}`}>
+      {selectable ? (
         <View
           className={`absolute right-2 top-2 z-10 h-6 w-6 items-center justify-center rounded-full border ${
             selected ? 'border-primary bg-primary' : 'border-border bg-card'

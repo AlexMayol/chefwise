@@ -2,11 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useAppDatabase } from '@/lib/db/provider';
 import type { Product, ProductInput, ProductListItem, ProductSort } from '@/lib/db/repositories/products';
-import type { Unit } from '@/lib/domain/units';
 
 import { useDetail } from './use-detail';
-
-type InitialPrice = { price: number; quantity: number; unit: Unit };
 
 export function useProducts(options: { favoritesOnly?: boolean; minRating?: number; sort?: ProductSort } = {}) {
   const { repositories } = useAppDatabase();
@@ -27,21 +24,12 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
   }, [reload]);
 
   const create = useCallback(
-    async (input: ProductInput, initialPrice?: InitialPrice) => {
+    async (input: ProductInput) => {
       const product = await repositories.products.create(input);
-      if (initialPrice && initialPrice.price > 0) {
-        await repositories.productPrices.create({
-          productId: product.id,
-          price: initialPrice.price,
-          quantity: initialPrice.quantity,
-          unit: initialPrice.unit,
-          observedAt: new Date().toISOString(),
-        });
-      }
       await reload();
       return product;
     },
-    [reload, repositories.productPrices, repositories.products],
+    [reload, repositories.products],
   );
 
   const update = useCallback(
@@ -73,7 +61,7 @@ export function useProducts(options: { favoritesOnly?: boolean; minRating?: numb
     [reload, repositories.products],
   );
 
-  // Apply the same patch to many products (e.g. reassign category/market), then reload once.
+  // Apply the same patch to many products (e.g. reassign category), then reload once.
   const assign = useCallback(
     async (ids: string[], patch: Partial<ProductInput>) => {
       await Promise.all(ids.map((id) => repositories.products.update(id, patch)));

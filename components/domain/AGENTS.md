@@ -11,7 +11,7 @@
 ## Cards
 
 - The grid card is `components/ui/grid-card.tsx` (`GridCard` + the `CollectionItem` shape). It is the single source of truth for how an entity card looks — reuse it; do not re-implement a card.
-- To render products outside the catalog grid (detail screens, etc.), use `ProductGrid` (`product-grid.tsx`). It maps each `ProductListItem` through `productToCollectionItem` into a `GridCard`, so products look identical everywhere. Pass `showMarket={false}` when the market is already implied by context (e.g. a market's own detail screen).
+- To render products outside the catalog grid (detail screens, etc.), use `ProductGrid` (`product-grid.tsx`). It maps each `ProductListItem` through `productToCollectionItem` into a `GridCard`, so products look identical everywhere. A product's `meta` shows its cheapest current offer price (`bestNormalizedPrice`).
 
 ## Detail Screens
 
@@ -28,7 +28,7 @@
 ## Selectors
 
 - Use `ProductSelector` for product choices; it sorts favorites first.
-- A product belongs to exactly one market; pick its market with the market `Select` in `ProductForm`.
+- A product is generic. Markets/brands/sizes are `product_offers` created on the product detail screen via `OfferForm`; a recipe ingredient can pick a specific offer (or "cheapest") in `RecipeProductForm`.
 - Price and recipe cost UI should show user names for products, not internal IDs, whenever product lists are available.
 - For a select whose options are a user-created entity (market, category), use `CreatableSelect` (`components/ui/creatable-select.tsx`): it pairs a `SelectInput` dropdown with an "add" button that opens the entity's form in a `BottomSheet` and selects the newly created row via `onCreated(id)`. Prefer this over a plain `Select` so users can create on the fly without leaving the form.
 - Use the `SelectInput` dropdown (not the pill `Select`) when the option list can grow long; keep the pill `Select` for small fixed sets (units, sort, language).

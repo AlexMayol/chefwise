@@ -2,12 +2,13 @@ import { fireEvent, render } from '@testing-library/react-native';
 
 import CategoryDetailScreen from '@/app/categories/[categoryId]';
 import { useCategories } from '@/lib/hooks/use-categories';
+import { useCategoryInsights } from '@/lib/hooks/use-category-insights';
 import { useProducts } from '@/lib/hooks/use-products';
 
 jest.mock('expo-router', () => ({
   Link: ({ children }: { children: React.ReactNode }) => children,
   useLocalSearchParams: () => ({ categoryId: 'category-1' }),
-  useRouter: () => ({ back: jest.fn() }),
+  useRouter: () => ({ back: jest.fn(), push: jest.fn() }),
   useFocusEffect: (effect: () => void | (() => void)) => {
     effect();
   },
@@ -21,15 +22,19 @@ jest.mock('@/lib/hooks/use-products', () => ({
   useProducts: jest.fn(),
 }));
 
+jest.mock('@/lib/hooks/use-category-insights', () => ({
+  useCategoryInsights: jest.fn(),
+}));
+
 const useCategoriesMock = useCategories as jest.MockedFunction<typeof useCategories>;
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
+const useCategoryInsightsMock = useCategoryInsights as jest.MockedFunction<typeof useCategoryInsights>;
 
 function product(id: string, name: string, categoryId: string | null) {
   return {
     id,
     name,
     categoryId,
-    marketId: 'market-1',
     defaultUnit: 'unit' as const,
     rating: null,
     notes: null,
@@ -37,10 +42,10 @@ function product(id: string, name: string, categoryId: string | null) {
     imagePath: null,
     createdAt: '',
     updatedAt: '',
-    marketName: null,
-    price: null,
-    normalizedPrice: null,
-    normalizedUnit: null,
+    offerCount: 0,
+    marketCount: 0,
+    bestNormalizedPrice: null,
+    bestNormalizedUnit: null,
   };
 }
 
@@ -68,6 +73,7 @@ describe('category detail screen', () => {
       removeMany: jest.fn(),
       assign: jest.fn(),
     });
+    useCategoryInsightsMock.mockReturnValue({ item: [], loading: false, reload: jest.fn() });
   });
 
   afterEach(() => {
@@ -86,7 +92,7 @@ describe('category detail screen', () => {
 
     await fireEvent.press(screen.getByLabelText('Edit'));
     await fireEvent.changeText(screen.getByDisplayValue('Postres'), 'Desserts');
-    await fireEvent.press(screen.getByText('Save'));
+    await fireEvent.press(screen.getByLabelText('Save'));
 
     expect(update).toHaveBeenCalledWith('category-1', { name: 'Desserts', description: '🍰' });
   });

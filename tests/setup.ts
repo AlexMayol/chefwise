@@ -4,9 +4,18 @@ jest.mock('expo-localization', () => ({
 
 jest.mock('react-native-reanimated', () => {
   const { View } = require('react-native');
-  // ponytail: minimal mock — only Animated.View + FadeIn().duration() are used in app code
+  // ponytail: minimal mock — Animated.View, FadeIn().duration(), and the shared-value
+  // hooks the Collapsible uses. No worklets: shared values are plain mutable boxes and
+  // useAnimatedStyle just runs the factory once at render.
   const fade = { duration: () => fade };
-  return { __esModule: true, default: { View }, FadeIn: fade };
+  return {
+    __esModule: true,
+    default: { View },
+    FadeIn: fade,
+    useSharedValue: (initial: unknown) => ({ value: initial }),
+    withTiming: (toValue: unknown) => toValue,
+    useAnimatedStyle: (factory: () => unknown) => factory(),
+  };
 });
 
 jest.mock('react-native-safe-area-context', () => ({

@@ -17,7 +17,8 @@
 
 ## Data Rules
 
-- Deleting a product cascades: its prices, recipe lines, shopping list items, pantry items, and pantry transactions go with it. Markets stay restrictive (`products.marketId` is `ON DELETE RESTRICT`).
+- A product is generic; its market/brand/size live on `product_offers`, and price history per offer in `product_offer_prices`. The legacy `product_prices` table is kept only for the shopping "bought" flow.
+- Deleting a product cascades: its offers (and their offer prices), legacy prices, recipe lines, shopping list items, pantry items, and pantry transactions go with it. Markets stay restrictive (`product_offers.marketId` is `ON DELETE RESTRICT`). A recipe ingredient's chosen `offerId` is `ON DELETE SET NULL`.
 - Deleting a category sets `products.categoryId` to null.
 - Pantry has one current item per product via `idx_pantry_items_product`.
 - Store booleans as SQLite integers and map at repository boundaries.

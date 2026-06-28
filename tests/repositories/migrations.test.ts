@@ -65,8 +65,8 @@ describe('database migrations', () => {
   it('cascades product deletes to every table that references a product', () => {
     const productRefs = SCHEMA_SQL.match(/REFERENCES products\(id\)[^,\n)]*/g) ?? [];
 
-    // product_prices, recipe_products, shopping_list_items, pantry_items, pantry_transactions
-    expect(productRefs.length).toBe(5);
+    // product_offers, product_prices, recipe_products, shopping_list_items, pantry_items, pantry_transactions
+    expect(productRefs.length).toBe(6);
     for (const ref of productRefs) {
       expect(ref).toContain('ON DELETE CASCADE');
     }
