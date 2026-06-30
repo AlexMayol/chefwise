@@ -1,42 +1,37 @@
-import { Link, type Href } from 'expo-router';
-import { Plus } from 'lucide-react-native';
-import { useCallback, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { type Href } from 'expo-router';
+import { useMemo, useRef, useState } from 'react';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { MarketForm, type MarketFormHandle } from '@/components/domain/market-form';
 import { MarketRow, type MarketRowItem } from '@/components/domain/market-row';
-import { BottomActionBar } from '@/components/ui/bottom-action-bar';
-import { Button } from '@/components/ui/button';
-import { EmptyState } from '@/components/ui/empty-state';
-import { LoadingState } from '@/components/ui/loading-state';
+import { EntityActionMenuSheet } from '@/components/ui/entity-action-menu-sheet';
+import { EntityEditSheet } from '@/components/ui/entity-edit-sheet';
+import { ListingContent } from '@/components/ui/listing-content';
+import { ListingScreenHeader } from '@/components/ui/listing-screen-header';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SearchBar } from '@/components/ui/search-bar';
+import type { Market } from '@/lib/db/repositories/markets';
 import { marketStats } from '@/lib/domain/market-stats';
-import { timeAgo } from '@/lib/formatting/relative-time';
+import { useListingQuickActions } from '@/lib/hooks/use-entity-quick-actions';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useAllOffers } from '@/lib/hooks/use-product-offers';
-import { useProducts } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
 
 export default function MarketsScreen() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
+  const editFormRef = useRef<MarketFormHandle>(null);
+  const actions = useListingQuickActions<Market>();
 
-  const { items: markets, loading, reload } = useMarkets();
-  const { items: products, reload: reloadProducts } = useProducts();
+  const { items: markets, loading, reload, update, remove } = useMarkets();
   const { items: allOffers, reload: reloadOffers } = useAllOffers();
 
-  useReloadOnFocus(
-    useCallback(async () => {
-      await Promise.all([reload(), reloadProducts(), reloadOffers()]);
-    }, [reload, reloadProducts, reloadOffers]),
-  );
+  useReloadOnFocus(reload, reloadOffers);
 
-  const productInfo = useMemo(
-    () => new Map(products.map((product) => [product.id, { bestNormalizedPrice: product.bestNormalizedPrice }])),
-    [products],
-  );
   const offersByMarket = useMemo(() => {
     const map = new Map<string, typeof allOffers>();
     for (const offer of allOffers) {
@@ -56,45 +51,85 @@ export default function MarketsScreen() {
           market.name.toLowerCase().includes(normalizedQuery) ||
           (market.address ?? '').toLowerCase().includes(normalizedQuery),
       )
-      .map((market) => ({ market, stats: marketStats(offersByMarket.get(market.id) ?? [], productInfo) }))
-      .map(({ market, stats }) => {
-        const updated = stats.lastUpdated ? timeAgo(stats.lastUpdated) : null;
+      .map((market) => {
+        const stats = marketStats(offersByMarket.get(market.id) ?? [], new Map());
+        const productCount = t('categories.productCount', { count: stats.productsTracked });
+        const subtitle = market.address ? `${productCount} · ${market.address}` : productCount;
+
         return {
           id: market.id,
           name: market.name,
-          address: market.address ?? undefined,
+          subtitle,
           imageUri: resolveEntityImageUri(market.imagePath) ?? undefined,
-          productCountLabel: t('categories.productCount', { count: stats.productsTracked }),
-          cheapestLabel: stats.cheapestCount > 0 ? t('markets.cheapestFor', { count: stats.cheapestCount }) : undefined,
-          updatedLabel: updated ? t('markets.updatedAgo', { time: t(updated.key, { count: updated.count }) }) : undefined,
           href: `/markets/${market.id}` as Href,
         };
       });
-  }, [markets, query, offersByMarket, productInfo, t]);
+  }, [markets, query, offersByMarket, t]);
+
+  const newMarketHref = '/markets/new' as Href;
+
+  const actionSubtitle = useMemo(() => {
+    if (!actions.entity) return undefined;
+    return rows.find((entry) => entry.id === actions.entity!.id)?.subtitle;
+  }, [actions.entity, rows]);
+
+  function openActions(marketId: string) {
+    const market = markets.find((entry) => entry.id === marketId);
+    if (market) actions.open(market);
+  }
 
   return (
     <View className="flex-1 bg-background">
       <ScreenScaffold>
-        <Text className="text-3xl font-bold tracking-tight text-foreground">{t('navigation.markets')}</Text>
+        <ListingScreenHeader title={t('markets.title')} newHref={newMarketHref} newLabel={t('markets.new')} />
         <SearchBar value={query} onChangeText={setQuery} placeholder={t('markets.searchPlaceholder')} />
-        {loading && markets.length === 0 ? (
-          <LoadingState />
-        ) : rows.length === 0 ? (
-          <EmptyState title={t('common.empty')} />
-        ) : (
-          <View className="gap-3">
-            {rows.map((row) => (
-              <MarketRow key={row.id} item={row} />
-            ))}
-          </View>
-        )}
+        <ListingContent
+          loading={loading}
+          sourceEmpty={markets.length === 0}
+          itemCount={rows.length}
+          query={query}
+          newHref={newMarketHref}
+          newLabel={t('markets.new')}
+          emptyTitle={t('common.empty')}>
+          {rows.map((row) => (
+            <MarketRow key={row.id} item={row} onLongPress={() => openActions(row.id)} />
+          ))}
+        </ListingContent>
       </ScreenScaffold>
 
-      <BottomActionBar>
-        <Link href="/markets/new" asChild>
-          <Button label={t('markets.new')} icon={<Plus size={18} />} />
-        </Link>
-      </BottomActionBar>
+      {actions.entity ? (
+        <>
+          <EntityActionMenuSheet
+            visible={actions.menuVisible}
+            onClose={actions.close}
+            bottomInset={insets.bottom}
+            title={actions.entity.name}
+            subtitle={actionSubtitle}
+            imageUri={resolveEntityImageUri(actions.entity.imagePath) ?? undefined}
+            emoji="🏪"
+            editLabel={t('markets.edit')}
+            deleteError={actions.deleteError}
+            onEdit={actions.beginEdit}
+            onDelete={() => void actions.remove(remove, actions.entity!.id)}
+          />
+          <EntityEditSheet
+            visible={actions.editVisible}
+            onClose={actions.close}
+            bottomInset={insets.bottom}
+            title={t('markets.edit')}
+            onSave={() => editFormRef.current?.submit()}>
+            <MarketForm
+              ref={editFormRef}
+              initialValues={actions.entity}
+              hideSubmit
+              onSubmit={async (values) => {
+                await update(actions.entity!.id, values);
+                actions.close();
+              }}
+            />
+          </EntityEditSheet>
+        </>
+      ) : null}
     </View>
   );
 }

@@ -11,7 +11,7 @@
 ## Decisions
 
 - The app is offline-only and local-first.
-- Product prices are immutable: create new rows, never update historical prices.
+- Legacy product prices (`product_prices`, shopping flow) are append-only. An offer has one current price stored on its `product_offers` row, edited via the offer form.
 - Recipe costs are incomplete when any ingredient lacks a compatible price; do not expose partial totals as final totals.
 - Shopping purchase flow must create a price, mark item bought, update pantry, and create a pantry transaction in one SQLite transaction.
 - Backup import validates and stages before replacing current local data.

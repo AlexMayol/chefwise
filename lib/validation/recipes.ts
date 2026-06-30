@@ -13,7 +13,11 @@ export const recipeProductSchema = z.object({
 export const recipeSchema = z.object({
   name: nameSchema,
   description: z.string().optional().nullable(),
-  servings: positiveNumberSchema,
+  // Servings is always optional: a blank field becomes undefined and no per-serving figure is shown.
+  servings: z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+    positiveNumberSchema.optional(),
+  ),
   recipeCategoryId: z.string().optional().nullable(),
   isFavorite: z.boolean().optional(),
   imagePath: z.string().optional().nullable(),

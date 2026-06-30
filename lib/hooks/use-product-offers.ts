@@ -27,15 +27,14 @@ export function useProductOffers(productId?: string) {
     [reload, repositories.productOffers],
   );
 
-  // Create an offer and record its first price in one step (the common "add offer" flow).
+  // Create an offer with its price in one step (the common "add offer" flow).
   const createWithPrice = useCallback(
     async (input: ProductOfferInput, price: number) => {
-      const offer = await repositories.productOffers.create(input);
-      await repositories.productOfferPrices.create({ offerId: offer.id, price, observedAt: new Date().toISOString() });
+      const offer = await repositories.productOffers.create({ ...input, price });
       await reload();
       return offer;
     },
-    [reload, repositories.productOfferPrices, repositories.productOffers],
+    [reload, repositories.productOffers],
   );
 
   const update = useCallback(
@@ -67,6 +66,7 @@ export function useOffer(offerId?: string) {
       if (!offerId) {
         return;
       }
+      // The repo re-derives normalizedPrice when price or size changes.
       await repositories.productOffers.update(offerId, input);
       await reload();
     },

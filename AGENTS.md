@@ -12,13 +12,29 @@
 
 ## Architecture
 
-- `app/` contains Expo Router routes and screen composition only.
-- `components/ui/` contains small reusable primitives.
+- `app/` contains Expo Router routes and **slim screen composition only** — wire hooks and shared components; do not grow inline layout branches or display-state logic in route files (see **Slim screens** below).
+- `components/ui/` contains small reusable primitives and cross-screen layout pieces.
 - `components/domain/` contains feature-aware form/list/picker components.
 - `lib/db/` owns SQLite schema, migrations, and repositories.
 - `lib/domain/` owns pure business rules and should be testable without React.
 - `lib/hooks/` bridges repositories/domain services into React state.
+- `lib/ui/` owns pure display-state helpers paired with UI components (no React).
 - `tests/` contains Jest coverage for domain, repository, and screen behavior.
+
+## Slim screens
+
+Route files compose; they do not implement. When the same structure, visibility rules, or lifecycle appear on more than one screen, extract before copying:
+
+1. **Pure rules** → `lib/domain/` (business) or `lib/ui/` (display state), with tests under `tests/domain/`.
+2. **Data and side effects** → `lib/hooks/` (fetch, reload, focus refresh, mutations).
+3. **Generic layout and behavior** → `components/ui/` (no domain imports).
+4. **Feature-specific rows/forms/pickers** → `components/domain/`.
+
+**Reference:** catalog tab listings use `getListingCreateVisibility` + `ListingContent` + `ListingScreenHeader` so each `app/(tabs)/*/index.tsx` only supplies filtered data, search query, and screen-specific chrome. Follow that split for new listing or collection screens — screens stay thin; shared behavior lives in helpers, hooks, and UI.
+
+## Features
+
+- **Recipes** is the flagship section. Before any recipe or recipe-category work, read `app/recipes/AGENTS.md` — it maps the full vertical slice (schema → cost engine → hooks → screens), the deliberate v1 scope cuts, and how to expand it.
 
 ## Verification
 

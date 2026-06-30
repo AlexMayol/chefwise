@@ -26,15 +26,26 @@ async function seedOffer(
     timestamp: string;
   },
 ): Promise<void> {
-  const offerId = createId('offer');
-  await db.runAsync(
-    'INSERT INTO product_offers (id, productId, marketId, brand, quantity, unit, rating, imagePath, description, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    [offerId, offer.productId, offer.marketId, offer.brand, offer.quantity, offer.unit, offer.rating ?? null, null, offer.description ?? null, offer.timestamp, offer.timestamp],
-  );
   const normalized = normalizePrice({ price: offer.price, quantity: offer.quantity, unit: offer.unit });
   await db.runAsync(
-    'INSERT INTO product_offer_prices (id, offerId, price, normalizedPrice, normalizedUnit, observedAt, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [createId('offer-price'), offerId, offer.price, normalized.normalizedPrice, normalized.normalizedUnit, offer.timestamp, offer.timestamp],
+    'INSERT INTO product_offers (id, productId, marketId, brand, quantity, unit, rating, imagePath, description, price, normalizedPrice, normalizedUnit, observedAt, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [
+      createId('offer'),
+      offer.productId,
+      offer.marketId,
+      offer.brand,
+      offer.quantity,
+      offer.unit,
+      offer.rating ?? null,
+      null,
+      offer.description ?? null,
+      offer.price,
+      normalized.normalizedPrice,
+      normalized.normalizedUnit,
+      offer.timestamp,
+      offer.timestamp,
+      offer.timestamp,
+    ],
   );
 }
 

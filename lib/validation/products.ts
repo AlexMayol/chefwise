@@ -40,7 +40,7 @@ export const productCreateSchema = productSchema
   });
 
 // A specific offer (market + optional brand + size), plus the rating/photo/description
-// that describe it at that market. No price here, so it doubles as the edit-offer form.
+// that describe it at that market.
 export const offerSchema = z.object({
   marketId: nameSchema,
   brand: z.string().trim().optional().nullable(),
@@ -56,11 +56,6 @@ export const offerCreateSchema = offerSchema.extend({
   price: positiveNumberSchema,
 });
 
-export const offerPriceSchema = z.object({
-  price: positiveNumberSchema,
-  observedAt: isoDateSchema,
-});
-
 // Legacy product-level price (shopping "bought" flow only).
 export const productPriceSchema = z.object({
   price: positiveNumberSchema,
@@ -73,5 +68,4 @@ export type ProductFormValues = z.infer<typeof productSchema>;
 export type ProductCreateValues = z.infer<typeof productCreateSchema>;
 export type OfferFormValues = z.infer<typeof offerSchema>;
 export type OfferCreateValues = z.infer<typeof offerCreateSchema>;
-export type OfferPriceFormValues = z.infer<typeof offerPriceSchema>;
 export type ProductPriceFormValues = z.infer<typeof productPriceSchema>;

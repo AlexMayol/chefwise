@@ -1,22 +1,20 @@
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { MoreVertical } from 'lucide-react-native';
 import { useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AddProductsSheet } from '@/components/domain/add-products-sheet';
 import { CategoryForm, type CategoryFormHandle } from '@/components/domain/category-form';
-import { DeleteButton } from '@/components/domain/delete-button';
 import { ProductRow, type ProductRowItem } from '@/components/domain/product-row';
+import { EntityActionMenuSheet } from '@/components/ui/entity-action-menu-sheet';
+import { EntityEditSheet } from '@/components/ui/entity-edit-sheet';
 import { BottomActionBar } from '@/components/ui/bottom-action-bar';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { DetailHeader } from '@/components/ui/detail-header';
-import { EditButton } from '@/components/ui/edit-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { EntityAvatar } from '@/components/ui/entity-avatar';
-import { FormScreenHeader } from '@/components/ui/form-screen-header';
 import { IconButton } from '@/components/ui/icon-button';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SearchBar } from '@/components/ui/search-bar';
@@ -25,6 +23,7 @@ import { bestMarketByProduct } from '@/lib/domain/category-insights';
 import { formatCurrency } from '@/lib/formatting/currency';
 import { useCategories } from '@/lib/hooks/use-categories';
 import { useCategoryInsights } from '@/lib/hooks/use-category-insights';
+import { useDetailActionMenu } from '@/lib/hooks/use-entity-quick-actions';
 import { useProducts } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
@@ -44,7 +43,7 @@ export default function CategoryDetailScreen() {
 
   const [editing, setEditing] = useState(false);
   const editFormRef = useRef<CategoryFormHandle>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const menu = useDetailActionMenu({ onDeleteSuccess: () => router.back() });
   const [adding, setAdding] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -88,8 +87,7 @@ export default function CategoryDetailScreen() {
     <View className="flex-1 bg-background">
       <ScreenScaffold>
         <DetailHeader>
-          <EditButton onPress={() => setEditing(true)} />
-          <IconButton accessibilityLabel={t('actions.more')} onPress={() => setMenuOpen(true)}>
+          <IconButton accessibilityLabel={t('actions.more')} onPress={menu.openMenu}>
             <MoreVertical size={20} color={tokens.foreground} />
           </IconButton>
         </DetailHeader>
@@ -144,42 +142,42 @@ export default function CategoryDetailScreen() {
         onRemove={(ids) => assign(ids, { categoryId: null })}
       />
 
-      <BottomSheet visible={editing} onClose={() => setEditing(false)} bottomInset={insets.bottom}>
-        {category ? (
-          <View className="flex-1 gap-4">
-            <FormScreenHeader
-              title={t('categories.edit')}
-              onCancel={() => setEditing(false)}
-              onSave={() => editFormRef.current?.submit()}
-            />
-            <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-              <CategoryForm
-                ref={editFormRef}
-                initialValues={{ name: category.name, description: category.description }}
-                hideSubmit
-                onSubmit={async (values) => {
-                  await update(categoryId, values);
-                  setEditing(false);
-                }}
-              />
-            </ScrollView>
-          </View>
-        ) : null}
-      </BottomSheet>
+      {category ? (
+        <EntityEditSheet
+          visible={editing}
+          onClose={() => setEditing(false)}
+          bottomInset={insets.bottom}
+          title={t('categories.edit')}
+          onSave={() => editFormRef.current?.submit()}>
+          <CategoryForm
+            ref={editFormRef}
+            initialValues={{ name: category.name, description: category.description }}
+            hideSubmit
+            onSubmit={async (values) => {
+              await update(categoryId, values);
+              setEditing(false);
+            }}
+          />
+        </EntityEditSheet>
+      ) : null}
 
-      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom} resizable={false}>
-        <View className="gap-3">
-          <Pressable
-            className="rounded-xl px-4 py-3 active:opacity-70"
-            onPress={() => {
-              setMenuOpen(false);
-              setEditing(true);
-            }}>
-            <Text className="text-base font-semibold text-foreground">{t('actions.edit')}</Text>
-          </Pressable>
-          <DeleteButton onDelete={() => remove(categoryId)} />
-        </View>
-      </BottomSheet>
+      {category ? (
+        <EntityActionMenuSheet
+          visible={menu.menuOpen}
+          onClose={menu.closeMenu}
+          bottomInset={insets.bottom}
+          title={category.name}
+          subtitle={t('categories.productCount', { count: linkedProducts.length })}
+          emoji={category.description || categoryEmoji(category.name)}
+          editLabel={t('categories.edit')}
+          deleteError={menu.deleteError}
+          onEdit={() => {
+            menu.closeMenu();
+            setEditing(true);
+          }}
+          onDelete={() => void menu.remove(() => remove(categoryId))}
+        />
+      ) : null}
     </View>
   );
 }

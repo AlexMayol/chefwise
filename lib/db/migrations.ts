@@ -144,6 +144,33 @@ export async function runMigrations(db: AppDatabase): Promise<void> {
     await seedDefaultRecipeCategories(db);
   }
 
+  if (currentVersion < 10) {
+    // Additive + backfill: collapse per-offer price history to a single current price stored
+    // on the offer. Add the four price columns, copy each offer's latest product_offer_prices
+    // row onto it, then drop the table. Guarded on the table existing so fresh installs (which
+    // already get the columns from SCHEMA_SQL and never had the table) skip the backfill.
+    await addColumnIfMissing(db, 'product_offers', 'price', 'REAL');
+    await addColumnIfMissing(db, 'product_offers', 'normalizedPrice', 'REAL');
+    await addColumnIfMissing(db, 'product_offers', 'normalizedUnit', 'TEXT');
+    await addColumnIfMissing(db, 'product_offers', 'observedAt', 'TEXT');
+
+    const oldTable = await db.getAllAsync<{ name: string }>(`PRAGMA table_info(product_offer_prices)`);
+    if (oldTable.length > 0) {
+      await db.execAsync(`
+        UPDATE product_offers SET
+          price = (SELECT price FROM product_offer_prices pp
+                   WHERE pp.offerId = product_offers.id ORDER BY pp.observedAt DESC, pp.id DESC LIMIT 1),
+          normalizedPrice = (SELECT normalizedPrice FROM product_offer_prices pp
+                   WHERE pp.offerId = product_offers.id ORDER BY pp.observedAt DESC, pp.id DESC LIMIT 1),
+          normalizedUnit = (SELECT normalizedUnit FROM product_offer_prices pp
+                   WHERE pp.offerId = product_offers.id ORDER BY pp.observedAt DESC, pp.id DESC LIMIT 1),
+          observedAt = (SELECT observedAt FROM product_offer_prices pp
+                   WHERE pp.offerId = product_offers.id ORDER BY pp.observedAt DESC, pp.id DESC LIMIT 1);
+        DROP TABLE product_offer_prices;
+      `);
+    }
+  }
+
   if (currentVersion < LATEST_SCHEMA_VERSION) {
     await db.execAsync(`PRAGMA user_version = ${LATEST_SCHEMA_VERSION}`);
   }

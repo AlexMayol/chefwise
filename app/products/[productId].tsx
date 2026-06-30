@@ -1,32 +1,31 @@
-import { Link, useLocalSearchParams, type Href } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { ChevronRight, MoreVertical, Plus, Star } from 'lucide-react-native';
 import { useMemo, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { DeleteButton } from '@/components/domain/delete-button';
 import { OfferForm, type OfferFormHandle } from '@/components/domain/offer-form';
 import { ProductForm, type ProductFormHandle } from '@/components/domain/product-form';
+import { EntityActionMenuSheet } from '@/components/ui/entity-action-menu-sheet';
+import { EntityEditSheet } from '@/components/ui/entity-edit-sheet';
 import { BottomActionBar } from '@/components/ui/bottom-action-bar';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Card } from '@/components/ui/card';
 import { DetailHeader } from '@/components/ui/detail-header';
 import { FormScreenHeader } from '@/components/ui/form-screen-header';
 import { EmptyState } from '@/components/ui/empty-state';
-import { EntityAvatar } from '@/components/ui/entity-avatar';
+import { EntityAvatar, LIST_THUMB_SIZE } from '@/components/ui/entity-avatar';
 import { IconButton } from '@/components/ui/icon-button';
-import { ListRow } from '@/components/ui/list-row';
 import { LoadingState } from '@/components/ui/loading-state';
 import { RatingStars } from '@/components/ui/rating-stars';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
-import { SegmentedTabs } from '@/components/ui/segmented-tabs';
 
 import type { ProductOfferListItem } from '@/lib/db/repositories/product-offers';
 import { formatCurrency } from '@/lib/formatting/currency';
-import { formatDate } from '@/lib/formatting/date';
 import { useCategories } from '@/lib/hooks/use-categories';
 import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
+import { useDetailActionMenu } from '@/lib/hooks/use-entity-quick-actions';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useProductOffers } from '@/lib/hooks/use-product-offers';
 import { useProductDetail } from '@/lib/hooks/use-products';
@@ -37,7 +36,6 @@ import { resolveEntityImageUri } from '@/lib/images/storage';
 import type { DesignTokens } from '@/lib/theme/tokens';
 import { productEmoji } from '@/lib/ui/category-emoji';
 import { cn } from '@/lib/utils';
-type DetailTab = 'overview' | 'prices' | 'history';
 
 type OfferGroup = {
   marketId: string;
@@ -48,6 +46,7 @@ type OfferGroup = {
 
 export default function ProductDetailScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const tokens = useDesignTokens();
   const { productId } = useLocalSearchParams<{ productId: string }>();
@@ -56,12 +55,11 @@ export default function ProductDetailScreen() {
   const { items: markets } = useMarkets();
   const { items: categories } = useCategories();
 
-  const [tab, setTab] = useState<DetailTab>('overview');
-  const [menuOpen, setMenuOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const editFormRef = useRef<ProductFormHandle>(null);
   const addFormRef = useRef<OfferFormHandle>(null);
+  const menu = useDetailActionMenu({ onDeleteSuccess: () => router.back() });
 
   // Offers/prices change on the offer screen; refresh when this screen regains focus.
   useReloadOnFocus(reload);
@@ -87,18 +85,8 @@ export default function ProductDetailScreen() {
     return [...groups.values()];
   }, [offers, markets]);
 
-  const historyOffers = useMemo(
-    () =>
-      [...offers].sort((a, b) => {
-        if (!a.observedAt) return 1;
-        if (!b.observedAt) return -1;
-        return b.observedAt.localeCompare(a.observedAt);
-      }),
-    [offers],
-  );
-
   const bestPrice = useMemo(() => {
-    const values = offers.map((offer) => offer.normalizedPrice).filter((value): value is number => value != null);
+    const values = offers.map((offer) => offer.price).filter((value): value is number => value != null);
     return values.length ? Math.min(...values) : null;
   }, [offers]);
 
@@ -118,11 +106,11 @@ export default function ProductDetailScreen() {
 
   const emoji = productEmoji(product.categoryId, categories);
 
-  const tabs: { key: DetailTab; label: string }[] = [
-    { key: 'overview', label: t('products.tabOverview') },
-    { key: 'prices', label: t('products.tabPrices') },
-    { key: 'history', label: t('products.tabHistory') },
-  ];
+  const actionSubtitle =
+    categoryName ??
+    (bestPrice != null
+      ? t('common.fromPrice', { price: formatCurrency(bestPrice) })
+      : t('offers.marketCount', { count: offerGroups.length }));
 
   return (
     <View className="flex-1 bg-background">
@@ -135,7 +123,7 @@ export default function ProductDetailScreen() {
               fill={product.isFavorite ? tokens.rating : 'transparent'}
             />
           </IconButton>
-          <IconButton accessibilityLabel={t('actions.more')} onPress={() => setMenuOpen(true)}>
+          <IconButton accessibilityLabel={t('actions.more')} onPress={menu.openMenu}>
             <MoreVertical size={20} color={tokens.foreground} />
           </IconButton>
         </DetailHeader>
@@ -159,27 +147,13 @@ export default function ProductDetailScreen() {
           </View>
         </View>
 
-        <SegmentedTabs<DetailTab> tabs={tabs} value={tab} onChange={setTab} />
-
-        {tab === 'overview' ? (
-          <View className="gap-4">
-            {bestPrice != null ? (
-              <Text className="text-sm text-muted-foreground">
-                {t('common.fromPrice', { price: formatCurrency(bestPrice) })} · {t('offers.marketCount', { count: offerGroups.length })}
-              </Text>
-            ) : null}
-            <Text className="text-base font-bold text-card-foreground">{t('products.priceByMarket')}</Text>
-            <PriceByMarket
-              groups={offerGroups}
-              emoji={emoji}
-              tokens={tokens}
-              noPriceLabel={t('common.noPriceYet')}
-              emptyLabel={t('offers.none')}
-            />
-          </View>
-        ) : null}
-
-        {tab === 'prices' ? (
+        <View className="gap-4">
+          {bestPrice != null ? (
+            <Text className="text-sm text-muted-foreground">
+              {t('common.fromPrice', { price: formatCurrency(bestPrice) })} · {t('offers.marketCount', { count: offerGroups.length })}
+            </Text>
+          ) : null}
+          <Text className="text-base font-bold text-card-foreground">{t('products.priceByMarket')}</Text>
           <PriceByMarket
             groups={offerGroups}
             emoji={emoji}
@@ -187,26 +161,7 @@ export default function ProductDetailScreen() {
             noPriceLabel={t('common.noPriceYet')}
             emptyLabel={t('offers.none')}
           />
-        ) : null}
-
-        {tab === 'history' ? (
-          historyOffers.length > 0 ? (
-            <View className="gap-2">
-              {historyOffers.map((offer) => (
-                <Link key={offer.id} href={`/offers/${offer.id}` as Href} asChild>
-                  <ListRow
-                    title={offer.brand ? `${offer.marketName ?? ''} · ${offer.brand}` : offer.marketName ?? ''}
-                    subtitle={offer.observedAt ? formatDate(offer.observedAt) : undefined}
-                    meta={offer.price != null ? formatCurrency(offer.price) : t('common.noPriceYet')}
-                    chevron
-                  />
-                </Link>
-              ))}
-            </View>
-          ) : (
-            <EmptyState title={t('offers.none')} />
-          )
-        ) : null}
+        </View>
       </ScreenScaffold>
 
       <BottomActionBar withSafeArea>
@@ -214,14 +169,14 @@ export default function ProductDetailScreen() {
           className="flex-row items-center justify-center gap-2 rounded-xl border border-primary bg-card py-3.5 active:opacity-80"
           onPress={() => setAddOpen(true)}>
           <Plus size={18} color={tokens.primary} />
-          <Text className="font-semibold text-primary">{t('products.addPrice')}</Text>
+          <Text className="font-semibold text-primary">{t('products.addOffer')}</Text>
         </Pressable>
       </BottomActionBar>
 
       <BottomSheet visible={addOpen} onClose={() => setAddOpen(false)} bottomInset={insets.bottom}>
         <View className="flex-1 gap-4">
           <FormScreenHeader
-            title={t('products.addPrice')}
+            title={t('products.addOffer')}
             onCancel={() => setAddOpen(false)}
             onSave={() => addFormRef.current?.submit()}
           />
@@ -242,40 +197,39 @@ export default function ProductDetailScreen() {
         </View>
       </BottomSheet>
 
-      <BottomSheet visible={editOpen} onClose={() => setEditOpen(false)} bottomInset={insets.bottom}>
-        <View className="flex-1 gap-4">
-          <FormScreenHeader
-            title={t('products.edit')}
-            onCancel={() => setEditOpen(false)}
-            onSave={() => editFormRef.current?.submit()}
-          />
-          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-            <ProductForm
-              ref={editFormRef}
-              initialValues={product}
-              hideSubmit
-              onSubmit={async (values) => {
-                await update(values);
-                setEditOpen(false);
-              }}
-            />
-          </ScrollView>
-        </View>
-      </BottomSheet>
+      <EntityEditSheet
+        visible={editOpen}
+        onClose={() => setEditOpen(false)}
+        bottomInset={insets.bottom}
+        title={t('products.edit')}
+        onSave={() => editFormRef.current?.submit()}>
+        <ProductForm
+          ref={editFormRef}
+          initialValues={product}
+          hideSubmit
+          onSubmit={async (values) => {
+            await update(values);
+            setEditOpen(false);
+          }}
+        />
+      </EntityEditSheet>
 
-      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom} resizable={false}>
-        <View className="gap-3">
-          <Pressable
-            className="rounded-xl px-4 py-3 active:opacity-70"
-            onPress={() => {
-              setMenuOpen(false);
-              setEditOpen(true);
-            }}>
-            <Text className="text-base font-semibold text-foreground">{t('actions.edit')}</Text>
-          </Pressable>
-          <DeleteButton onDelete={remove} />
-        </View>
-      </BottomSheet>
+      <EntityActionMenuSheet
+        visible={menu.menuOpen}
+        onClose={menu.closeMenu}
+        bottomInset={insets.bottom}
+        title={product.name}
+        subtitle={actionSubtitle}
+        imageUri={avatarImageUri}
+        emoji={emoji}
+        editLabel={t('products.edit')}
+        deleteError={menu.deleteError}
+        onEdit={() => {
+          menu.closeMenu();
+          setEditOpen(true);
+        }}
+        onDelete={() => void menu.remove(remove)}
+      />
     </View>
   );
 }
@@ -315,7 +269,7 @@ function PriceByMarket({
                   index > 0 && 'border-t border-border',
                 )}>
                 {/* Image, rating and description now live on the offer, so they render per row. */}
-                <EntityAvatar imageUri={resolveEntityImageUri(offer.imagePath) ?? undefined} emoji={emoji} size={44} />
+                <EntityAvatar imageUri={resolveEntityImageUri(offer.imagePath) ?? undefined} emoji={emoji} size={LIST_THUMB_SIZE} />
                 <View className="flex-1 gap-0.5">
                   <Text className="text-sm font-medium text-card-foreground" numberOfLines={1}>
                     {offer.brand ? `${offer.brand} – ` : ''}

@@ -29,7 +29,7 @@ export default function NewProductScreen() {
     router.back();
   };
 
-  const tips = [t('products.tipSkipPrice'), t('products.tipDefaultUnit'), t('products.tipAddMorePrices')];
+  const tips = [t('products.tipSkipOffer'), t('products.tipDefaultUnit'), t('products.tipAddMoreOffers')];
 
   return (
     <ScreenScaffold paddingBottom={32}>

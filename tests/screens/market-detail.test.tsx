@@ -94,6 +94,30 @@ describe('market detail screen', () => {
     jest.clearAllMocks();
   });
 
+  it('shows the purchase price prominently and the normalized price below the product name', async () => {
+    useMarketOffersMock.mockReturnValue({
+      items: [
+        {
+          ...offer('1', 'Cheddar Cheese', 'market-1'),
+          quantity: 500,
+          unit: 'g',
+          price: 3.6,
+          normalizedPrice: 7.2,
+          normalizedUnit: 'kg',
+        },
+      ],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      remove: jest.fn(),
+    });
+
+    const screen = await render(<MarketDetailScreen />);
+
+    expect(screen.getByText('€3.60')).toBeTruthy();
+    expect(screen.getByText('500 g · €7.20 / kg')).toBeTruthy();
+  });
+
   it('lists the offers sold at the market', async () => {
     const screen = await render(<MarketDetailScreen />);
 
@@ -137,7 +161,8 @@ describe('market detail screen', () => {
   it('opens the edit flow and saves changes', async () => {
     const screen = await render(<MarketDetailScreen />);
 
-    await fireEvent.press(screen.getByLabelText('Edit'));
+    await fireEvent.press(screen.getByLabelText('More options'));
+    await fireEvent.press(screen.getByText('Edit market'));
     await fireEvent.changeText(screen.getByDisplayValue('Lidl'), 'Aldi');
     await fireEvent.press(screen.getByLabelText('Save'));
 

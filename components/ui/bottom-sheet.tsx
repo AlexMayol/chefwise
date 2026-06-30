@@ -1,10 +1,14 @@
-import { type ReactNode, useId, useMemo, useRef } from 'react';
-import { Modal, PanResponder, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { memo, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { Dimensions, Modal, PanResponder, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  cancelAnimation,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
-
-import { elevation } from '@/lib/theme/elevation';
 
 type BottomSheetProps = {
   visible: boolean;
@@ -19,53 +23,136 @@ type BottomSheetProps = {
 
 const SCRIM_OPACITY = 0.4;
 const SCRIM_FADE_END = 0.24;
+const SCRIM_FADE_DURATION = 250;
+const SHEET_SLIDE_DURATION = 300;
+const SCRIM_GRADIENT_ID = 'bottom-sheet-scrim-gradient';
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-function BottomSheetScrim() {
-  const gradientId = useId().replace(/:/g, '');
-
+const BottomSheetScrim = memo(function BottomSheetScrim() {
   return (
     <View testID="bottom-sheet-scrim" pointerEvents="none" style={StyleSheet.absoluteFill}>
       <Svg width="100%" height="100%" preserveAspectRatio="none">
         <Defs>
-          <LinearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+          <LinearGradient id={SCRIM_GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0" stopColor="#000000" stopOpacity={0} />
             <Stop offset={SCRIM_FADE_END} stopColor="#000000" stopOpacity={SCRIM_OPACITY} />
             <Stop offset="1" stopColor="#000000" stopOpacity={SCRIM_OPACITY} />
           </LinearGradient>
         </Defs>
-        <Rect width="100%" height="100%" fill={`url(#${gradientId})`} />
+        <Rect width="100%" height="100%" fill={`url(#${SCRIM_GRADIENT_ID})`} />
       </Svg>
     </View>
   );
+});
+
+type BottomSheetModalProps = {
+  visible: boolean;
+  onClose(): void;
+  children: ReactNode;
+};
+
+function BottomSheetModal({ visible, onClose, children }: BottomSheetModalProps) {
+  const [rendered, setRendered] = useState(visible);
+  const isMountedRef = useRef(visible);
+  const slideDistanceRef = useRef(Dimensions.get('window').height);
+  const scrimOpacity = useSharedValue(0);
+  const sheetTranslateY = useSharedValue(slideDistanceRef.current);
+
+  const finishClose = useRef(() => {
+    isMountedRef.current = false;
+    setRendered(false);
+  }).current;
+
+  const scrimStyle = useAnimatedStyle(() => ({ opacity: scrimOpacity.value }));
+  const sheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: sheetTranslateY.value }] }));
+
+  useEffect(() => {
+    if (visible) {
+      const slideDistance = Dimensions.get('window').height;
+      slideDistanceRef.current = slideDistance;
+      isMountedRef.current = true;
+      setRendered(true);
+
+      cancelAnimation(scrimOpacity);
+      cancelAnimation(sheetTranslateY);
+      scrimOpacity.value = 0;
+      sheetTranslateY.value = slideDistance;
+      scrimOpacity.value = withTiming(1, { duration: SCRIM_FADE_DURATION });
+      sheetTranslateY.value = withTiming(0, { duration: SHEET_SLIDE_DURATION });
+      return;
+    }
+
+    if (!isMountedRef.current) {
+      return;
+    }
+
+    const slideDistance = slideDistanceRef.current;
+    cancelAnimation(scrimOpacity);
+    cancelAnimation(sheetTranslateY);
+    scrimOpacity.value = withTiming(0, { duration: SCRIM_FADE_DURATION });
+    sheetTranslateY.value = withTiming(
+      slideDistance,
+      { duration: SHEET_SLIDE_DURATION },
+      (finished) => {
+        if (finished) {
+          runOnJS(finishClose)();
+        }
+      },
+    );
+  }, [visible, finishClose, scrimOpacity, sheetTranslateY]);
+
+  if (!rendered) {
+    return null;
+  }
+
+  return (
+    <Modal visible={rendered} transparent animationType="none" onRequestClose={onClose}>
+      <View style={StyleSheet.absoluteFill}>
+        <Animated.View style={[StyleSheet.absoluteFill, scrimStyle]}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={onClose}>
+            <BottomSheetScrim />
+          </Pressable>
+        </Animated.View>
+        <Animated.View style={[styles.sheet, sheetStyle]}>{children}</Animated.View>
+      </View>
+    </Modal>
+  );
 }
 
-// Native Modal `animationType="slide"` gives the slide-up animation for free; a
-// bottom-anchored card over a scrim makes it read as a bottom sheet.
+const styles = StyleSheet.create({
+  sheet: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+});
+
 export function BottomSheet({ visible, onClose, bottomInset = 0, resizable = true, children }: BottomSheetProps) {
   if (!resizable) {
     return (
-      <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-        <Pressable className="flex-1 justify-end" onPress={onClose}>
-          <BottomSheetScrim />
-          <Pressable
-            className="rounded-t-3xl border border-border bg-card p-5"
-            style={[elevation.card, { paddingBottom: bottomInset + 24 }]}
-            onPress={(event) => event.stopPropagation()}
-          >
-            <View className="mb-4 h-1.5 w-12 self-center rounded-full bg-border" />
-            {children}
-          </Pressable>
+      <BottomSheetModal visible={visible} onClose={onClose}>
+        <Pressable
+          className="rounded-t-3xl border border-border bg-card p-5"
+          style={{ paddingBottom: bottomInset + 24 }}
+          onPress={(event) => event.stopPropagation()}
+        >
+          <View className="mb-4 h-1.5 w-12 self-center rounded-full bg-border" />
+          {children}
         </Pressable>
-      </Modal>
+      </BottomSheetModal>
     );
   }
 
-  return <ResizableSheet {...{ visible, onClose, bottomInset, children }} />;
+  return (
+    <BottomSheetModal visible={visible} onClose={onClose}>
+      <ResizableSheetBody bottomInset={bottomInset}>{children}</ResizableSheetBody>
+    </BottomSheetModal>
+  );
 }
 
-function ResizableSheet({ visible, onClose, bottomInset = 0, children }: Omit<BottomSheetProps, 'resizable'>) {
+function ResizableSheetBody({ bottomInset = 0, children }: Pick<BottomSheetProps, 'bottomInset' | 'children'>) {
   const insets = useSafeAreaInsets();
   const { height: screenHeight } = useWindowDimensions();
 
@@ -103,24 +190,18 @@ function ResizableSheet({ visible, onClose, bottomInset = 0, children }: Omit<Bo
   const animatedStyle = useAnimatedStyle(() => ({ height: height.value }));
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable className="flex-1 justify-end" onPress={onClose}>
-        <BottomSheetScrim />
-        <Animated.View style={[{ width: '100%' }, animatedStyle]}>
-          <Pressable
-            className="flex-1 rounded-t-3xl border border-border bg-card"
-            style={elevation.card}
-            onPress={(event) => event.stopPropagation()}
-          >
-            <View {...pan.panHandlers} className="items-center py-3">
-              <View className="h-1.5 w-12 rounded-full bg-border" />
-            </View>
-            <View className="flex-1 px-5" style={{ paddingBottom: bottomInset + 24 }}>
-              {children}
-            </View>
-          </Pressable>
-        </Animated.View>
+    <Animated.View style={[{ width: '100%' }, animatedStyle]}>
+      <Pressable
+        className="flex-1 rounded-t-3xl border border-border bg-card"
+        onPress={(event) => event.stopPropagation()}
+      >
+        <View {...pan.panHandlers} className="items-center py-3">
+          <View className="h-1.5 w-12 rounded-full bg-border" />
+        </View>
+        <View className="flex-1 px-5" style={{ paddingBottom: bottomInset + 24 }}>
+          {children}
+        </View>
       </Pressable>
-    </Modal>
+    </Animated.View>
   );
 }

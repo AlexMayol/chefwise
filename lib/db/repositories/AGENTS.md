@@ -10,8 +10,8 @@
 
 ## Immutability
 
-- `product-prices.ts` is append-only. New prices create new rows; latest price is derived by query order.
-- Shopping purchases should reference the created `ProductPrice` row rather than mutating prior prices.
+- Legacy `product_prices` (shopping "bought" flow) is append-only: create/read only; latest price is derived by query order.
+- An offer carries a single current price on its own row; `productOffers.create`/`update` (re)derive `normalizedPrice` and stamp `observedAt` when the price or size changes.
 
 ## Testing
 

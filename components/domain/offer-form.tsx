@@ -16,7 +16,7 @@ import { createId } from '@/lib/db/repositories/base';
 import type { Unit } from '@/lib/domain/units';
 import { useTranslation } from '@/lib/i18n';
 import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
-import { offerCreateSchema, offerSchema, type OfferCreateValues, type OfferFormValues } from '@/lib/validation/products';
+import { offerCreateSchema, offerSchema, type OfferCreateValues } from '@/lib/validation/products';
 
 import { EntityImageField } from './entity-image-field';
 import { MarketSelect } from './market-select';
@@ -30,12 +30,13 @@ export type OfferFormHandle = FormHandle;
 type OfferFormProps = {
   defaultUnit?: Unit;
   hideSubmit?: boolean;
-  // Create captures a first price; pass false (with initialValues) to edit an existing offer.
+  // Create captures a first price; pass withPrice={false} when editing an existing offer.
   withPrice?: boolean;
-  initialValues?: Partial<OfferFormValues>;
+  // OfferCreateValues (not OfferFormValues) so an existing offer's price can prefill on edit.
+  initialValues?: Partial<OfferCreateValues>;
   // The offer's id when editing, so its image saves under a stable path.
   offerId?: string;
-  onSubmit(values: OfferFormValues & { price?: number }): Promise<void> | void;
+  onSubmit(values: OfferCreateValues): Promise<void> | void;
 };
 
 // Captures (or edits) an offer: market + optional brand + size, plus the rating, photo and

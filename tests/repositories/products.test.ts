@@ -27,8 +27,9 @@ describe('product repository list enrichment', () => {
     await repository.list({ favoritesOnly: true, sort: 'favorites_first' });
 
     expect(db.lastGetAllSql).toContain('product_offers');
-    expect(db.lastGetAllSql).toContain('product_offer_prices');
-    expect(db.lastGetAllSql).toContain('MIN(lp.normalizedPrice)');
+    expect(db.lastGetAllSql).not.toContain('product_offer_prices');
+    expect(db.lastGetAllSql).toContain('MIN(off.price)');
+    expect(db.lastGetAllSql).toContain('MIN(off.normalizedPrice)');
     expect(db.lastGetAllSql).toContain('COUNT(DISTINCT off.marketId)');
     expect(db.lastGetAllSql).toContain('bestImagePath');
     // bestImagePath comes from the top-rated offer that actually has an image.
@@ -51,6 +52,7 @@ describe('product repository list enrichment', () => {
         updatedAt: '2026-01-01',
         offerCount: 2,
         marketCount: 2,
+        bestPrice: 1.99,
         bestNormalizedPrice: 2.5,
         bestNormalizedUnit: 'kg',
         bestImagePath: null,
@@ -62,6 +64,7 @@ describe('product repository list enrichment', () => {
 
     expect(item.offerCount).toBe(2);
     expect(item.marketCount).toBe(2);
+    expect(item.bestPrice).toBe(1.99);
     expect(item.bestNormalizedPrice).toBe(2.5);
     expect(item.bestNormalizedUnit).toBe('kg');
     expect(item.isFavorite).toBe(true);

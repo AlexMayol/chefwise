@@ -20,6 +20,9 @@ export type RecipeRow = Omit<Recipe, 'isFavorite'> & {
 };
 
 export type RecipeInput = {
+  // Optional caller-supplied id: the create flow generates it upfront so a recipe image
+  // can be saved to images/recipes/{id}.jpg before the row exists. Omit it and one is generated.
+  id?: string;
   name: string;
   description?: string | null;
   servings: number;
@@ -62,7 +65,7 @@ export function createRecipeRepository(db: AppDatabase) {
     async create(input: RecipeInput): Promise<Recipe> {
       const timestamp = nowIso();
       const row: RecipeRow = {
-        id: createId('recipe'),
+        id: input.id ?? createId('recipe'),
         name: input.name,
         description: input.description ?? null,
         servings: input.servings,

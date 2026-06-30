@@ -71,7 +71,11 @@ function RootLayoutNav() {
             <Stack.Screen name="offers/[offerId]" options={{ headerShown: false }} />
             <Stack.Screen name="markets/new" options={{ headerShown: false }} />
             <Stack.Screen name="markets/[marketId]" options={{ headerShown: false }} />
+            <Stack.Screen name="recipes/new" options={{ headerShown: false }} />
             <Stack.Screen name="recipes/[recipeId]" options={{ headerShown: false }} />
+            <Stack.Screen name="recipe-categories/index" options={{ headerShown: false }} />
+            <Stack.Screen name="recipe-categories/new" options={{ headerShown: false }} />
+            <Stack.Screen name="recipe-categories/[recipeCategoryId]" options={{ headerShown: false }} />
             <Stack.Screen name="shopping/[shoppingListId]" options={{ headerShown: false }} />
           </Stack>
           <PortalHost />

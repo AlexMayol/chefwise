@@ -1,11 +1,10 @@
-export const LATEST_SCHEMA_VERSION = 9;
+export const LATEST_SCHEMA_VERSION = 10;
 
 export const REQUIRED_TABLES = [
   'markets',
   'categories',
   'products',
   'product_offers',
-  'product_offer_prices',
   'product_prices',
   'recipe_categories',
   'recipes',
@@ -18,7 +17,6 @@ export const REQUIRED_TABLES = [
 
 export const REQUIRED_INDEXES = [
   'idx_product_offers_product',
-  'idx_product_offer_prices_lookup',
   'idx_product_prices_lookup',
   'idx_recipe_products_recipe',
   'idx_shopping_list_items_list',
@@ -57,7 +55,9 @@ CREATE TABLE IF NOT EXISTS products (
 );
 
 -- A specific offer for a product in a market: brand (optional) + size (quantity/unit),
--- plus the rating, photo, and description that describe it at that market.
+-- plus the rating, photo, and description that describe it at that market, and its single
+-- current price. ponytail: normalizedPrice is computed at write from quantity/unit (same
+-- pattern as product_prices); price columns are nullable — an offer can exist without a price.
 CREATE TABLE IF NOT EXISTS product_offers (
   id TEXT PRIMARY KEY NOT NULL,
   productId TEXT NOT NULL,
@@ -68,28 +68,18 @@ CREATE TABLE IF NOT EXISTS product_offers (
   rating INTEGER,
   imagePath TEXT,
   description TEXT,
+  price REAL,
+  normalizedPrice REAL,
+  normalizedUnit TEXT,
+  observedAt TEXT,
   createdAt TEXT NOT NULL,
   updatedAt TEXT NOT NULL,
   FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE,
   FOREIGN KEY (marketId) REFERENCES markets(id) ON DELETE RESTRICT
 );
 
--- Price history per offer. ponytail: normalizedPrice is computed at insert from the
--- offer's quantity/unit (same pattern as product_prices); the offer's "current" price
--- shown in comparison views is the latest row via window-join, not a stored field.
-CREATE TABLE IF NOT EXISTS product_offer_prices (
-  id TEXT PRIMARY KEY NOT NULL,
-  offerId TEXT NOT NULL,
-  price REAL NOT NULL,
-  normalizedPrice REAL NOT NULL,
-  normalizedUnit TEXT NOT NULL,
-  observedAt TEXT NOT NULL,
-  createdAt TEXT NOT NULL,
-  FOREIGN KEY (offerId) REFERENCES product_offers(id) ON DELETE CASCADE
-);
-
 -- Legacy product-level price ledger. Kept untouched for the shopping "bought" flow;
--- the catalog/recipes now use product_offer_prices.
+-- the catalog/recipes now use the price stored on product_offers.
 CREATE TABLE IF NOT EXISTS product_prices (
   id TEXT PRIMARY KEY NOT NULL,
   productId TEXT NOT NULL,
@@ -196,8 +186,6 @@ CREATE TABLE IF NOT EXISTS pantry_transactions (
 
 CREATE INDEX IF NOT EXISTS idx_product_offers_product
   ON product_offers(productId);
-CREATE INDEX IF NOT EXISTS idx_product_offer_prices_lookup
-  ON product_offer_prices(offerId, observedAt DESC, id DESC);
 CREATE INDEX IF NOT EXISTS idx_product_prices_lookup
   ON product_prices(productId, observedAt DESC, id DESC);
 CREATE INDEX IF NOT EXISTS idx_recipe_products_recipe

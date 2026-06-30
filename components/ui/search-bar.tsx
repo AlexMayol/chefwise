@@ -28,7 +28,7 @@ export function SearchBar({ value, onChangeText, placeholder, onFilter, filterAc
           <Search size={18} color={tokens.mutedForeground} />
         </View>
         <Input
-          className="pl-10"
+          className="border-border bg-card pl-10"
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}

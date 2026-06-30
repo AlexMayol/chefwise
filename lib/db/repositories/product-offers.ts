@@ -1,8 +1,12 @@
+import { normalizePrice } from '@/lib/domain/pricing';
 import type { NormalizedUnit, Unit } from '@/lib/domain/units';
 
 import type { AppDatabase } from '../client';
-import { createCrudRepository, createId, insertRow, nowIso } from './base';
+import { createCrudRepository, createId, insertRow, nowIso, updateRow } from './base';
 
+// An offer carries its single current price inline (nullable — it may not be priced yet).
+// normalizedPrice/normalizedUnit are computed from the offer's quantity/unit at write time;
+// observedAt is the date the price was last set/changed.
 export type ProductOffer = {
   id: string;
   productId: string;
@@ -13,6 +17,10 @@ export type ProductOffer = {
   rating: number | null;
   imagePath: string | null;
   description: string | null;
+  price: number | null;
+  normalizedPrice: number | null;
+  normalizedUnit: NormalizedUnit | null;
+  observedAt: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -26,24 +34,21 @@ export type ProductOfferInput = {
   rating?: number | null;
   imagePath?: string | null;
   description?: string | null;
+  price?: number | null;
 };
 
-// Offer plus the data comparison views surface: which market, and the latest price for it.
+// Offer plus which market it's at (the price fields live on the offer itself now).
 export type ProductOfferListItem = ProductOffer & {
   marketName: string | null;
-  price: number | null;
-  normalizedPrice: number | null;
-  normalizedUnit: NormalizedUnit | null;
-  observedAt: string | null;
 };
 
 export type MarketOfferListItem = ProductOfferListItem & {
   productName: string | null;
 };
 
-// A single price observation for a category's offers, joined with product + market names.
-// Powers the category detail Insights/Activity tabs (one query; latest-per-offer is derived
-// in lib/domain/category-insights.ts).
+// One priced offer in a category, joined with product + market names. Powers the category
+// detail Insights/Activity tabs (one row per offer; aggregates derived in
+// lib/domain/category-insights.ts).
 export type CategoryPriceEventItem = {
   offerId: string;
   productId: string;
@@ -56,14 +61,6 @@ export type CategoryPriceEventItem = {
   observedAt: string;
 };
 
-// Latest price per offer via window-join — reused by both list queries below.
-const LATEST_PRICE_SUBQUERY = `
-  LEFT JOIN (
-    SELECT offerId, price, normalizedPrice, normalizedUnit, observedAt,
-           ROW_NUMBER() OVER (PARTITION BY offerId ORDER BY observedAt DESC, id DESC) AS rn
-    FROM product_offer_prices
-  ) lp ON lp.offerId = off.id AND lp.rn = 1`;
-
 export function createProductOfferRepository(db: AppDatabase) {
   const base = createCrudRepository<ProductOffer, ProductOfferInput>(db, 'product_offers', 'offer');
 
@@ -71,6 +68,8 @@ export function createProductOfferRepository(db: AppDatabase) {
     ...base,
     async create(input: ProductOfferInput): Promise<ProductOffer> {
       const timestamp = nowIso();
+      const normalized =
+        input.price != null ? normalizePrice({ price: input.price, quantity: input.quantity, unit: input.unit }) : null;
       const row: ProductOffer = {
         id: createId('offer'),
         productId: input.productId,
@@ -81,6 +80,10 @@ export function createProductOfferRepository(db: AppDatabase) {
         rating: input.rating ?? null,
         imagePath: input.imagePath ?? null,
         description: input.description ?? null,
+        price: input.price ?? null,
+        normalizedPrice: normalized?.normalizedPrice ?? null,
+        normalizedUnit: normalized?.normalizedUnit ?? null,
+        observedAt: input.price != null ? timestamp : null,
         createdAt: timestamp,
         updatedAt: timestamp,
       };
@@ -88,60 +91,81 @@ export function createProductOfferRepository(db: AppDatabase) {
       await insertRow(db, 'product_offers', row);
       return row;
     },
+    // Re-derives normalizedPrice when the price or the size (quantity/unit) changes, and
+    // stamps observedAt when the price itself changes. Replaces the old renormalizeForOffer.
+    async update(id: string, input: Partial<ProductOfferInput>): Promise<void> {
+      const patch: Record<string, unknown> = { ...input, updatedAt: nowIso() };
+      const priceChanging = input.price !== undefined;
+      const sizeChanging = input.quantity != null || input.unit != null;
+
+      if (priceChanging || sizeChanging) {
+        const existing = await db.getFirstAsync<{ quantity: number; unit: Unit; price: number | null }>(
+          'SELECT quantity, unit, price FROM product_offers WHERE id = ?',
+          [id],
+        );
+        const quantity = input.quantity ?? existing?.quantity ?? 1;
+        const unit = (input.unit ?? existing?.unit ?? 'unit') as Unit;
+        const price = priceChanging ? input.price : (existing?.price ?? null);
+
+        if (price != null) {
+          const normalized = normalizePrice({ price, quantity, unit });
+          patch.normalizedPrice = normalized.normalizedPrice;
+          patch.normalizedUnit = normalized.normalizedUnit;
+        } else {
+          patch.normalizedPrice = null;
+          patch.normalizedUnit = null;
+        }
+        if (priceChanging) {
+          patch.observedAt = price != null ? nowIso() : null;
+        }
+      }
+
+      await updateRow(db, 'product_offers', id, patch);
+    },
     async listForProduct(productId: string): Promise<ProductOfferListItem[]> {
       // Cheapest current offer first; offers without a price sort last (NULL).
       return db.getAllAsync<ProductOfferListItem>(
-        `SELECT off.*, m.name AS marketName,
-                lp.price AS price, lp.normalizedPrice AS normalizedPrice,
-                lp.normalizedUnit AS normalizedUnit, lp.observedAt AS observedAt
+        `SELECT off.*, m.name AS marketName
          FROM product_offers off
          LEFT JOIN markets m ON m.id = off.marketId
-         ${LATEST_PRICE_SUBQUERY}
          WHERE off.productId = ?
-         ORDER BY lp.normalizedPrice IS NULL, lp.normalizedPrice ASC, off.createdAt ASC`,
+         ORDER BY off.normalizedPrice IS NULL, off.normalizedPrice ASC, off.createdAt ASC`,
         [productId],
       );
     },
     async listForMarket(marketId: string): Promise<MarketOfferListItem[]> {
       return db.getAllAsync<MarketOfferListItem>(
-        `SELECT off.*, m.name AS marketName, p.name AS productName,
-                lp.price AS price, lp.normalizedPrice AS normalizedPrice,
-                lp.normalizedUnit AS normalizedUnit, lp.observedAt AS observedAt
+        `SELECT off.*, m.name AS marketName, p.name AS productName
          FROM product_offers off
          LEFT JOIN markets m ON m.id = off.marketId
          LEFT JOIN products p ON p.id = off.productId
-         ${LATEST_PRICE_SUBQUERY}
          WHERE off.marketId = ?
          ORDER BY p.name COLLATE NOCASE ASC, off.createdAt ASC`,
         [marketId],
       );
     },
-    // Every offer across all markets with its latest price — for market-list aggregates.
+    // Every offer across all markets with its price — for market-list aggregates.
     async listAll(): Promise<MarketOfferListItem[]> {
       return db.getAllAsync<MarketOfferListItem>(
-        `SELECT off.*, m.name AS marketName, p.name AS productName,
-                lp.price AS price, lp.normalizedPrice AS normalizedPrice,
-                lp.normalizedUnit AS normalizedUnit, lp.observedAt AS observedAt
+        `SELECT off.*, m.name AS marketName, p.name AS productName
          FROM product_offers off
          LEFT JOIN markets m ON m.id = off.marketId
          LEFT JOIN products p ON p.id = off.productId
-         ${LATEST_PRICE_SUBQUERY}
          ORDER BY off.createdAt ASC`,
       );
     },
-    // Every price observation for offers whose product is in this category, newest first.
+    // Every priced offer whose product is in this category, newest price first.
     async listPriceEventsForCategory(categoryId: string): Promise<CategoryPriceEventItem[]> {
       return db.getAllAsync<CategoryPriceEventItem>(
-        `SELECT pp.offerId AS offerId, off.productId AS productId, p.name AS productName,
+        `SELECT off.id AS offerId, off.productId AS productId, p.name AS productName,
                 off.marketId AS marketId, m.name AS marketName,
-                pp.price AS price, pp.normalizedPrice AS normalizedPrice,
-                pp.normalizedUnit AS normalizedUnit, pp.observedAt AS observedAt
-         FROM product_offer_prices pp
-         JOIN product_offers off ON off.id = pp.offerId
+                off.price AS price, off.normalizedPrice AS normalizedPrice,
+                off.normalizedUnit AS normalizedUnit, off.observedAt AS observedAt
+         FROM product_offers off
          JOIN products p ON p.id = off.productId
          LEFT JOIN markets m ON m.id = off.marketId
-         WHERE p.categoryId = ?
-         ORDER BY pp.observedAt DESC, pp.id DESC`,
+         WHERE p.categoryId = ? AND off.price IS NOT NULL
+         ORDER BY off.observedAt DESC, off.id DESC`,
         [categoryId],
       );
     },

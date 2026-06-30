@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { EmojiPicker } from '@/components/domain/emoji-picker';
 import { ControlledInput } from '@/components/ui/controlled-input';
-import { EntityAvatar } from '@/components/ui/entity-avatar';
+import { EntityAvatar, LIST_THUMB_SIZE } from '@/components/ui/entity-avatar';
 import { FormField } from '@/components/ui/form-field';
 import { FormScreenHeader } from '@/components/ui/form-screen-header';
 import { FormSection } from '@/components/ui/form-section';
@@ -53,7 +53,7 @@ export default function NewCategoryScreen() {
       </FormSection>
 
       <View className="flex-row items-center gap-3 rounded-2xl bg-muted p-4">
-        <EntityAvatar emoji={emoji || categoryEmoji(name)} size={44} className="bg-card" />
+        <EntityAvatar emoji={emoji || categoryEmoji(name)} size={LIST_THUMB_SIZE} className="bg-card" />
         <View className="flex-1">
           <Text className="text-base font-bold text-card-foreground">{name || t('categories.new')}</Text>
           <Text className="text-sm text-muted-foreground">{t('categories.previewHint')}</Text>

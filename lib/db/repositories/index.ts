@@ -2,7 +2,6 @@ import type { AppDatabase } from '../client';
 import { createCategoryRepository } from './categories';
 import { createMarketRepository } from './markets';
 import { createPantryRepository } from './pantry';
-import { createProductOfferPriceRepository } from './product-offer-prices';
 import { createProductOfferRepository } from './product-offers';
 import { createProductPriceRepository } from './product-prices';
 import { createProductRepository } from './products';
@@ -16,7 +15,6 @@ export function createAppRepositories(db: AppDatabase) {
     markets: createMarketRepository(db),
     products: createProductRepository(db),
     productOffers: createProductOfferRepository(db),
-    productOfferPrices: createProductOfferPriceRepository(db),
     // Kept for the shopping "bought" flow only; the catalog/recipes use offers now.
     productPrices: createProductPriceRepository(db),
     recipeCategories: createRecipeCategoryRepository(db),

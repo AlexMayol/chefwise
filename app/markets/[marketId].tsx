@@ -1,21 +1,19 @@
 import { Link, useLocalSearchParams, useRouter, type Href } from 'expo-router';
-import { Clock, MoreVertical, Package, Tag } from 'lucide-react-native';
+import { ChevronRight, Clock, MoreVertical, Package, Tag } from 'lucide-react-native';
 import { useMemo, useRef, useState, type ReactNode } from 'react';
-import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AddProductsSheet } from '@/components/domain/add-products-sheet';
 import { MarketForm, type MarketFormHandle } from '@/components/domain/market-form';
+import { EntityActionMenuSheet } from '@/components/ui/entity-action-menu-sheet';
+import { EntityEditSheet } from '@/components/ui/entity-edit-sheet';
 import { BottomActionBar } from '@/components/ui/bottom-action-bar';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DeleteButton } from '@/components/domain/delete-button';
 import { DetailHeader } from '@/components/ui/detail-header';
-import { FormScreenHeader } from '@/components/ui/form-screen-header';
-import { EditButton } from '@/components/ui/edit-button';
 import { EmptyState } from '@/components/ui/empty-state';
-import { EntityAvatar } from '@/components/ui/entity-avatar';
+import { EntityAvatar, LIST_THUMB_SIZE } from '@/components/ui/entity-avatar';
 import { IconButton } from '@/components/ui/icon-button';
 import { LoadingState } from '@/components/ui/loading-state';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
@@ -25,6 +23,8 @@ import { marketStats } from '@/lib/domain/market-stats';
 import { formatCurrency } from '@/lib/formatting/currency';
 import { timeAgo } from '@/lib/formatting/relative-time';
 import { useCategories } from '@/lib/hooks/use-categories';
+import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
+import { useDetailActionMenu } from '@/lib/hooks/use-entity-quick-actions';
 import { useMarkets } from '@/lib/hooks/use-markets';
 import { useMarketOffers } from '@/lib/hooks/use-product-offers';
 import { useProducts } from '@/lib/hooks/use-products';
@@ -32,7 +32,6 @@ import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
 import { resolveEntityImageUri } from '@/lib/images/storage';
 import { productEmoji } from '@/lib/ui/category-emoji';
-import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { cn } from '@/lib/utils';
 
 const MARKET_EMOJI = '🏪';
@@ -50,7 +49,7 @@ export default function MarketDetailScreen() {
 
   const [editing, setEditing] = useState(false);
   const editFormRef = useRef<MarketFormHandle>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const menu = useDetailActionMenu({ onDeleteSuccess: () => router.back() });
   const [adding, setAdding] = useState(false);
 
   useReloadOnFocus(reload);
@@ -76,6 +75,11 @@ export default function MarketDetailScreen() {
     return t('markets.updatedAgo', { time: t(key, { count }) });
   };
 
+  const marketActionSubtitle = useMemo(() => {
+    const productCount = t('categories.productCount', { count: stats.productsTracked });
+    return market?.address ? `${productCount} · ${market.address}` : productCount;
+  }, [market?.address, stats.productsTracked, t]);
+
   if (!market) {
     return (
       <ScreenScaffold>
@@ -89,8 +93,7 @@ export default function MarketDetailScreen() {
     <View className="flex-1 bg-background">
       <ScreenScaffold>
         <DetailHeader>
-          <EditButton onPress={() => setEditing(true)} />
-          <IconButton accessibilityLabel={t('actions.more')} onPress={() => setMenuOpen(true)}>
+          <IconButton accessibilityLabel={t('actions.more')} onPress={menu.openMenu}>
             <MoreVertical size={20} color={tokens.foreground} />
           </IconButton>
         </DetailHeader>
@@ -121,16 +124,7 @@ export default function MarketDetailScreen() {
                 imageUri={resolveEntityImageUri(offer.imagePath) ?? undefined}
                 emoji={productGlyph.get(offer.productId)}
                 separator={index > 0}
-                right={
-                  offer.normalizedPrice != null ? (
-                    <Text className="text-sm font-bold text-foreground">
-                      {formatCurrency(offer.normalizedPrice)}
-                      <Text className="text-xs font-normal text-muted-foreground"> / {offer.normalizedUnit}</Text>
-                    </Text>
-                  ) : (
-                    <Text className="text-xs text-muted-foreground">{t('common.noPriceYet')}</Text>
-                  )
-                }
+                noPriceLabel={t('common.noPriceYet')}
               />
             ))}
           </Card>
@@ -173,40 +167,39 @@ export default function MarketDetailScreen() {
         }}
       />
 
-      <BottomSheet visible={editing} onClose={() => setEditing(false)} bottomInset={insets.bottom}>
-        <View className="flex-1 gap-4">
-          <FormScreenHeader
-            title={t('markets.edit')}
-            onCancel={() => setEditing(false)}
-            onSave={() => editFormRef.current?.submit()}
-          />
-          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-            <MarketForm
-              ref={editFormRef}
-              initialValues={market}
-              hideSubmit
-              onSubmit={async (values) => {
-                await update(marketId, values);
-                setEditing(false);
-              }}
-            />
-          </ScrollView>
-        </View>
-      </BottomSheet>
+      <EntityEditSheet
+        visible={editing}
+        onClose={() => setEditing(false)}
+        bottomInset={insets.bottom}
+        title={t('markets.edit')}
+        onSave={() => editFormRef.current?.submit()}>
+        <MarketForm
+          ref={editFormRef}
+          initialValues={market}
+          hideSubmit
+          onSubmit={async (values) => {
+            await update(marketId, values);
+            setEditing(false);
+          }}
+        />
+      </EntityEditSheet>
 
-      <BottomSheet visible={menuOpen} onClose={() => setMenuOpen(false)} bottomInset={insets.bottom} resizable={false}>
-        <View className="gap-3">
-          <Pressable
-            className="rounded-xl px-4 py-3 active:opacity-70"
-            onPress={() => {
-              setMenuOpen(false);
-              setEditing(true);
-            }}>
-            <Text className="text-base font-semibold text-foreground">{t('actions.edit')}</Text>
-          </Pressable>
-          <DeleteButton onDelete={() => remove(marketId)} />
-        </View>
-      </BottomSheet>
+      <EntityActionMenuSheet
+        visible={menu.menuOpen}
+        onClose={menu.closeMenu}
+        bottomInset={insets.bottom}
+        title={market.name}
+        subtitle={marketActionSubtitle}
+        imageUri={resolveEntityImageUri(market.imagePath) ?? undefined}
+        emoji={MARKET_EMOJI}
+        editLabel={t('markets.edit')}
+        deleteError={menu.deleteError}
+        onEdit={() => {
+          menu.closeMenu();
+          setEditing(true);
+        }}
+        onDelete={() => void menu.remove(() => remove(marketId))}
+      />
     </View>
   );
 }
@@ -226,33 +219,42 @@ function OfferLine({
   offer,
   imageUri,
   emoji,
-  right,
   separator,
+  noPriceLabel,
 }: {
   offer: MarketOfferListItem;
   imageUri?: string;
   emoji?: string;
-  right: ReactNode;
   separator?: boolean;
+  noPriceLabel: string;
 }) {
+  const tokens = useDesignTokens();
+
   return (
     <Link href={`/offers/${offer.id}` as Href} asChild>
       <Pressable className={cn('flex-row items-center gap-3 py-3 active:opacity-70', separator && 'border-t border-border')}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} className="size-9 rounded-lg" resizeMode="cover" />
-        ) : (
-          <EntityAvatar emoji={emoji ?? '🥕'} size={36} />
-        )}
+        <EntityAvatar imageUri={imageUri} emoji={emoji ?? '🥕'} size={LIST_THUMB_SIZE} />
         <View className="flex-1 gap-0.5">
           <Text className="text-sm font-semibold text-card-foreground" numberOfLines={1}>
             {offer.productName ?? ''}
           </Text>
           <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-            {offer.brand ? `${offer.brand} – ` : ''}
-            {offer.quantity} {offer.unit}
+            {[
+              offer.brand ? `${offer.brand} – ${offer.quantity} ${offer.unit}` : `${offer.quantity} ${offer.unit}`,
+              offer.normalizedPrice != null
+                ? `${formatCurrency(offer.normalizedPrice)} / ${offer.normalizedUnit}`
+                : null,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
           </Text>
         </View>
-        {right}
+        <View className="items-end gap-0.5">
+          <Text className={cn('text-sm', offer.price != null ? 'font-bold text-foreground' : 'text-muted-foreground')}>
+            {offer.price != null ? formatCurrency(offer.price) : noPriceLabel}
+          </Text>
+        </View>
+        <ChevronRight size={18} color={tokens.mutedForeground} />
       </Pressable>
     </Link>
   );

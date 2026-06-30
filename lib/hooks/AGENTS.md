@@ -5,6 +5,7 @@
 - Hooks are the React adapter layer over repositories and domain services.
 - Screens should call hooks; components should receive values/callbacks from screens unless a selector component intentionally owns a catalog hook.
 - Keep loading state and reload functions consistent: writes should usually call `reload()` before returning.
+- **Screens stay thin:** hooks fetch and mutate; they do not encode shared layout rules. Pass hook results into shared UI/domain components instead of growing conditional JSX in `app/`.
 
 ## Repository Access
 
@@ -18,7 +19,4 @@
 - `useRecipeDetail` combines recipe data, ingredients, latest prices, pantry consumption, and recipe costing.
 - `useRecipeDetail.cook` currently validates pantry availability in memory, then adjusts pantry per ingredient. Treat a future single-transaction cook flow as a behavior change that needs tests.
 
-## Selector Hooks
-
-- Product selectors use `useProducts({ sort: 'favorites_first' })`.
-- Market selectors use `useMarkets()`.
+- `useReloadOnFocus(...reloads)` refetches whenever a screen regains focus. Pass one or more stable `reload` callbacks from the hooks the screen reads from.

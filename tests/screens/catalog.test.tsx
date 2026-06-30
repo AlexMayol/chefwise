@@ -150,6 +150,7 @@ describe('catalog screens', () => {
           isFavorite: false,
           offerCount: 1,
           marketCount: 1,
+          bestPrice: 0.2,
           bestNormalizedPrice: 0.2,
           bestNormalizedUnit: 'unit',
           bestImagePath: null,
@@ -172,6 +173,40 @@ describe('catalog screens', () => {
     expect(screen.queryByText('🛒')).toBeNull();
     // header emoji + product row emoji both come from the stored 🧀
     expect(screen.getAllByText('🧀').length).toBe(2);
+  });
+
+  it('shows the lowest purchase price on the product list, not the normalized unit price', async () => {
+    useProductsMock.mockReturnValue({
+      items: [
+        {
+          id: 'product-pasta',
+          name: 'Pasta',
+          categoryId: null,
+          defaultUnit: 'kg',
+          isFavorite: false,
+          offerCount: 1,
+          marketCount: 1,
+          bestPrice: 5,
+          bestNormalizedPrice: 10,
+          bestNormalizedUnit: 'kg',
+          bestImagePath: null,
+          createdAt: '',
+          updatedAt: '',
+        },
+      ],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+      removeMany: jest.fn(),
+      assign: jest.fn(),
+    });
+
+    const screen = await render(<ProductsScreen />);
+
+    expect(screen.getByText('From €5.00')).toBeTruthy();
+    expect(screen.queryByText('From €10.00')).toBeNull();
   });
 
   it('shows product detail with its offers and prices', async () => {
@@ -224,6 +259,57 @@ describe('catalog screens', () => {
     expect(screen.getByText('Bread flour')).toBeTruthy();
     expect(screen.getAllByText('Central Market').length).toBeGreaterThan(0);
     expect(screen.getByText('Favorite')).toBeTruthy();
+  });
+
+  it('shows the lowest purchase price in the product header summary', async () => {
+    useProductDetailMock.mockReturnValue({
+      item: {
+        id: 'product-pasta',
+        name: 'Pasta',
+        categoryId: null,
+        defaultUnit: 'kg',
+        isFavorite: false,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      },
+      loading: false,
+      reload: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+    });
+    useProductOffersMock.mockReturnValue({
+      items: [
+        {
+          id: 'offer-1',
+          productId: 'product-pasta',
+          marketId: 'market-1',
+          brand: null,
+          quantity: 500,
+          unit: 'g',
+          rating: 3,
+          imagePath: null,
+          description: null,
+          createdAt: '',
+          updatedAt: '',
+          marketName: 'Wholesale Warehouse',
+          price: 5,
+          normalizedPrice: 10,
+          normalizedUnit: 'kg',
+          observedAt: '2026-01-02T00:00:00.000Z',
+        },
+      ],
+      loading: false,
+      reload: jest.fn(),
+      create: jest.fn(),
+      createWithPrice: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+    });
+
+    const screen = await render(<ProductDetailScreen />);
+
+    expect(screen.getByText('From €5.00 · 1 market')).toBeTruthy();
+    expect(screen.queryByText('From €10.00 · 1 market')).toBeNull();
   });
 
   it('uses the highest-rated offer image for the product hero avatar', async () => {

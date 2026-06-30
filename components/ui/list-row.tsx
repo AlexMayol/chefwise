@@ -2,7 +2,6 @@ import { ChevronRight } from 'lucide-react-native';
 import { Pressable, Text, View, type PressableProps } from 'react-native';
 
 
-import { elevation } from '@/lib/theme/elevation';
 import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { cn } from '@/lib/utils';
 
@@ -18,7 +17,7 @@ export function ListRow({ title, subtitle, meta, chevron, className, style, ...p
   const tokens = useDesignTokens();
 
   return (
-    <Pressable className={cn('rounded-2xl border border-border bg-card p-4 active:opacity-90', className)} style={[elevation.card, style as object]} {...props}>
+    <Pressable className={cn('rounded-2xl border border-border bg-card p-4 active:opacity-90', className)} style={style} {...props}>
       <View className="flex-row items-center justify-between gap-3">
         <View className="flex-1 gap-1">
           <Text className="text-base font-semibold text-card-foreground">{title}</Text>

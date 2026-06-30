@@ -3,7 +3,6 @@ import { cloneElement, isValidElement } from 'react';
 import { Pressable, Text, type PressableProps } from 'react-native';
 
 import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
-import { elevation } from '@/lib/theme/elevation';
 import { cn } from '@/lib/utils';
 
 type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'ghost';
@@ -54,9 +53,6 @@ export function Button({ label, variant = 'primary', size = 'default', icon, cla
       ? cloneElement(icon as ReactElement<{ color?: string }>, { color: iconColor })
       : icon;
 
-  // Filled actions get a tinted lift; outline/ghost stay flat.
-  const lifted = (variant === 'primary' || variant === 'destructive') && !disabled;
-
   return (
     <Pressable
       className={cn(
@@ -66,7 +62,7 @@ export function Button({ label, variant = 'primary', size = 'default', icon, cla
         disabled && 'opacity-50',
         className,
       )}
-      style={[lifted ? elevation.raised : undefined, style as object]}
+      style={style}
       disabled={disabled}
       {...props}
     >

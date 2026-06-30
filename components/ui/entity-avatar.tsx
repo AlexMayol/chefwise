@@ -2,6 +2,9 @@ import { Image, Text, View } from 'react-native';
 
 import { cn } from '@/lib/utils';
 
+// Row thumbnails in product/market offer lists (products tab, category detail, product detail offers).
+export const LIST_THUMB_SIZE = 52;
+
 type EntityAvatarProps = {
   imageUri?: string;
   emoji?: string;
@@ -13,7 +16,7 @@ type EntityAvatarProps = {
 };
 
 // Shared product/category/market thumbnail: a real image, or an emoji on a tinted tile.
-export function EntityAvatar({ imageUri, emoji, size = 44, circle = false, className }: EntityAvatarProps) {
+export function EntityAvatar({ imageUri, emoji, size = LIST_THUMB_SIZE, circle = false, className }: EntityAvatarProps) {
   const borderRadius = circle ? size / 2 : Math.round(size * 0.28);
 
   if (imageUri) {

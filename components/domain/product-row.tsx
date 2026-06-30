@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
 
-import { EntityAvatar } from '@/components/ui/entity-avatar';
+import { EntityAvatar, LIST_THUMB_SIZE } from '@/components/ui/entity-avatar';
 import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 import { cn } from '@/lib/utils';
 
@@ -24,13 +24,24 @@ export type ProductRowItem = {
 
 // A single product line: thumbnail, name + optional subtitle, price (+ optional
 // market) + chevron.
-export function ProductRow({ item, separator }: { item: ProductRowItem; separator?: boolean }) {
+export function ProductRow({
+  item,
+  separator,
+  onLongPress,
+}: {
+  item: ProductRowItem;
+  separator?: boolean;
+  onLongPress?: () => void;
+}) {
   const tokens = useDesignTokens();
 
   return (
     <Link href={item.href} asChild>
-      <Pressable className={cn('flex-row items-center gap-3 py-3 active:opacity-70', separator && 'border-t border-border')}>
-        <EntityAvatar imageUri={item.imageUri} emoji={item.emoji} size={44} />
+      <Pressable
+        testID={`product-row-${item.id}`}
+        className={cn('flex-row items-center gap-3 py-3 active:opacity-70', separator && 'border-t border-border')}
+        onLongPress={onLongPress}>
+        <EntityAvatar imageUri={item.imageUri} emoji={item.emoji} size={LIST_THUMB_SIZE} />
         <View className="flex-1 gap-0.5">
           <Text className="text-base font-semibold text-card-foreground" numberOfLines={1}>
             {item.isFavorite ? '★ ' : ''}

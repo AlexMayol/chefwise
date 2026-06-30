@@ -41,6 +41,7 @@ function product(id: string, name: string, categoryId: string | null) {
     updatedAt: '',
     offerCount: 0,
     marketCount: 0,
+    bestPrice: null,
     bestNormalizedPrice: null,
     bestNormalizedUnit: null,
     bestImagePath: null,
@@ -88,7 +89,8 @@ describe('category detail screen', () => {
   it('opens the edit flow and saves changes', async () => {
     const screen = await render(<CategoryDetailScreen />);
 
-    await fireEvent.press(screen.getByLabelText('Edit'));
+    await fireEvent.press(screen.getByLabelText('More options'));
+    await fireEvent.press(screen.getByText('Edit category'));
     await fireEvent.changeText(screen.getByDisplayValue('Postres'), 'Desserts');
     await fireEvent.press(screen.getByLabelText('Save'));
 

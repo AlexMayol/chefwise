@@ -1,0 +1,2906 @@
+{
+  "version": "2.14",
+  "children": [
+    {
+      "type": "frame",
+      "id": "curScr",
+      "x": 0,
+      "y": 0,
+      "name": "Markets — Current",
+      "clip": true,
+      "width": 390,
+      "fill": "$background",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "text",
+          "id": "curLbl",
+          "name": "Label",
+          "fill": "$muted-foreground",
+          "content": "Current · too cluttered",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "curCnt",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            8,
+            16,
+            16,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "curHdr",
+              "name": "Header",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "curTit",
+                  "name": "Title",
+                  "fill": "$foreground",
+                  "content": "Markets",
+                  "fontFamily": "$font-body",
+                  "fontSize": 28,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "curNew",
+                  "name": "New Button",
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "curPls",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$primary-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "curNewT",
+                      "fill": "$primary-foreground",
+                      "content": "New market",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "curSrch",
+              "name": "Search",
+              "width": "fill_container",
+              "fill": "$card",
+              "cornerRadius": 14,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                13,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "curSrchI",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$muted-foreground"
+                },
+                {
+                  "type": "text",
+                  "id": "curSrchP",
+                  "fill": "$muted-foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Search markets",
+                  "fontFamily": "$font-body",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "curList",
+              "name": "Market Cards",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "curC1",
+                  "name": "Card City Supermarket",
+                  "width": "fill_container",
+                  "fill": "$card",
+                  "cornerRadius": 16,
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "curC1r1",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "curC1av",
+                          "width": 44,
+                          "height": 44,
+                          "fill": "$muted",
+                          "cornerRadius": 22,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "curC1em",
+                              "content": "🏪",
+                              "fontFamily": "$font-body",
+                              "fontSize": 22,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC1tx",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "curC1nm",
+                              "fill": "$foreground",
+                              "content": "City Supermarket",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC1ad",
+                              "fill": "$muted-foreground",
+                              "content": "12 Main Street",
+                              "fontFamily": "$font-body",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC1pc",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC1pk",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "package",
+                              "library": "lucide",
+                              "fill": "$primary"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC1pt",
+                              "fill": "$muted-foreground",
+                              "content": "8 products",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "curC1r2",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "curC1ch",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC1tg",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "tag",
+                              "library": "lucide",
+                              "fill": "$muted-foreground"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC1cht",
+                              "fill": "$muted-foreground",
+                              "content": "Cheapest for 3 products",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC1up",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC1cl",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "clock",
+                              "library": "lucide",
+                              "fill": "$muted-foreground"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC1upt",
+                              "fill": "$muted-foreground",
+                              "content": "Updated today",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "curC2",
+                  "name": "Card Farmers Market",
+                  "width": "fill_container",
+                  "fill": "$card",
+                  "cornerRadius": 16,
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "curC2r1",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "curC2av",
+                          "width": 44,
+                          "height": 44,
+                          "fill": "$muted",
+                          "cornerRadius": 22,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "curC2em",
+                              "content": "🏪",
+                              "fontFamily": "$font-body",
+                              "fontSize": 22,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC2tx",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "curC2nm",
+                              "fill": "$foreground",
+                              "content": "Farmers Market",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC2pc",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC2pk",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "package",
+                              "library": "lucide",
+                              "fill": "$primary"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC2pt",
+                              "fill": "$muted-foreground",
+                              "content": "8 products",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "curC2r2",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "curC2ch",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC2tg",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "tag",
+                              "library": "lucide",
+                              "fill": "$muted-foreground"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC2cht",
+                              "fill": "$muted-foreground",
+                              "content": "Cheapest for 3 products",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC2up",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC2cl",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "clock",
+                              "library": "lucide",
+                              "fill": "$muted-foreground"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC2upt",
+                              "fill": "$muted-foreground",
+                              "content": "Updated today",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "curC3",
+                  "name": "Card Bulk Warehouse",
+                  "width": "fill_container",
+                  "fill": "$card",
+                  "cornerRadius": 16,
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "curC3r1",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "curC3av",
+                          "width": 44,
+                          "height": 44,
+                          "fill": "$muted",
+                          "cornerRadius": 22,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "curC3em",
+                              "content": "🏪",
+                              "fontFamily": "$font-body",
+                              "fontSize": 22,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC3tx",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "curC3nm",
+                              "fill": "$foreground",
+                              "content": "Bulk Warehouse",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC3ad",
+                              "fill": "$muted-foreground",
+                              "content": "45 Industrial Blvd",
+                              "fontFamily": "$font-body",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC3pc",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC3pk",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "package",
+                              "library": "lucide",
+                              "fill": "$primary"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC3pt",
+                              "fill": "$muted-foreground",
+                              "content": "11 products",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "curC3r2",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "curC3ch",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC3tg",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "tag",
+                              "library": "lucide",
+                              "fill": "$muted-foreground"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC3cht",
+                              "fill": "$muted-foreground",
+                              "content": "Cheapest for 1 product",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "curC3up",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "curC3cl",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "clock",
+                              "library": "lucide",
+                              "fill": "$muted-foreground"
+                            },
+                            {
+                              "type": "text",
+                              "id": "curC3upt",
+                              "fill": "$muted-foreground",
+                              "content": "Updated today",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "newScr",
+      "x": 430,
+      "y": 0,
+      "name": "Markets — Proposed",
+      "clip": true,
+      "width": 390,
+      "fill": "$background",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "text",
+          "id": "newLbl",
+          "name": "Label",
+          "fill": "$primary",
+          "content": "Proposed · single-row list",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "newCnt",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            8,
+            16,
+            16,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "newHdr",
+              "name": "Header",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "newTit",
+                  "name": "Title",
+                  "fill": "$foreground",
+                  "content": "Markets",
+                  "fontFamily": "$font-body",
+                  "fontSize": 28,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "newNew",
+                  "name": "New Icon Button",
+                  "width": 40,
+                  "height": 40,
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "newPls",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$primary-foreground"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "newSrch",
+              "name": "Search",
+              "width": "fill_container",
+              "fill": "$card",
+              "cornerRadius": 14,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                13,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "newSrchI",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$muted-foreground"
+                },
+                {
+                  "type": "text",
+                  "id": "newSrchP",
+                  "fill": "$muted-foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Search markets",
+                  "fontFamily": "$font-body",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "newList",
+              "name": "Market List",
+              "width": "fill_container",
+              "fill": "$card",
+              "cornerRadius": 16,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "padding": [
+                2,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "newR1",
+                  "name": "Row City Supermarket",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "newR1av",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$muted",
+                      "cornerRadius": 22,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR1em",
+                          "content": "🏪",
+                          "fontFamily": "$font-body",
+                          "fontSize": 22,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR1tx",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR1nm",
+                          "fill": "$foreground",
+                          "content": "City Supermarket",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "newR1sub",
+                          "fill": "$muted-foreground",
+                          "content": "8 products",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR1bd",
+                      "fill": "$secondary",
+                      "cornerRadius": 999,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR1bdt",
+                          "fill": "$secondary-foreground",
+                          "content": "Best for 3",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "newR1ch",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "newR2",
+                  "name": "Row Farmers Market",
+                  "width": "fill_container",
+                  "stroke": "$border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "gap": 12,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "newR2av",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$muted",
+                      "cornerRadius": 22,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR2em",
+                          "content": "🏪",
+                          "fontFamily": "$font-body",
+                          "fontSize": 22,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR2tx",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR2nm",
+                          "fill": "$foreground",
+                          "content": "Farmers Market",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "newR2sub",
+                          "fill": "$muted-foreground",
+                          "content": "8 products",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR2bd",
+                      "fill": "$secondary",
+                      "cornerRadius": 999,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR2bdt",
+                          "fill": "$secondary-foreground",
+                          "content": "Best for 3",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "newR2ch",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "newR3",
+                  "name": "Row Bulk Warehouse",
+                  "width": "fill_container",
+                  "stroke": "$border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "gap": 12,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "newR3av",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$muted",
+                      "cornerRadius": 22,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR3em",
+                          "content": "🏪",
+                          "fontFamily": "$font-body",
+                          "fontSize": 22,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR3tx",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR3nm",
+                          "fill": "$foreground",
+                          "content": "Bulk Warehouse",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "newR3sub",
+                          "fill": "$muted-foreground",
+                          "content": "11 products",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR3bd",
+                      "fill": "$secondary",
+                      "cornerRadius": 999,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR3bdt",
+                          "fill": "$secondary-foreground",
+                          "content": "Best for 1",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "newR3ch",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "newR4",
+                  "name": "Row Corner Shop",
+                  "width": "fill_container",
+                  "stroke": "$border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "gap": 12,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "newR4av",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$muted",
+                      "cornerRadius": 22,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR4em",
+                          "content": "🏪",
+                          "fontFamily": "$font-body",
+                          "fontSize": 22,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR4tx",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR4nm",
+                          "fill": "$foreground",
+                          "content": "Corner Shop",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "newR4sub",
+                          "fill": "$muted-foreground",
+                          "content": "4 products",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "newR4ch",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "newR5",
+                  "name": "Row Neighborhood Grocery",
+                  "width": "fill_container",
+                  "stroke": "$border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "gap": 12,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "newR5av",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$muted",
+                      "cornerRadius": 22,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR5em",
+                          "content": "🏪",
+                          "fontFamily": "$font-body",
+                          "fontSize": 22,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR5tx",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR5nm",
+                          "fill": "$foreground",
+                          "content": "Neighborhood Grocery",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "newR5sub",
+                          "fill": "$muted-foreground",
+                          "content": "6 products",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "newR5bd",
+                      "fill": "$secondary",
+                      "cornerRadius": 999,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "newR5bdt",
+                          "fill": "$secondary-foreground",
+                          "content": "Best for 2",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "newR5ch",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$muted-foreground"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "notesFr",
+      "x": 0,
+      "y": 720,
+      "name": "Design rationale",
+      "width": 820,
+      "fill": "$card",
+      "cornerRadius": 16,
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 12,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "notesTit",
+          "fill": "$foreground",
+          "content": "Markets list — declutter proposal",
+          "fontFamily": "$font-body",
+          "fontSize": 20,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "notesSub",
+          "fill": "$muted-foreground",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Goal: match Categories / Products scan density. One row per market; competitive signal only when earned.",
+          "fontFamily": "$font-body",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "notesCols",
+          "width": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "notesRm",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "notesRmT",
+                  "fill": "$destructive",
+                  "content": "Remove from list rows",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "notesRmB",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Second meta row (tag + clock icons)\n• \"Updated today\" on every card\n• Address (move to detail screen)\n• Inline Package / Tag / Clock icons\n• Per-row card border + elevation",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "notesAdd",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "notesAddT",
+                  "fill": "$primary",
+                  "content": "Add / keep",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "notesAddB",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Single row: avatar · name · subtitle · chevron\n• Subtitle: product count only (\"8 products\")\n• \"Best for N\" pill badge when cheapestCount > 0\n• Grouped list container (like recipe categories)\n• Icon-only + in header (optional)",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "notesImpl",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "notesImplT",
+                  "fill": "$foreground",
+                  "content": "Implementation",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "notesImplB",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Refactor components/domain/market-row.tsx to match CategoryRow\n• Drop updatedLabel from app/(tabs)/markets/index.tsx mapping\n• Optional sort sheet: name · most cheapest · most tracked\n• Show address + last updated on market detail only",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rowCmp",
+      "x": 860,
+      "y": 0,
+      "name": "Row anatomy",
+      "width": 360,
+      "fill": "$card",
+      "cornerRadius": 16,
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "anatTit",
+          "fill": "$foreground",
+          "content": "Row anatomy",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "anatBefore",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "anatBefT",
+              "fill": "$muted-foreground",
+              "content": "Before (6 signals per card)",
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "anatBefD",
+              "fill": "$foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "🏪 Name\n   Address\n📦 8 products\n🏷 Cheapest for 3\n🕐 Updated today",
+              "lineHeight": 1.6,
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "anatAfter",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "anatAftT",
+              "fill": "$primary",
+              "content": "After (2–3 signals per row)",
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "anatAftD",
+              "fill": "$foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "🏪 City Supermarket     [Best for 3]  ›\n   8 products",
+              "lineHeight": 1.6,
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "anatBadge",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "anatBdT",
+              "fill": "$foreground",
+              "content": "Badge rules",
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "anatBdD",
+              "fill": "$muted-foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Show \"Best for N\" only when cheapestCount > 0. Same secondary pill pattern as Categories \"Most tracked\".",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mdSecHdr",
+      "x": 860,
+      "y": 480,
+      "name": "Section — Market detail thumbs",
+      "width": 800,
+      "fill": "$secondary",
+      "cornerRadius": 12,
+      "padding": [
+        12,
+        16
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "mdSecTit",
+          "fill": "$secondary-foreground",
+          "content": "Market detail · offer row thumbnail proposals →",
+          "fontFamily": "$font-body",
+          "fontSize": 14,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mdCurScr",
+      "x": 860,
+      "y": 530,
+      "name": "MD thumb — Current 36px",
+      "clip": true,
+      "width": 390,
+      "fill": "$background",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "text",
+          "id": "mdCurLbl",
+          "fill": "$destructive",
+          "content": "Current · 36px (size-9)",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "mdCurList",
+          "width": "fill_container",
+          "fill": "$card",
+          "cornerRadius": 16,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": [
+            4,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "mdCurR1",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mdCurR1im",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$muted",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdCurR1em",
+                      "content": "🧀",
+                      "fontFamily": "$font-body",
+                      "fontSize": 18,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mdCurR1tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdCurR1nm",
+                      "fill": "$foreground",
+                      "content": "Cheddar Cheese",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdCurR1sub",
+                      "fill": "$muted-foreground",
+                      "content": "500 g · €7.20 / kg",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mdCurR1pr",
+                  "fill": "$foreground",
+                  "content": "€3.60",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mdCurR2",
+              "width": "fill_container",
+              "stroke": "$border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "gap": 12,
+              "padding": [
+                12,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mdCurR2im",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$muted",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdCurR2em",
+                      "content": "🍌",
+                      "fontFamily": "$font-body",
+                      "fontSize": 18,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mdCurR2tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdCurR2nm",
+                      "fill": "$foreground",
+                      "content": "Bananas",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdCurR2sub",
+                      "fill": "$muted-foreground",
+                      "content": "1 kg · €3.00 / kg",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mdCurR2pr",
+                  "fill": "$foreground",
+                  "content": "€3.00",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mdOptAScr",
+      "x": 1270,
+      "y": 530,
+      "name": "MD thumb — Option A 44px",
+      "clip": true,
+      "width": 390,
+      "fill": "$background",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "text",
+          "id": "mdOptALbl",
+          "fill": "$primary",
+          "content": "Option A · 44px (recommended)",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "mdOptAList",
+          "width": "fill_container",
+          "fill": "$card",
+          "cornerRadius": 16,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": [
+            4,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "mdOptAR1",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mdOptAR1im",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$muted",
+                  "cornerRadius": 10,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptAR1em",
+                      "content": "🧀",
+                      "fontFamily": "$font-body",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mdOptAR1tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptAR1nm",
+                      "fill": "$foreground",
+                      "content": "Cheddar Cheese",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdOptAR1sub",
+                      "fill": "$muted-foreground",
+                      "content": "500 g · €7.20 / kg",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mdOptAR1pr",
+                  "fill": "$foreground",
+                  "content": "€3.60",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mdOptAR2",
+              "width": "fill_container",
+              "stroke": "$border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "gap": 12,
+              "padding": [
+                12,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mdOptAR2im",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$muted",
+                  "cornerRadius": 10,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptAR2em",
+                      "content": "🍌",
+                      "fontFamily": "$font-body",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mdOptAR2tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptAR2nm",
+                      "fill": "$foreground",
+                      "content": "Bananas",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdOptAR2sub",
+                      "fill": "$muted-foreground",
+                      "content": "1 kg · €3.00 / kg",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mdOptAR2pr",
+                  "fill": "$foreground",
+                  "content": "€3.00",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mdOptBScr",
+      "x": 860,
+      "y": 780,
+      "name": "MD thumb — Option B 52px",
+      "clip": true,
+      "width": 390,
+      "fill": "$background",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "text",
+          "id": "mdOptBLbl",
+          "fill": "$foreground",
+          "content": "Option B · 52px product-led",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "mdOptBList",
+          "width": "fill_container",
+          "fill": "$card",
+          "cornerRadius": 16,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": [
+            4,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "mdOptBR1",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                14,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mdOptBR1im",
+                  "width": 52,
+                  "height": 52,
+                  "fill": "$secondary",
+                  "cornerRadius": 12,
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptBR1ph",
+                      "fill": "$muted-foreground",
+                      "content": "photo",
+                      "fontFamily": "$font-body",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mdOptBR1tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptBR1nm",
+                      "fill": "$foreground",
+                      "content": "Cheddar Cheese",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdOptBR1sub",
+                      "fill": "$muted-foreground",
+                      "content": "500 g · €7.20 / kg",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mdOptBR1pr",
+                  "fill": "$foreground",
+                  "content": "€3.60",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mdOptCScr",
+      "x": 1270,
+      "y": 780,
+      "name": "MD thumb — Option C split",
+      "clip": true,
+      "width": 390,
+      "fill": "$background",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "text",
+          "id": "mdOptCLbl",
+          "fill": "$foreground",
+          "content": "Option C · photo square / emoji circle",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "mdOptCList",
+          "width": "fill_container",
+          "fill": "$card",
+          "cornerRadius": 16,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": [
+            4,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "mdOptCR1",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mdOptCR1im",
+                  "width": 48,
+                  "height": 48,
+                  "fill": "$secondary",
+                  "cornerRadius": 10,
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptCR1ph",
+                      "fill": "$muted-foreground",
+                      "content": "photo",
+                      "fontFamily": "$font-body",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mdOptCR1tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptCR1nm",
+                      "fill": "$foreground",
+                      "content": "Cheddar Cheese",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdOptCR1sub",
+                      "fill": "$muted-foreground",
+                      "content": "500 g · €7.20 / kg",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mdOptCR1pr",
+                  "fill": "$foreground",
+                  "content": "€3.60",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mdOptCR2",
+              "width": "fill_container",
+              "stroke": "$border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "gap": 12,
+              "padding": [
+                12,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mdOptCR2im",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$muted",
+                  "cornerRadius": 22,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptCR2em",
+                      "content": "🍌",
+                      "fontFamily": "$font-body",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mdOptCR2tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mdOptCR2nm",
+                      "fill": "$foreground",
+                      "content": "Bananas",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdOptCR2sub",
+                      "fill": "$muted-foreground",
+                      "content": "1 kg · €3.00 / kg",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mdOptCR2pr",
+                  "fill": "$foreground",
+                  "content": "€3.00",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lpSecHdr",
+      "x": 0,
+      "y": 1320,
+      "name": "Section — Long-press quick actions",
+      "width": 1260,
+      "fill": "$secondary",
+      "cornerRadius": 12,
+      "padding": [
+        12,
+        16
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "lpSecTit",
+          "fill": "$secondary-foreground",
+          "content": "Markets list · long-press quick actions →",
+          "fontFamily": "$font-body",
+          "fontSize": 14,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lpCurSheet",
+      "x": 0,
+      "y": 1370,
+      "name": "LP — Current",
+      "width": 390,
+      "fill": "$card",
+      "cornerRadius": 24,
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "lpCurLbl",
+          "fill": "$destructive",
+          "content": "Current · unbalanced weight",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "lpCurHdl",
+          "width": 48,
+          "height": 6,
+          "fill": "$border",
+          "cornerRadius": 999
+        },
+        {
+          "type": "text",
+          "id": "lpCurEd",
+          "fill": "$foreground",
+          "content": "Edit",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "lpCurDel",
+          "width": "fill_container",
+          "fill": "$destructive",
+          "cornerRadius": 12,
+          "padding": [
+            14,
+            16
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "lpCurDelT",
+              "fill": "$primary-foreground",
+              "content": "Delete",
+              "fontFamily": "$font-body",
+              "fontSize": 16,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lpOptASheet",
+      "x": 430,
+      "y": 1370,
+      "name": "LP — Option A (recommended)",
+      "width": 390,
+      "fill": "$card",
+      "cornerRadius": 24,
+      "stroke": "$primary",
+      "strokeWidth": 2,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "lpOptALbl",
+          "fill": "$primary",
+          "content": "Option A · entity header + icon rows ✓",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "lpOptAHdl",
+          "width": 48,
+          "height": 6,
+          "fill": "$border",
+          "cornerRadius": 999
+        },
+        {
+          "type": "frame",
+          "id": "lpOptAHdr",
+          "width": "fill_container",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "lpOptAAv",
+              "width": 44,
+              "height": 44,
+              "fill": "$muted",
+              "cornerRadius": 22,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lpOptAEm",
+                  "content": "🏪",
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lpOptATx",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lpOptANm",
+                  "fill": "$foreground",
+                  "content": "Farmers Market",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptASub",
+                  "fill": "$muted-foreground",
+                  "content": "4 products · Central Square",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lpOptAGrp",
+          "width": "fill_container",
+          "fill": "$card",
+          "cornerRadius": 16,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "lpOptAEd",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "lpOptAEdIc",
+                  "width": 40,
+                  "height": 40,
+                  "fill": "$secondary",
+                  "cornerRadius": 20,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "lpOptAEdI",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "pencil",
+                      "library": "lucide",
+                      "fill": "$primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptAEdT",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Edit market",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "icon",
+                  "id": "lpOptAEdCh",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "chevron-right",
+                  "library": "lucide",
+                  "fill": "$muted-foreground"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lpOptADel",
+              "width": "fill_container",
+              "stroke": "$border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "gap": 12,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "lpOptADelIc",
+                  "width": 40,
+                  "height": 40,
+                  "fill": "#fce8e6",
+                  "cornerRadius": 20,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "lpOptADelI",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "trash-2",
+                      "library": "lucide",
+                      "fill": "$destructive"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptADelT",
+                  "fill": "$destructive",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Delete",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lpOptBSheet",
+      "x": 860,
+      "y": 1370,
+      "name": "LP — Option B",
+      "width": 390,
+      "fill": "$card",
+      "cornerRadius": 24,
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "lpOptBLbl",
+          "fill": "$muted-foreground",
+          "content": "Option B · horizontal action tiles",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "lpOptBHdl",
+          "width": 48,
+          "height": 6,
+          "fill": "$border",
+          "cornerRadius": 999
+        },
+        {
+          "type": "frame",
+          "id": "lpOptBHdr",
+          "width": "fill_container",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "lpOptBAv",
+              "width": 44,
+              "height": 44,
+              "fill": "$muted",
+              "cornerRadius": 22,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lpOptBEm",
+                  "content": "🏪",
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lpOptBTx",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lpOptBNm",
+                  "fill": "$foreground",
+                  "content": "Farmers Market",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptBSub",
+                  "fill": "$muted-foreground",
+                  "content": "4 products · Central Square",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lpOptBTiles",
+          "width": "fill_container",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "lpOptBEdT",
+              "width": "fill_container",
+              "fill": "$secondary",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "lpOptBEdI",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "pencil",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptBEdL",
+                  "fill": "$secondary-foreground",
+                  "content": "Edit",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lpOptBDelT",
+              "width": "fill_container",
+              "fill": "#fce8e6",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "lpOptBDelI",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "trash-2",
+                  "library": "lucide",
+                  "fill": "$destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptBDelL",
+                  "fill": "$destructive",
+                  "content": "Delete",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lpOptCSheet",
+      "x": 0,
+      "y": 1750,
+      "name": "LP — Option C",
+      "width": 390,
+      "fill": "$card",
+      "cornerRadius": 24,
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "lpOptCLbl",
+          "fill": "$muted-foreground",
+          "content": "Option C · compact title only",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "lpOptCHdl",
+          "width": 48,
+          "height": 6,
+          "fill": "$border",
+          "cornerRadius": 999
+        },
+        {
+          "type": "text",
+          "id": "lpOptCTit",
+          "fill": "$foreground",
+          "content": "Farmers Market",
+          "fontFamily": "$font-body",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "lpOptCSub",
+          "fill": "$muted-foreground",
+          "content": "Quick actions",
+          "fontFamily": "$font-body",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "lpOptCGrp",
+          "width": "fill_container",
+          "fill": "$card",
+          "cornerRadius": 16,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "lpOptCEd",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "lpOptCEdI",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "pencil",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptCEdT",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Edit market",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lpOptCDel",
+              "width": "fill_container",
+              "stroke": "$border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "gap": 10,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "lpOptCDelI",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "trash-2",
+                  "library": "lucide",
+                  "fill": "$destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "lpOptCDelT",
+                  "fill": "$destructive",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Delete",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lpNotesFr",
+      "x": 430,
+      "y": 1750,
+      "name": "LP actions — rationale",
+      "width": 820,
+      "fill": "$card",
+      "cornerRadius": 16,
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 12,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "lpNotesTit",
+          "fill": "$foreground",
+          "content": "Recommendation: Option A",
+          "fontFamily": "$font-body",
+          "fontSize": 20,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "lpNotesSub",
+          "fill": "$muted-foreground",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Long-press should confirm which item you touched and offer balanced actions — not a giant red delete button beside naked text.",
+          "fontFamily": "$font-body",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "lpNotesCols",
+          "width": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "lpNotesWhy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lpNotesWhyT",
+                  "fill": "$primary",
+                  "content": "Why Option A",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "lpNotesWhyB",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Entity header (avatar + name + subtitle) anchors context\n• Icon circles match Chefwise list-row language\n• Edit gets chevron → reads as navigation into form\n• Delete uses destructive text, not a full-width red slab\n• Reusable as components/ui/action-menu.tsx",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lpNotesAlt",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lpNotesAltT",
+                  "fill": "$foreground",
+                  "content": "Alternatives",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "lpNotesAltB",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Option B: side-by-side tiles — faster scan, less vertical space\n• Option C: title-only header — lighter when avatar redundant\n• Future: add \"View details\" row or swipe-reveal on row\n• Consider light haptic on long-press open",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mdNotesFr",
+      "x": 860,
+      "y": 980,
+      "name": "MD thumb — rationale",
+      "width": 800,
+      "fill": "$card",
+      "cornerRadius": 16,
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 8,
+      "padding": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "mdNotesTit",
+          "fill": "$foreground",
+          "content": "Recommendation: Option A (44px)",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "mdNotesB",
+          "fill": "$muted-foreground",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "36px is smaller than ProductRow (44px). Bump OfferLine to EntityAvatar size={44} for photo + emoji. Option B if photos still feel weak; Option C if packshots need a different shape than emoji fallback.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-body",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "background": {
+      "type": "color",
+      "value": "#f6f6f3"
+    },
+    "foreground": {
+      "type": "color",
+      "value": "#1c1f1d"
+    },
+    "card": {
+      "type": "color",
+      "value": "#ffffff"
+    },
+    "muted": {
+      "type": "color",
+      "value": "#f0f0ec"
+    },
+    "muted-foreground": {
+      "type": "color",
+      "value": "#8a8f8a"
+    },
+    "primary": {
+      "type": "color",
+      "value": "#2e9e5e"
+    },
+    "primary-foreground": {
+      "type": "color",
+      "value": "#ffffff"
+    },
+    "secondary": {
+      "type": "color",
+      "value": "#e7f3ec"
+    },
+    "secondary-foreground": {
+      "type": "color",
+      "value": "#246b45"
+    },
+    "destructive": {
+      "type": "color",
+      "value": "#d1483a"
+    },
+    "border": {
+      "type": "color",
+      "value": "#e9e9e3"
+    },
+    "rating": {
+      "type": "color",
+      "value": "#f5b50a"
+    },
+    "font-body": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "radius": {
+      "type": "number",
+      "value": 16
+    }
+  },
+  "fileToken": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+}

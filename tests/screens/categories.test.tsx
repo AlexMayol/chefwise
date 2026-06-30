@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 
 import CategoriesScreen from '@/app/(tabs)/categories';
 import { useCategories } from '@/lib/hooks/use-categories';
@@ -19,8 +19,16 @@ jest.mock('@/lib/hooks/use-products', () => ({
   useProducts: jest.fn(),
 }));
 
+jest.mock('@/components/domain/category-form', () => ({
+  CategoryForm: () => null,
+}));
+
 const useCategoriesMock = useCategories as jest.MockedFunction<typeof useCategories>;
 const useProductsMock = useProducts as jest.MockedFunction<typeof useProducts>;
+
+function longPressCategoryRow(screen: Awaited<ReturnType<typeof render>>, categoryId: string) {
+  fireEvent(screen.getByTestId(`category-row-${categoryId}`), 'onLongPress');
+}
 
 function product(id: string, name: string, categoryId: string | null) {
   return {
@@ -33,6 +41,7 @@ function product(id: string, name: string, categoryId: string | null) {
     updatedAt: '',
     offerCount: 0,
     marketCount: 0,
+    bestPrice: null,
     bestNormalizedPrice: null,
     bestNormalizedUnit: null,
     bestImagePath: null,
@@ -85,5 +94,12 @@ describe('categories screen', () => {
 
     expect(screen.getByText('Bebidas')).toBeTruthy();
     expect(screen.queryByText('Postres')).toBeNull();
+  });
+
+  it('opens quick actions on long press', async () => {
+    const screen = await render(<CategoriesScreen />);
+
+    longPressCategoryRow(screen, 'category-1');
+    await waitFor(() => expect(screen.getByText('Edit category')).toBeTruthy());
   });
 });

@@ -18,10 +18,11 @@ export type ProductRow = Omit<Product, 'isFavorite'> & {
 };
 
 // Enriched list shape: a generic product plus a summary of its offers (how many, across how
-// many markets, the cheapest current normalized price, and the cheapest offer's photo).
+// many markets, the cheapest current purchase and normalized prices, and the cheapest offer's photo).
 export type ProductListItem = Product & {
   offerCount: number;
   marketCount: number;
+  bestPrice: number | null;
   bestNormalizedPrice: number | null;
   bestNormalizedUnit: NormalizedUnit | null;
   bestImagePath: string | null;
@@ -62,8 +63,8 @@ export function createProductRepository(db: AppDatabase) {
           ? 'p.isFavorite DESC, p.name COLLATE NOCASE ASC'
           : 'p.name COLLATE NOCASE ASC';
 
-      // Per product: count offers/markets and surface the cheapest current normalized price.
-      // Each offer's "current" price is its latest product_offer_prices row (window-join).
+      // Per product: count offers/markets and surface the cheapest current purchase + normalized prices
+      // (each offer carries its own price now — no price-history join).
       // ponytail: SQLite's single-MIN rule makes bestNormalizedUnit take its value from the
       // MIN(normalizedPrice) row, so we get the cheapest offer's unit without a self-join.
       // bestImagePath is independent of price: the top-rated offer that actually has a photo
@@ -72,6 +73,7 @@ export function createProductRepository(db: AppDatabase) {
         `SELECT p.*,
                 COALESCE(agg.offerCount, 0) AS offerCount,
                 COALESCE(agg.marketCount, 0) AS marketCount,
+                agg.bestPrice AS bestPrice,
                 agg.bestNormalizedPrice AS bestNormalizedPrice,
                 agg.bestNormalizedUnit AS bestNormalizedUnit,
                 (SELECT img.imagePath
@@ -84,14 +86,10 @@ export function createProductRepository(db: AppDatabase) {
            SELECT off.productId AS productId,
                   COUNT(*) AS offerCount,
                   COUNT(DISTINCT off.marketId) AS marketCount,
-                  MIN(lp.normalizedPrice) AS bestNormalizedPrice,
-                  lp.normalizedUnit AS bestNormalizedUnit
+                  MIN(off.price) AS bestPrice,
+                  MIN(off.normalizedPrice) AS bestNormalizedPrice,
+                  off.normalizedUnit AS bestNormalizedUnit
            FROM product_offers off
-           LEFT JOIN (
-             SELECT offerId, normalizedPrice, normalizedUnit,
-                    ROW_NUMBER() OVER (PARTITION BY offerId ORDER BY observedAt DESC, id DESC) AS rn
-             FROM product_offer_prices
-           ) lp ON lp.offerId = off.id AND lp.rn = 1
            GROUP BY off.productId
          ) agg ON agg.productId = p.id
          ${clauses.length ? `WHERE ${clauses.join(' AND ')}` : ''}
@@ -102,6 +100,7 @@ export function createProductRepository(db: AppDatabase) {
         ...mapProduct(row),
         offerCount: row.offerCount,
         marketCount: row.marketCount,
+        bestPrice: row.bestPrice,
         bestNormalizedPrice: row.bestNormalizedPrice,
         bestNormalizedUnit: row.bestNormalizedUnit,
         bestImagePath: row.bestImagePath,

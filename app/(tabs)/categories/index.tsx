@@ -1,21 +1,24 @@
-import { Link, type Href } from 'expo-router';
-import { Plus } from 'lucide-react-native';
-import { useCallback, useMemo, useState } from 'react';
+import { type Href } from 'expo-router';
+import { useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { CategoryForm, type CategoryFormHandle } from '@/components/domain/category-form';
 import { CategoryRow, type CategoryRowItem } from '@/components/domain/category-row';
-import { BottomActionBar } from '@/components/ui/bottom-action-bar';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
-import { EmptyState } from '@/components/ui/empty-state';
+import { EntityActionMenuSheet } from '@/components/ui/entity-action-menu-sheet';
+import { EntityEditSheet } from '@/components/ui/entity-edit-sheet';
 import { FormField } from '@/components/ui/form-field';
-import { LoadingState } from '@/components/ui/loading-state';
+import { ListingContent } from '@/components/ui/listing-content';
+import { ListingScreenHeader } from '@/components/ui/listing-screen-header';
 import { ScreenScaffold } from '@/components/ui/screen-scaffold';
 import { SearchBar } from '@/components/ui/search-bar';
 import { Select } from '@/components/ui/select';
 import { mostTrackedCategoryId, productCountsByCategory } from '@/lib/domain/category-stats';
+import type { Category } from '@/lib/db/repositories/categories';
 import { useCategories } from '@/lib/hooks/use-categories';
+import { useListingQuickActions } from '@/lib/hooks/use-entity-quick-actions';
 import { useProducts } from '@/lib/hooks/use-products';
 import { useReloadOnFocus } from '@/lib/hooks/use-reload-on-focus';
 import { useTranslation } from '@/lib/i18n';
@@ -29,15 +32,13 @@ export default function CategoriesScreen() {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<CategorySort>('name');
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const editFormRef = useRef<CategoryFormHandle>(null);
+  const actions = useListingQuickActions<Category>();
 
-  const { items: categories, loading, reload } = useCategories();
+  const { items: categories, loading, reload, update, remove } = useCategories();
   const { items: products, reload: reloadProducts } = useProducts();
 
-  useReloadOnFocus(
-    useCallback(async () => {
-      await Promise.all([reload(), reloadProducts()]);
-    }, [reload, reloadProducts]),
-  );
+  useReloadOnFocus(reload, reloadProducts);
 
   const counts = useMemo(() => productCountsByCategory(products), [products]);
   const mostTrackedId = useMemo(() => mostTrackedCategoryId(products), [products]);
@@ -60,10 +61,22 @@ export default function CategoriesScreen() {
     }));
   }, [categories, query, sort, counts, mostTrackedId, t]);
 
+  const newCategoryHref = '/categories/new' as Href;
+
+  const actionSubtitle = useMemo(() => {
+    if (!actions.entity) return undefined;
+    return t('categories.productCount', { count: counts.get(actions.entity.id) ?? 0 });
+  }, [actions.entity, counts, t]);
+
+  function openActions(categoryId: string) {
+    const category = categories.find((entry) => entry.id === categoryId);
+    if (category) actions.open(category);
+  }
+
   return (
     <View className="flex-1 bg-background">
       <ScreenScaffold>
-        <Text className="text-3xl font-bold tracking-tight text-foreground">{t('categories.title')}</Text>
+        <ListingScreenHeader title={t('categories.title')} newHref={newCategoryHref} newLabel={t('categories.new')} />
 
         <SearchBar
           value={query}
@@ -74,24 +87,57 @@ export default function CategoriesScreen() {
           filterLabel={t('common.filters')}
         />
 
-        {loading && categories.length === 0 ? (
-          <LoadingState />
-        ) : rows.length === 0 ? (
-          <EmptyState title={t('common.empty')} />
-        ) : (
-          <View className="gap-3">
-            {rows.map((row) => (
-              <CategoryRow key={row.id} item={row} badgeLabel={t('categories.mostTracked')} />
-            ))}
-          </View>
-        )}
+        <ListingContent
+          loading={loading}
+          sourceEmpty={categories.length === 0}
+          itemCount={rows.length}
+          query={query}
+          newHref={newCategoryHref}
+          newLabel={t('categories.new')}
+          emptyTitle={t('common.empty')}>
+          {rows.map((row) => (
+            <CategoryRow
+              key={row.id}
+              item={row}
+              badgeLabel={t('categories.mostTracked')}
+              onLongPress={() => openActions(row.id)}
+            />
+          ))}
+        </ListingContent>
       </ScreenScaffold>
 
-      <BottomActionBar>
-        <Link href="/categories/new" asChild>
-          <Button label={t('categories.new')} icon={<Plus size={18} />} />
-        </Link>
-      </BottomActionBar>
+      {actions.entity ? (
+        <>
+          <EntityActionMenuSheet
+            visible={actions.menuVisible}
+            onClose={actions.close}
+            bottomInset={insets.bottom}
+            title={actions.entity.name}
+            subtitle={actionSubtitle}
+            emoji={actions.entity.description || categoryEmoji(actions.entity.name)}
+            editLabel={t('categories.edit')}
+            deleteError={actions.deleteError}
+            onEdit={actions.beginEdit}
+            onDelete={() => void actions.remove(remove, actions.entity!.id)}
+          />
+          <EntityEditSheet
+            visible={actions.editVisible}
+            onClose={actions.close}
+            bottomInset={insets.bottom}
+            title={t('categories.edit')}
+            onSave={() => editFormRef.current?.submit()}>
+            <CategoryForm
+              ref={editFormRef}
+              initialValues={{ name: actions.entity.name, description: actions.entity.description }}
+              hideSubmit
+              onSubmit={async (values) => {
+                await update(actions.entity!.id, values);
+                actions.close();
+              }}
+            />
+          </EntityEditSheet>
+        </>
+      ) : null}
 
       <BottomSheet visible={filtersOpen} onClose={() => setFiltersOpen(false)} bottomInset={insets.bottom} resizable={false}>
         <View className="gap-4">

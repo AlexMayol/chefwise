@@ -6,6 +6,17 @@
 - `components/domain/` may know Chefwise concepts such as products, markets, recipes, pantry, and backup.
 - Components should receive data and callbacks from screens/hooks; avoid importing repositories or database providers here.
 
+## Reusable composition (required)
+
+Screens must stay slim by pushing repeated structure into components and helpers — not by copying JSX across routes.
+
+- **Before duplicating** a loading/empty/list branch, filter sheet shell, or header row across screens, add or extend a shared `components/ui/` or `components/domain/` component.
+- UI components own **layout and conditional rendering**; callers pass data and labels. Pair them with pure helpers from `lib/ui/` when visibility depends on simple inputs (see `ListingContent` + `getListingCreateVisibility`).
+- Domain components own **feature row/card/form** shapes; UI components own **cross-feature shells** (`ScreenScaffold`, `ListingContent`, `EmptyState`, `BottomSheet` framing).
+- If a new screen would exceed ~150 lines mostly from shared patterns, extract first, then compose the route.
+
+**Reference:** `ListingContent` — one component replaces per-screen loading/empty/list-footer logic; screens only pass `loading`, `itemCount`, `query`, create href/label, and row `children`.
+
 ## Styling
 
 NativeWind v5 (built on `react-native-css`) targets native and web from one codebase — every rule below is about staying correct on **both**.
