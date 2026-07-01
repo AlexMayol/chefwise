@@ -3,8 +3,8 @@ import { Plus } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
 import { ListNewItem } from '@/components/ui/list-new-item';
 import { LoadingState } from '@/components/ui/loading-state';
 import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
@@ -62,7 +62,7 @@ export function ListingContent({
   }
 
   return (
-    <View className="gap-3">
+    <View className="gap-2">
       {children}
       {showListFooterNew ? <ListNewItem href={newHref} label={newLabel} /> : null}
     </View>

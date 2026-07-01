@@ -8,8 +8,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
-
 type BottomSheetProps = {
   visible: boolean;
   onClose(): void;
@@ -22,27 +20,18 @@ type BottomSheetProps = {
 };
 
 const SCRIM_OPACITY = 0.4;
-const SCRIM_FADE_END = 0.24;
 const SCRIM_FADE_DURATION = 250;
 const SHEET_SLIDE_DURATION = 300;
-const SCRIM_GRADIENT_ID = 'bottom-sheet-scrim-gradient';
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const BottomSheetScrim = memo(function BottomSheetScrim() {
   return (
-    <View testID="bottom-sheet-scrim" pointerEvents="none" style={StyleSheet.absoluteFill}>
-      <Svg width="100%" height="100%" preserveAspectRatio="none">
-        <Defs>
-          <LinearGradient id={SCRIM_GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#000000" stopOpacity={0} />
-            <Stop offset={SCRIM_FADE_END} stopColor="#000000" stopOpacity={SCRIM_OPACITY} />
-            <Stop offset="1" stopColor="#000000" stopOpacity={SCRIM_OPACITY} />
-          </LinearGradient>
-        </Defs>
-        <Rect width="100%" height="100%" fill={`url(#${SCRIM_GRADIENT_ID})`} />
-      </Svg>
-    </View>
+    <View
+      testID="bottom-sheet-scrim"
+      pointerEvents="none"
+      style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0, 0, 0, ${SCRIM_OPACITY})` }]}
+    />
   );
 });
 

@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react-native';
 import { type ReactNode, type RefObject, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -43,10 +44,17 @@ export function CreatableSelect<T extends string>({
 
   return (
     <View className="flex-row items-center gap-2">
-      <View className="flex-1">
-        <SelectInput value={value} options={options} onChange={onChange} placeholder={emptyLabel} />
-      </View>
-      <Button variant="ghost" label="+" accessibilityLabel={addLabel} className="px-4" onPress={() => setOpen(true)} />
+      {options.length === 0 ? (
+        // Nothing to pick yet: skip the empty select and offer one full-width create button.
+        <Button variant="ghost" label={addLabel} icon={<Plus size={18} />} className="flex-1" onPress={() => setOpen(true)} />
+      ) : (
+        <>
+          <View className="flex-1">
+            <SelectInput value={value} options={options} onChange={onChange} placeholder={emptyLabel} />
+          </View>
+          <Button variant="ghost" label="+" accessibilityLabel={addLabel} className="px-4" onPress={() => setOpen(true)} />
+        </>
+      )}
       <BottomSheet visible={open} onClose={() => setOpen(false)}>
         <View className="flex-1 gap-4">
           <FormScreenHeader title={addLabel} onCancel={() => setOpen(false)} onSave={() => formRef.current?.submit()} />

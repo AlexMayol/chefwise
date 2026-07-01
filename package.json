@@ -1,5 +1,5 @@
 {
-  "name": "chefwise",
+  "name": "Chefwise",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
@@ -58,13 +58,15 @@
   },
   "scripts": {
     "start": "expo start",
+    "start:no-seed": "EXPO_PUBLIC_SKIP_SEED=1 expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "test": "jest --watchAll=false",
     "typecheck": "tsc --noEmit",
     "seed:db": "node --experimental-sqlite --experimental-strip-types scripts/seed-db.ts",
     "web": "expo start --web",
-    "test:android": "eas build --platform android --profile development"
+    "test:android": "eas build --platform android --profile development",
+    "build:apk": "eas build --platform android --profile production-apk"
   },
   "jest": {
     "preset": "jest-expo",

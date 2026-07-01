@@ -1,10 +1,10 @@
-import { ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useState, type ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 
 import { Card } from '@/components/ui/card';
 import { Collapsible } from '@/components/ui/collapsible';
+import { CollapsibleChevron } from '@/components/ui/collapsible-chevron';
 import { useDesignTokens } from '@/lib/hooks/use-design-tokens';
 
 type CategorySectionProps = {
@@ -31,11 +31,7 @@ export function CategorySection({ title, emoji, count, defaultExpanded = true, c
         <View className="min-w-6 items-center rounded-full bg-muted px-2 py-0.5">
           <Text className="text-xs font-semibold text-muted-foreground">{count}</Text>
         </View>
-        {expanded ? (
-          <ChevronUp size={18} color={tokens.mutedForeground} />
-        ) : (
-          <ChevronDown size={18} color={tokens.mutedForeground} />
-        )}
+        <CollapsibleChevron expanded={expanded} color={tokens.mutedForeground} />
       </Pressable>
       <Collapsible expanded={expanded}>{children}</Collapsible>
     </Card>

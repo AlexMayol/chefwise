@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 
 import { BackupActions } from '@/components/domain/backup-actions';
 import { FeatureScreen } from '@/components/domain/feature-screen';
-import { Select } from '@/components/ui/select';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { useLocale } from '@/lib/hooks/use-locale';
 import { useThemePreference, type ThemePreference } from '@/lib/hooks/use-theme-preference';
 import { useTranslation, type SupportedLocale } from '@/lib/i18n';
@@ -38,7 +38,7 @@ export default function SettingsScreen() {
       <SettingsSection title={t('settings.appearance')} description={t('settings.appearanceDescription')}>
         <View className="gap-2">
           <Text className="text-base font-semibold text-card-foreground">{t('settings.theme')}</Text>
-          <Select<ThemePreference>
+          <SegmentedControl<ThemePreference>
             value={preference}
             onChange={(value) => void setPreference(value)}
             options={[
@@ -51,7 +51,7 @@ export default function SettingsScreen() {
       </SettingsSection>
 
       <SettingsSection title={t('settings.language')} description={t('settings.languageDescription')}>
-        <Select<SupportedLocale>
+        <SegmentedControl<SupportedLocale>
           value={locale}
           onChange={(value) => void setLocale(value)}
           options={[

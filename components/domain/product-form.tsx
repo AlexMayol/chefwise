@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronDown, ChevronUp } from 'lucide-react-native';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Pressable, Switch, Text, View } from 'react-native';
@@ -7,6 +6,7 @@ import { Pressable, Switch, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Collapsible } from '@/components/ui/collapsible';
+import { CollapsibleChevron } from '@/components/ui/collapsible-chevron';
 import { ControlledInput } from '@/components/ui/controlled-input';
 import { FormField } from '@/components/ui/form-field';
 import { type FormHandle } from '@/components/ui/form-screen-header';
@@ -118,11 +118,7 @@ export const ProductForm = forwardRef<ProductFormHandle, ProductFormProps>(funct
           className="flex-row items-center gap-2.5 active:opacity-70"
           onPress={() => setShowMore((current) => !current)}>
           <Text className="flex-1 text-base font-bold text-foreground">{t('forms.productDetailsOptional')}</Text>
-          {showMore ? (
-            <ChevronUp size={18} color={tokens.mutedForeground} />
-          ) : (
-            <ChevronDown size={18} color={tokens.mutedForeground} />
-          )}
+          <CollapsibleChevron expanded={showMore} color={tokens.mutedForeground} />
         </Pressable>
         <Collapsible expanded={showMore}>
           <View className="gap-4 pt-4">
